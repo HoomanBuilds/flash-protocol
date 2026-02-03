@@ -1,57 +1,36 @@
-'use client'
-
-import * as React from 'react'
-import {
-  RainbowKitProvider,
-  getDefaultWallets,
-  getDefaultConfig,
-} from '@rainbow-me/rainbowkit'
-import {
-  trustWallet,
-  ledgerWallet,
-} from '@rainbow-me/rainbowkit/wallets'
-import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base,
-} from 'wagmi/chains'
+import { RainbowKitProvider, RainbowKitAuthenticationProvider, AuthenticationStatus, darkTheme } from '@rainbow-me/rainbowkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
+import { config } from '@/config/wagmi'
+import { authenticationAdapter } from '@/lib/auth-adapter'
+import { useEffect } from 'react'
+import { useUserStore } from '@/store/user'
 import '@rainbow-me/rainbowkit/styles.css'
-
-const { wallets } = getDefaultWallets()
-
-const config = getDefaultConfig({
-  appName: 'Crypto Payment Platform',
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'YOUR_PROJECT_ID',
-  wallets: [
-    ...wallets,
-    {
-      groupName: 'Other',
-      wallets: [trustWallet, ledgerWallet],
-    },
-  ],
-  chains: [
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    base,
-  ],
-  ssr: true,
-})
 
 const queryClient = new QueryClient()
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading, fetchUser } = useUserStore()
+
+  useEffect(() => {
+    fetchUser()
+  }, []) 
+
+  const status: AuthenticationStatus = isLoading 
+    ? 'loading' 
+    : isAuthenticated ? 'authenticated' : 'unauthenticated'
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          {children}
-        </RainbowKitProvider>
+        <RainbowKitAuthenticationProvider 
+          adapter={authenticationAdapter} 
+          status={status}
+        >
+          <RainbowKitProvider theme={darkTheme()}>
+            {children}
+          </RainbowKitProvider>
+        </RainbowKitAuthenticationProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )
