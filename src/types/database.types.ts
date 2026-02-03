@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       merchants: {
@@ -37,7 +37,7 @@ export interface Database {
           last_login_at?: string | null
         }
         Update: {
-          id?: string
+          id: string
           wallet_address?: string
           email?: string | null
           business_name?: string | null
@@ -70,7 +70,7 @@ export interface Database {
           updated_at: string
         }
         Insert: {
-          id?: string
+          id: string
           merchant_id: string
           amount?: number | null
           currency?: string
@@ -88,7 +88,7 @@ export interface Database {
           updated_at?: string
         }
         Update: {
-          id?: string
+          id: string
           merchant_id?: string
           amount?: number | null
           currency?: string
@@ -142,7 +142,7 @@ export interface Database {
           completed_at: string | null
         }
         Insert: {
-          id?: string
+          id: string
           payment_link_id?: string | null
           customer_wallet?: string | null
           from_chain_id?: number | null
@@ -176,7 +176,7 @@ export interface Database {
           completed_at?: string | null
         }
         Update: {
-          id?: string
+          id: string
           payment_link_id?: string | null
           customer_wallet?: string | null
           from_chain_id?: number | null
@@ -233,7 +233,7 @@ export interface Database {
           created_at: string
         }
         Insert: {
-          id?: string
+          id: string
           payment_link_id?: string | null
           session_id?: string | null
           from_chain_id?: number | null
@@ -254,7 +254,7 @@ export interface Database {
           created_at?: string
         }
         Update: {
-          id?: string
+          id: string
           payment_link_id?: string | null
           session_id?: string | null
           from_chain_id?: number | null
@@ -288,7 +288,7 @@ export interface Database {
           created_at: string
         }
         Insert: {
-          id?: string
+          id: string
           wallet_address: string
           email?: string | null
           total_payments?: number
@@ -299,7 +299,7 @@ export interface Database {
           created_at?: string
         }
         Update: {
-          id?: string
+          id: string
           wallet_address?: string
           email?: string | null
           total_payments?: number
@@ -321,7 +321,7 @@ export interface Database {
           created_at: string
         }
         Insert: {
-          id?: string
+          id: string
           wallet_address: string
           nonce: string
           signature?: string | null
@@ -330,7 +330,7 @@ export interface Database {
           created_at?: string
         }
         Update: {
-          id?: string
+          id: string
           wallet_address?: string
           nonce?: string
           signature?: string | null
@@ -357,7 +357,7 @@ export interface Database {
           created_at: string
         }
         Insert: {
-          id?: string
+          id: string
           transaction_id?: string | null
           provider?: string | null
           failure_stage?: string | null
@@ -373,7 +373,7 @@ export interface Database {
           created_at?: string
         }
         Update: {
-          id?: string
+          id: string
           transaction_id?: string | null
           provider?: string | null
           failure_stage?: string | null
@@ -407,7 +407,7 @@ export interface Database {
           created_at: string
         }
         Insert: {
-          id?: string
+          id: string
           date?: string | null
           provider?: string | null
           chain_id?: number | null
@@ -423,7 +423,7 @@ export interface Database {
           created_at?: string
         }
         Update: {
-          id?: string
+          id: string
           date?: string | null
           provider?: string | null
           chain_id?: number | null

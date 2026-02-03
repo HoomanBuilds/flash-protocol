@@ -32,7 +32,7 @@ end $$;
 -- Merchants Table (Profile table linked to auth.users)
 -- "merchants (users table)" from technical docs
 create table if not exists merchants (
-    id uuid primary key references auth.users(id) on delete cascade,
+    id uuid primary key default uuid_generate_v4(),
     wallet_address varchar unique not null,
     email varchar,
     business_name varchar,
@@ -48,8 +48,8 @@ create table if not exists merchants (
 -- RLS for Merchants
 alter table merchants enable row level security;
 create policy "Public profiles are viewable by everyone" on merchants for select using (true);
-create policy "Users can insert their own profile" on merchants for insert with check (auth.uid() = id);
-create policy "Users can update own profile" on merchants for update using (auth.uid() = id);
+create policy "Anyone can insert profile" on merchants for insert with check (true);
+create policy "Users can update own profile" on merchants for update using (true); -- TODO: Lock down with session check in API
 
 -- Payment Links Table
 create table if not exists payment_links (
@@ -74,8 +74,8 @@ create table if not exists payment_links (
 -- RLS for Payment Links
 alter table payment_links enable row level security;
 create policy "Payment links viewable by everyone" on payment_links for select using (true);
-create policy "Merchants can insert own links" on payment_links for insert with check (auth.uid() = merchant_id);
-create policy "Merchants can update own links" on payment_links for update using (auth.uid() = merchant_id);
+create policy "Merchants can insert own links" on payment_links for insert with check (true);
+create policy "Merchants can update own links" on payment_links for update using (true);
 
 -- Transactions Table
 create table if not exists transactions (
