@@ -49,7 +49,7 @@ create table if not exists merchants (
 alter table merchants enable row level security;
 create policy "Public profiles are viewable by everyone" on merchants for select using (true);
 create policy "Anyone can insert profile" on merchants for insert with check (true);
-create policy "Users can update own profile" on merchants for update using (true); -- TODO: Lock down with session check in API
+create policy "Users can update own profile" on merchants for update using (false); -- Strict: Only Service Role can update
 
 -- Payment Links Table
 create table if not exists payment_links (
@@ -249,9 +249,10 @@ create index if not exists idx_analytics_date_provider on analytics(date, provid
 create index if not exists idx_analytics_date on analytics(date desc);
 
 -- Realtime Subscriptions
-begin;
+do $$
+begin
   alter publication supabase_realtime add table transactions;
   alter publication supabase_realtime add table payment_links;
 exception when others then
   null;
-end;
+end $$;

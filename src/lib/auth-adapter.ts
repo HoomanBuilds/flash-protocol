@@ -1,5 +1,5 @@
 import { createAuthenticationAdapter } from '@rainbow-me/rainbowkit'
-import { SiweMessage } from 'siwe'
+import { createSiweMessage } from 'viem/siwe'
 import { useUserStore } from '@/store/user'
 
 export const authenticationAdapter = createAuthenticationAdapter({
@@ -10,7 +10,7 @@ export const authenticationAdapter = createAuthenticationAdapter({
   },
 
   createMessage: ({ nonce, address, chainId }) => {
-    return new SiweMessage({
+    return createSiweMessage({
       domain: window.location.host,
       address,
       statement: 'Sign in to Crypto Payment Gateway',
@@ -24,22 +24,29 @@ export const authenticationAdapter = createAuthenticationAdapter({
 
 
   verify: async ({ message, signature }) => {
-    const verifyRes = await fetch('/api/auth/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: message.prepareMessage(), signature }),
-    })
-    
-    if (!verifyRes.ok) {
-        throw new Error('Failed to verify signature')
-    }
+    try {
+      const verifyRes = await fetch('/api/auth/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, signature }),
+      })
+      
+      if (!verifyRes.ok) {
+        const errorData = await verifyRes.json()
+        console.error('SIWE Verify failed:', errorData)
+        return false
+      }
 
-    const data = await verifyRes.json()
-    if (data.success && data.user) {
-        useUserStore.getState().setUser(data.user)
+      const data = await verifyRes.json()
+      if (data.success && data.user) {
+          useUserStore.getState().setUser(data.user)
+      }
+      
+      return Boolean(data.success)
+    } catch (error) {
+      console.error('SIWE Verify Error:', error)
+      return false
     }
-    
-    return Boolean(data.success)
   },
 
   signOut: async () => {
