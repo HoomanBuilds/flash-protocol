@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { LifiService } from '@/services/lifi'
+import { QuoteAggregator } from '@/services/quote-aggregator'
 import { z } from 'zod'
 
 const quoteSchema = z.object({
@@ -16,26 +16,28 @@ export async function POST(request: Request) {
     const body = await request.json()
     const params = quoteSchema.parse(body)
 
-    const result = await LifiService.getQuote({
-      fromChainId: params.fromChainId,
-      toChainId: params.toChainId,
-      fromTokenAddress: params.fromTokenAddress,
-      toTokenAddress: params.toTokenAddress,
+    // Using QuoteAggregator to fetch from all providers
+    const result = await QuoteAggregator.getQuotes({
+      fromChain: params.fromChainId,
+      toChain: params.toChainId,
+      fromToken: params.fromTokenAddress,
+      toToken: params.toTokenAddress,
       fromAmount: params.fromAmount,
-      fromAddress: params.fromAddress,
-      options: {
-        slippage: 0.005, // 0.5%
-        order: 'RECOMMENDED',
-      },
+      fromAddress: params.fromAddress || '',
+      slippage: 0.5 // Default 0.5%
     })
 
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 })
-    }
-
-    return NextResponse.json({ routes: result.routes })
+    return NextResponse.json({ 
+      success: true, 
+      routes: result.quotes,
+      bestQuote: result.bestQuote,
+      expiresAt: result.expiresAt,
+      fetchedAt: result.fetchedAt,
+      providerStats: result.providerStats,
+    })
   } catch (error) {
     console.error('API Quote Error:', error)
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
   }
 }
+

@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { inngest } from '@/inngest/client'
 
 const initiateSchema = z.object({
-  paymentLinkId: z.string().optional(), // Optional for now (direct swap test)
+  paymentLinkId: z.string().nullable().optional(), // Accept null or undefined
   walletAddress: z.string(),
   fromChainId: z.number(),
   toChainId: z.number(),
@@ -12,7 +12,8 @@ const initiateSchema = z.object({
   toToken: z.string(),
   fromAmount: z.string(),
   toAmount: z.string(),
-  route: z.any(), // Store LIFI route JSON
+  provider: z.string().default('lifi'),
+  route: z.any(), // Store route JSON
 })
 
 export async function POST(request: Request) {
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
         from_amount: params.fromAmount,
         to_amount: params.toAmount,
         status: 'initiated',
-        provider: 'lifi',
+        provider: params.provider,
         route_details: params.route,
         payment_link_id: params.paymentLinkId || null // Allow null for testing
       } as any)
@@ -45,17 +46,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Database error' }, { status: 500 })
     }
 
-    // 2. Trigger Inngest Job for status monitoring
-    await inngest.send({ 
-        name: 'transaction/poll', 
-        data: { 
-            transactionId: (data as any).id,
-            txHash: params.route?.transactionRequest?.hash || null,
-            fromChainId: params.fromChainId,
-            toChainId: params.toChainId,
-            bridge: params.route?.steps?.[0]?.tool || 'lifi',
-        } 
-    })
+    // 2. Record created - polling will be triggered when user submits tx hash via PATCH /api/transactions/[id]/hash
+    // We don't start polling yet because we don't have a tx hash until user signs
 
     return NextResponse.json({ success: true, transactionId: (data as any).id })
   } catch (error) {
