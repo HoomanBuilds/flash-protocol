@@ -26,6 +26,7 @@
     "next": "16.1.6",
     "posthog-js": "^1.336.4",
     "radix-ui": "^1.4.3",
+    "rango-sdk-basic": "^0.1.72",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-qr-code": "^2.0.18",
