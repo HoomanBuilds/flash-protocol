@@ -10,6 +10,10 @@
     "inngest": "npx inngest-cli@latest dev"
   },
   "dependencies": {
+    "@circle-fin/adapter-viem-v2": "^1.4.0",
+    "@circle-fin/bridge-kit": "^1.5.0",
+    "@defuse-protocol/intents-sdk": "^0.51.0",
+    "@defuse-protocol/one-click-sdk-typescript": "^0.1.15",
     "@lifi/sdk": "^3.15.4",
     "@rainbow-me/rainbowkit": "^2.2.10",
     "@sentry/nextjs": "^10.38.0",
