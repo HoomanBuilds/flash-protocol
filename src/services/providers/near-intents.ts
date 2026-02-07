@@ -1,25 +1,17 @@
 import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus } from '@/types/provider'
+import { OneClickService, QuoteRequest as DefuseQuoteRequest, OpenAPI } from '@defuse-protocol/one-click-sdk-typescript'
 
-// NEAR Intents 1Click API
-const NEAR_INTENTS_API = 'https://1click.chaindefuser.com/v0'
+OpenAPI.BASE = 'https://1click.chaindefuser.com'
 
-const NATIVE_ASSET_IDS: Record<number, string> = {
-  // nep141 format chains
-  1: 'nep141:eth.omft.near',           // ETH on Ethereum
-  42161: 'nep141:arb.omft.near',       // ETH on Arbitrum
-  8453: 'nep141:base.omft.near',       // ETH on Base
-  100: 'nep141:gnosis.omft.near',      // xDAI on Gnosis
-  // nep245 format chains (use chainId in the format)
-  56: 'nep245:v2_1.omni.hot.tg:56_11111111111111111111',      // BNB on BSC
-  137: 'nep245:v2_1.omni.hot.tg:137_11111111111111111111',    // POL on Polygon
-  43114: 'nep245:v2_1.omni.hot.tg:43114_11111111111111111111', // AVAX on Avalanche
-  10: 'nep245:v2_1.omni.hot.tg:10_11111111111111111111',       // ETH on Optimism
+if (process.env.NEAR_INTENTS_JWT) {
+  OpenAPI.TOKEN = process.env.NEAR_INTENTS_JWT
 }
 
-// Chain blockchain name mapping for token address format
+// Chain prefix mapping for asset ID format
+// Format: nep141:[chain]-[address].omft.near
 const CHAIN_PREFIX_MAP: Record<number, string> = {
   1: 'eth',
-  137: 'pol',
+  137: 'polygon', 
   42161: 'arb',
   10: 'op',
   8453: 'base',
@@ -28,16 +20,41 @@ const CHAIN_PREFIX_MAP: Record<number, string> = {
   100: 'gnosis',
 }
 
+// Known WETH addresses for native ETH handling
+const WETH_ADDRESSES: Record<number, string> = {
+  1: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  42161: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
+  8453: '0x4200000000000000000000000000000000000006',
+  137: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
+  10: '0x4200000000000000000000000000000000000006',
+  43114: '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab',
+}
+
 export class NearIntentsProvider implements IProvider {
   name = 'near-intents'
 
+  /**
+   * Convert chainId + token address to NEAR Intents asset ID format
+   * Format: nep141:[chain]-[address].omft.near
+   * Example: nep141:arb-0xaf88d065e77c8cc2239327c5edb3a432268e5831.omft.near
+   */
   private getAssetId(chainId: number, tokenAddress: string): string | null {
     const chainPrefix = CHAIN_PREFIX_MAP[chainId]
-    if (!chainPrefix) return null
+    if (!chainPrefix) {
+      console.log(`NEAR Intents: Unsupported chain ${chainId}`)
+      return null
+    }
 
     const address = tokenAddress.toLowerCase()
+    
+    // Native ETH (zero address)
     if (address === '0x0000000000000000000000000000000000000000') {
-      return NATIVE_ASSET_IDS[chainId] || null
+      const wethAddress = WETH_ADDRESSES[chainId]
+      if (!wethAddress) {
+        console.log(`NEAR Intents: No WETH for chain ${chainId}`)
+        return null
+      }
+      return `nep141:${chainPrefix}-${wethAddress.toLowerCase()}.omft.near`
     }
 
     return `nep141:${chainPrefix}-${address}.omft.near`
@@ -45,57 +62,74 @@ export class NearIntentsProvider implements IProvider {
 
   async getQuote(request: QuoteRequest): Promise<QuoteResponse[]> {
     try {
+      // Check if JWT is configured
+      if (!process.env.NEAR_INTENTS_JWT) {
+        console.log('NEAR Intents: JWT not configured (NEAR_INTENTS_JWT)')
+        return []
+      }
+
       const originAsset = this.getAssetId(request.fromChain, request.fromToken)
       const destinationAsset = this.getAssetId(request.toChain, request.toToken)
-      
+
       if (!originAsset || !destinationAsset) {
-        console.log('NEAR Intents: Unsupported chain')
+        console.log('NEAR Intents: Could not generate asset IDs')
         return []
       }
 
-      const response = await fetch(`${NEAR_INTENTS_API}/quote`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          dry: true,
-          swapType: 'EXACT_INPUT',
-          slippageTolerance: Math.round((request.slippage || 0.5) * 100), // Basis points (50 = 0.5%)
-          originAsset,
-          depositType: 'ORIGIN_CHAIN',
-          destinationAsset,
-          amount: request.fromAmount,
-          refundTo: request.fromAddress,
-          refundType: 'ORIGIN_CHAIN',
-          recipient: request.toAddress || request.fromAddress,
-          recipientType: 'DESTINATION_CHAIN',
-          deadline: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
-        })
+      console.log('NEAR Intents: Fetching quote with SDK', {
+        originAsset,
+        destinationAsset,
+        amount: request.fromAmount
       })
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('NEAR Intents API Error:', errorText)
-        return []
+      // Create deadline 1 hour from now in ISO format
+      const deadline = new Date(Date.now() + 3600000).toISOString()
+
+      const quoteRequest: DefuseQuoteRequest = {
+        dry: true,
+        swapType: DefuseQuoteRequest.swapType.EXACT_INPUT,
+        slippageTolerance: Math.round((request.slippage || 0.5) * 100), // Basis points (100 = 1%)
+        originAsset,
+        depositType: DefuseQuoteRequest.depositType.ORIGIN_CHAIN,
+        destinationAsset,
+        amount: request.fromAmount,
+        refundTo: request.fromAddress,
+        refundType: DefuseQuoteRequest.refundType.ORIGIN_CHAIN,
+        recipient: request.toAddress || request.fromAddress,
+        recipientType: DefuseQuoteRequest.recipientType.DESTINATION_CHAIN,
+        deadline,
       }
 
-      const data = await response.json()
-      
-      if (!data.amountOut) {
-        console.log('NEAR Intents: No quote available')
+      const response = await OneClickService.getQuote(quoteRequest)
+
+      console.log('NEAR Intents SDK Response:', JSON.stringify(response, null, 2))
+
+      const quote = response.quote
+      if (!quote?.amountOut) {
+        console.log('NEAR Intents: No quote available in response')
         return []
       }
 
       return [{
         provider: 'near-intents',
-        id: data.quoteId || Math.random().toString(36).substring(7),
+        id: response.correlationId || Math.random().toString(36).substring(7),
         fromAmount: request.fromAmount,
-        toAmount: data.amountOut,
-        toAmountMin: data.minAmountOut || data.amountOut,
+        toAmount: quote.amountOut,
+        toAmountMin: quote.minAmountOut || quote.amountOut,
         estimatedGas: '0', // NEAR Intents handles gas internally
-        estimatedDuration: data.estimatedTime || 180, 
-        transactionRequest: null, 
+        estimatedDuration: 120, // NEAR Intents typically ~2 minutes
+        transactionRequest: quote.depositAddress ? { 
+          depositAddress: quote.depositAddress,
+          memo: quote.depositMemo 
+        } : null,
+        metadata: {
+          depositAddress: quote.depositAddress,
+          depositMemo: quote.depositMemo,
+          signature: response.signature,
+          deadline: quote.deadline,
+          amountOutFormatted: quote.amountOutFormatted,
+          amountOutUsd: quote.amountOutUsd,
+        },
         routes: [{
           type: 'bridge' as const,
           tool: 'near-intents',
@@ -113,10 +147,10 @@ export class NearIntentsProvider implements IProvider {
               decimals: 18
             },
             fromAmount: request.fromAmount,
-            toAmount: data.amountOut
+            toAmount: quote.amountOut
           },
           estimate: {
-            executionDuration: data.estimatedTime || 180
+            executionDuration: 120
           }
         }]
       }]
@@ -129,27 +163,27 @@ export class NearIntentsProvider implements IProvider {
 
   async getStatus(request: StatusRequest): Promise<StatusResponse> {
     try {
-      const response = await fetch(`${NEAR_INTENTS_API}/status?intentHash=${request.txHash}`)
-      
-      if (!response.ok) return { status: 'NOT_FOUND' }
+      const response = await OneClickService.getExecutionStatus(request.txHash)
 
-      const data = await response.json()
-      
+      if (!response) {
+        return { status: 'NOT_FOUND' }
+      }
+
       let finalStatus: TransactionStatus = 'PENDING'
       
-      const statusLower = (data.status || '').toLowerCase()
-      if (['completed', 'success', 'done'].includes(statusLower)) {
+      const status = (response.status || '').toLowerCase()
+      if (['completed', 'success', 'done', 'settled'].includes(status)) {
         finalStatus = 'DONE'
-      } else if (['failed', 'refunded', 'expired'].includes(statusLower)) {
+      } else if (['failed', 'refunded', 'expired', 'error'].includes(status)) {
         finalStatus = 'FAILED'
-      } else if (['pending', 'processing', 'waiting_deposit'].includes(statusLower)) {
+      } else if (['pending', 'processing', 'waiting', 'in_progress'].includes(status)) {
         finalStatus = 'PENDING'
       }
 
       return {
         status: finalStatus,
-        subStatus: data.status,
-        txLink: data.explorerUrl
+        subStatus: response.status,
+        txLink: undefined
       }
     } catch (error) {
       console.error('NEAR Intents Status Error:', error)
