@@ -6,10 +6,11 @@ const QUOTE_VALIDITY_MS = 60000
 
 // Provider reliability scores
 const PROVIDER_RELIABILITY: Record<string, number> = {
+  'cctp': 98,           
   'lifi': 95,
   'rango': 90,
-  'rubic': 85,
   'symbiosis': 88,
+  'rubic': 85,
   'near-intents': 80,
 }
 

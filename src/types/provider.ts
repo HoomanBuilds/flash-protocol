@@ -60,6 +60,8 @@ export interface QuoteResponse {
   estimatedDuration: number 
   routes: QuoteStep[]
   transactionRequest?: any 
+  bridgeFee?: string        
+  bridgeFeeUSD?: string     
   fees?: {
     totalFeeUSD: string 
     bridgeFee?: string 
@@ -68,6 +70,7 @@ export interface QuoteResponse {
     slippage?: string 
   }
   toolsUsed?: string[] 
+  metadata?: Record<string, any>  
 }
 
 export interface StatusRequest {

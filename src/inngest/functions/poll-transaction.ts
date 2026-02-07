@@ -4,6 +4,7 @@ import { rangoProvider } from '@/services/providers/rango'
 import { rubicProvider } from '@/services/providers/rubic'
 import { symbiosisProvider } from '@/services/providers/symbiosis'
 import { nearIntentsProvider } from '@/services/providers/near-intents'
+import { cctpProvider } from '@/services/providers/cctp'
 import { IProvider, StatusRequest } from '@/types/provider'
 import { createServerClient } from '@/lib/supabase'
 
@@ -14,6 +15,7 @@ const providerRegistry: Record<string, IProvider> = {
   rubic: rubicProvider,
   symbiosis: symbiosisProvider,
   'near-intents': nearIntentsProvider,
+  cctp: cctpProvider,
 }
 
 export const pollTransactionStatus = inngest.createFunction(
