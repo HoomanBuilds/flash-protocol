@@ -44,24 +44,19 @@ export class RangoProvider implements IProvider {
 
       if (!quote || !quote.route) return []
 
-      let txData = null
-      if (request.fromAddress) {
-        try {
-           // Fetch swap data for execution
-           const swap = await this.client.swap({
-             from: { blockchain: fromChain, address: request.fromToken },
-             to: { blockchain: toChain, address: request.toToken },
-             amount: request.fromAmount,
-             fromAddress: request.fromAddress,
-             toAddress: request.toAddress || request.fromAddress,
-             slippage: request.slippage || 1.0,
-             disableEstimate: true
-           })
-           txData = swap
-        } catch (e) {
-          console.warn('Rango Swap Data Error:', e)
-        }
-      }
+      console.log('=== RANGO RAW RESPONSE ===')
+      console.log('requestId:', quote.requestId)
+      console.log('route.outputAmount:', quote.route.outputAmount)
+      console.log('route.outputAmountMin:', quote.route.outputAmountMin)
+      console.log('route.feeUsd:', quote.route.feeUsd)
+      console.log('route.estimatedTime:', quote.route.estimatedTime)
+      console.log('route.path:', JSON.stringify(quote.route.path, null, 2))
+      console.log('===========================')
+
+      // Get estimated time from route or first path element
+      const estimatedTime = quote.route.estimatedTime || 
+        quote.route.path?.[0]?.estimatedTimeInSeconds || 
+        60
 
       return [{
         provider: 'rango',
@@ -70,8 +65,8 @@ export class RangoProvider implements IProvider {
         toAmount: quote.route.outputAmount,
         toAmountMin: quote.route.outputAmountMin || quote.route.outputAmount,
         estimatedGas: quote.route.feeUsd || '0',
-        estimatedDuration: quote.route.estimatedTime || 0,
-        transactionRequest: txData,
+        estimatedDuration: estimatedTime,
+        transactionRequest: null, // Fetch at execution time via swap() call
         routes: [{
           type: 'swap',
           tool: 'rango',

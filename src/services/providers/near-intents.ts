@@ -8,7 +8,6 @@ if (process.env.NEAR_INTENTS_JWT) {
 }
 
 // Chain prefix mapping for asset ID format
-// Format: nep141:[chain]-[address].omft.near
 const CHAIN_PREFIX_MAP: Record<number, string> = {
   1: 'eth',
   137: 'polygon', 
@@ -20,14 +19,16 @@ const CHAIN_PREFIX_MAP: Record<number, string> = {
   100: 'gnosis',
 }
 
-// Known WETH addresses for native ETH handling
-const WETH_ADDRESSES: Record<number, string> = {
-  1: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  42161: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
-  8453: '0x4200000000000000000000000000000000000006',
-  137: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-  10: '0x4200000000000000000000000000000000000006',
-  43114: '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab',
+// Native token asset IDs from https://1click.chaindefuser.com/v0/tokens
+const NATIVE_ASSET_IDS: Record<number, string> = {
+  1: 'nep141:eth.omft.near',
+  42161: 'nep141:arb.omft.near',
+  8453: 'nep141:base.omft.near',
+  10: 'nep245:v2_1.omni.hot.tg:10_11111111111111111111',
+  137: 'nep245:v2_1.omni.hot.tg:137_11111111111111111111',
+  56: 'nep245:v2_1.omni.hot.tg:56_11111111111111111111',
+  43114: 'nep245:v2_1.omni.hot.tg:43114_11111111111111111111',
+  100: 'nep141:gnosis.omft.near',
 }
 
 export class NearIntentsProvider implements IProvider {
@@ -35,8 +36,8 @@ export class NearIntentsProvider implements IProvider {
 
   /**
    * Convert chainId + token address to NEAR Intents asset ID format
-   * Format: nep141:[chain]-[address].omft.near
-   * Example: nep141:arb-0xaf88d065e77c8cc2239327c5edb3a432268e5831.omft.near
+   * ERC20 format: nep141:[chain]-[address].omft.near
+   * Native format: nep141:[chain].omft.near (no contract address)
    */
   private getAssetId(chainId: number, tokenAddress: string): string | null {
     const chainPrefix = CHAIN_PREFIX_MAP[chainId]
@@ -47,14 +48,14 @@ export class NearIntentsProvider implements IProvider {
 
     const address = tokenAddress.toLowerCase()
     
-    // Native ETH (zero address)
+    // Native token (zero address) - use chain-level asset ID
     if (address === '0x0000000000000000000000000000000000000000') {
-      const wethAddress = WETH_ADDRESSES[chainId]
-      if (!wethAddress) {
-        console.log(`NEAR Intents: No WETH for chain ${chainId}`)
+      const nativeId = NATIVE_ASSET_IDS[chainId]
+      if (!nativeId) {
+        console.log(`NEAR Intents: No native asset ID for chain ${chainId}`)
         return null
       }
-      return `nep141:${chainPrefix}-${wethAddress.toLowerCase()}.omft.near`
+      return nativeId
     }
 
     return `nep141:${chainPrefix}-${address}.omft.near`
@@ -99,6 +100,8 @@ export class NearIntentsProvider implements IProvider {
         recipientType: DefuseQuoteRequest.recipientType.DESTINATION_CHAIN,
         deadline,
       }
+
+      console.log('NEAR Intents: Full request payload:', JSON.stringify(quoteRequest, null, 2))
 
       const response = await OneClickService.getQuote(quoteRequest)
 
@@ -155,8 +158,14 @@ export class NearIntentsProvider implements IProvider {
         }]
       }]
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('NEAR Intents Quote Error:', error)
+      if (error?.body) {
+        console.error('NEAR Intents Error Body:', JSON.stringify(error.body, null, 2))
+      }
+      if (error?.request?.body) {
+        console.error('NEAR Intents Request that failed:', error.request.body)
+      }
       return []
     }
   }
