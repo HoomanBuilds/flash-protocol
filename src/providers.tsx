@@ -17,6 +17,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchUser()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) 
 
   const status: AuthenticationStatus = isLoading 
