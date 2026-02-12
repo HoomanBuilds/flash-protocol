@@ -20,6 +20,7 @@ export const UserService = {
     const supabase = createServerClient()
     const { data, error } = await supabase
       .from('merchants')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .insert({ wallet_address: walletAddress } as any)
       .select()
       .single()

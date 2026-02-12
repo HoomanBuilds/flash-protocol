@@ -1,4 +1,4 @@
-import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus } from '@/types/provider'
+import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus, FeeCost } from '@/types/provider'
 import { OneClickService, QuoteRequest as DefuseQuoteRequest, OpenAPI } from '@defuse-protocol/one-click-sdk-typescript'
 
 OpenAPI.BASE = 'https://1click.chaindefuser.com'
@@ -113,6 +113,21 @@ export class NearIntentsProvider implements IProvider {
         return []
       }
 
+      // Calculate implicit fee (Spread)
+      const amountInUsd = parseFloat(quote.amountInUsd || '0')
+      const amountOutUsd = parseFloat(quote.amountOutUsd || '0')
+      const spread = Math.max(0, amountInUsd - amountOutUsd)
+      
+      const feeCosts: FeeCost[] = spread > 0 ? [{
+        type: 'PROTOCOL',
+        name: 'Network Spread',
+        description: 'Start-valued implicit fee (Input USD - Output USD)',
+        amount: spread.toFixed(6), 
+        amountUSD: spread.toFixed(6),
+        included: true,
+        percentage: amountInUsd > 0 ? (spread / amountInUsd) * 100 : 0
+      }] : []
+
       return [{
         provider: 'near-intents',
         id: response.correlationId || Math.random().toString(36).substring(7),
@@ -120,7 +135,7 @@ export class NearIntentsProvider implements IProvider {
         toAmount: quote.amountOut,
         toAmountMin: quote.minAmountOut || quote.amountOut,
         estimatedGas: '0', // NEAR Intents handles gas internally
-        estimatedDuration: 120, // NEAR Intents typically ~2 minutes
+        estimatedDuration: quote.timeEstimate || 120, 
         transactionRequest: quote.depositAddress ? { 
           depositAddress: quote.depositAddress,
           memo: quote.depositMemo 
@@ -133,9 +148,16 @@ export class NearIntentsProvider implements IProvider {
           amountOutFormatted: quote.amountOutFormatted,
           amountOutUsd: quote.amountOutUsd,
         },
+        fees: {
+            totalFeeUSD: spread.toFixed(4),
+            bridgeFee: spread.toFixed(4),
+            gasCost: '0'
+        },
         routes: [{
           type: 'bridge' as const,
           tool: 'near-intents',
+          toolName: 'NEAR Intents (Solver)',
+          toolLogoURI: 'https://cryptologos.cc/logos/near-protocol-near-logo.png', // Fallback
           action: {
             fromToken: {
               address: request.fromToken,
@@ -153,18 +175,20 @@ export class NearIntentsProvider implements IProvider {
             toAmount: quote.amountOut
           },
           estimate: {
-            executionDuration: 120
+            executionDuration: quote.timeEstimate || 120,
+            feeCosts: feeCosts
           }
         }]
       }]
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('NEAR Intents Quote Error:', error)
-      if (error?.body) {
-        console.error('NEAR Intents Error Body:', JSON.stringify(error.body, null, 2))
+      const err = error as { body?: unknown; request?: { body?: unknown } }
+      if (err?.body) {
+        console.error('NEAR Intents Error Body:', JSON.stringify(err.body, null, 2))
       }
-      if (error?.request?.body) {
-        console.error('NEAR Intents Request that failed:', error.request.body)
+      if (err?.request?.body) {
+        console.error('NEAR Intents Request that failed:', err.request.body)
       }
       return []
     }

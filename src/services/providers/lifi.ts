@@ -65,7 +65,7 @@ export class LifiProvider implements IProvider {
       return {
         status: finalStatus,
         subStatus: status.substatus,
-        txLink: (status as any).receiving?.txLink
+        txLink: (status as unknown as { receiving?: { txLink?: string } }).receiving?.txLink
       }
     } catch (error) {
       console.error('LI.FI Status Error:', error)
@@ -73,6 +73,7 @@ export class LifiProvider implements IProvider {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private mapRouteToQuote(route: Route, txData?: any): QuoteResponse {
     console.log('=== LIFI RAW ROUTE ===')
     console.log('route.fromAmount:', route.fromAmount)
@@ -86,18 +87,23 @@ export class LifiProvider implements IProvider {
     const toolsUsed = route.steps.map(step => step.toolDetails?.name || step.tool)
     
     let totalBridgeFee = 0
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const feeCosts: any[] = []
     
     for (const step of route.steps) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((step.estimate as any).feeCosts) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         for (const fee of (step.estimate as any).feeCosts) {
           totalBridgeFee += parseFloat(fee.amountUSD || '0')
           feeCosts.push({
-            type: 'BRIDGE',
-            name: `${step.toolDetails?.name || step.tool} Fee`,
+            type: 'PROTOCOL', 
+            name: fee.name,
+            description: fee.description,
             amount: fee.amount,
             amountUSD: fee.amountUSD || '0',
             percentage: fee.percentage,
+            included: fee.included,
             token: fee.token ? {
               address: fee.token.address,
               chainId: fee.token.chainId,
@@ -145,11 +151,13 @@ export class LifiProvider implements IProvider {
             decimals: step.action.toToken.decimals
           },
           fromAmount: step.action.fromAmount,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           toAmount: (step.estimate as any).toAmount || '0'
         },
         estimate: {
           approvalAddress: step.estimate.approvalAddress,
           executionDuration: step.estimate.executionDuration,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           feeCosts: (step.estimate as any).feeCosts?.map((f: any) => ({
             type: 'BRIDGE' as const,
             name: f.name || `${step.tool} Fee`,
@@ -158,8 +166,12 @@ export class LifiProvider implements IProvider {
             percentage: f.percentage
           })),
           gasCosts: step.estimate.gasCosts?.map(g => ({
+            type: 'GAS',
+            name: 'Network Gas',
+            description: 'Gas fee for transaction execution',
             amount: g.amount,
-            amountUSD: g.amountUSD,
+            amountUSD: g.amountUSD || '0',
+            included: false, 
             token: {
               address: g.token.address,
               chainId: g.token.chainId,

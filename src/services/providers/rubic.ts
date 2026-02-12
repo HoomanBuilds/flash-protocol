@@ -118,7 +118,25 @@ export class RubicProvider implements IProvider {
             toAmount: this.toWei(data.estimate.destinationTokenAmount, 18)
           },
           estimate: {
-            executionDuration: data.estimate.estimatedTime
+            executionDuration: data.estimate.estimatedTime,
+            feeCosts: [
+              ...(gasCostUSD !== '0' ? [{
+                type: 'GAS' as const,
+                name: 'Network Gas',
+                description: 'Estimated gas fee',
+                amount: '0', // Rubic often gives USD value directly
+                amountUSD: gasCostUSD,
+                included: false
+              }] : []),
+              ...(data.estimate.fixedFee ? [{
+                type: 'PROTOCOL' as const,
+                name: 'Fixed Fee',
+                description: 'Rubic Fixed Fee',
+                amount: data.estimate.fixedFee,
+                amountUSD: data.estimate.fixedFee, // Assuming USD for now
+                included: true
+              }] : [])
+            ]
           }
         }]
       }]

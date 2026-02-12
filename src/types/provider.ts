@@ -21,10 +21,12 @@ export interface QuoteRequest {
 export interface FeeCost {
   type: 'BRIDGE' | 'PROTOCOL' | 'LP' | 'GAS' | 'SLIPPAGE' | 'OTHER'
   name: string 
+  description?: string
   amount: string 
   amountUSD: string 
   token?: Token
   percentage?: number 
+  included?: boolean // true if deducted from output, false if paid on top
 }
 
 export interface QuoteStep {
@@ -59,6 +61,7 @@ export interface QuoteResponse {
   estimatedGas: string 
   estimatedDuration: number 
   routes: QuoteStep[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transactionRequest?: any 
   bridgeFee?: string        
   bridgeFeeUSD?: string     
@@ -70,7 +73,7 @@ export interface QuoteResponse {
     slippage?: string 
   }
   toolsUsed?: string[] 
-  metadata?: Record<string, any>  
+  metadata?: Record<string, unknown>  
 }
 
 export interface StatusRequest {

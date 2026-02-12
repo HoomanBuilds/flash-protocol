@@ -1,4 +1,4 @@
-import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus } from '@/types/provider'
+import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus, FeeCost } from '@/types/provider'
 
 /**
  * CCTP Provider - Circle Cross-Chain Transfer Protocol
@@ -142,7 +142,15 @@ export class CCTPProvider implements IProvider {
             toAmount: outputAmount.toString()
           },
           estimate: {
-            executionDuration: estimatedDuration
+            executionDuration: estimatedDuration,
+            feeCosts: [{
+              type: 'GAS',
+              name: 'Network Gas',
+              description: 'Gas for Burn (Source) + Mint (Dest)',
+              amount: '0.005', // Rough estimate/placeholder
+              amountUSD: '0.10', // Rough estimate
+              included: false
+            }]
           }
         }],
         metadata: {

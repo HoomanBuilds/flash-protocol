@@ -53,6 +53,7 @@ export const pollTransactionStatus = inngest.createFunction(
     // 3. Update Database
     await step.run('update-db', async () => {
       const supabase = createServerClient()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (supabase.from('transactions') as any)
         .update({ 
           status: finalStatus,
@@ -61,6 +62,49 @@ export const pollTransactionStatus = inngest.createFunction(
         })
         .eq('id', transactionId)
     })
+
+    // 4. If transaction completed, update payment link stats and merchant revenue
+    if (finalStatus === 'completed') {
+      await step.run('update-stats', async () => {
+        const supabase = createServerClient()
+        
+        // Fetch transaction details to get payment_link_id and amount
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: tx } = await (supabase.from('transactions') as any)
+          .select('payment_link_id, to_amount, amount:to_amount') // Select amount
+          .eq('id', transactionId)
+          .single()
+
+        if (tx?.payment_link_id) {
+          // 1. Increment Link Uses
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { error: linkError } = await (supabase.rpc as any)('increment_payment_link_uses', { 
+            link_id: tx.payment_link_id 
+          })
+          
+          if (linkError) console.error('Failed to increment link uses', linkError)
+
+          // 2. Update Merchant Revenue
+          const { data: linkRes } = await supabase
+            .from('payment_links')
+            .select('merchant_id')
+            .eq('id', tx.payment_link_id)
+            .single()
+            
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const link = linkRes as any
+
+          if (link?.merchant_id && tx.to_amount) {
+             // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const { error: revError } = await (supabase.rpc as any)('update_merchant_revenue', {
+               merchant_uuid: link.merchant_id,
+               amount: tx.to_amount 
+             })
+             if (revError) console.error('Failed to update revenue', revError)
+          }
+        }
+      })
+    }
 
     // 4. If still pending, schedule another check in 30 seconds
     if (finalStatus === 'pending') {

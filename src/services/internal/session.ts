@@ -25,6 +25,7 @@ export const SessionService = {
         signature,
         message,
         expires_at: expiresAt
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
       .select()
       .single()

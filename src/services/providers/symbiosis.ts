@@ -117,7 +117,17 @@ export class SymbiosisProvider implements IProvider {
             toAmount: data.tokenAmountOut.amount
           },
           estimate: {
-            executionDuration: data.estimatedTime
+            executionDuration: data.estimatedTime,
+            feeCosts: [
+              ...(parseFloat(bridgeFeeUSD) > 0 ? [{
+                type: 'BRIDGE' as const,
+                name: 'Bridge Fee',
+                description: 'Symbiosis Protocol Fee',
+                amount: bridgeFeeUSD,
+                amountUSD: bridgeFeeUSD,
+                included: true
+              }] : [])
+            ]
           }
         }]
       }]

@@ -1,5 +1,5 @@
 import { RangoClient } from 'rango-sdk-basic'
-import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus } from '@/types/provider'
+import { IProvider, QuoteRequest, QuoteResponse as UnifiedQuoteResponse, StatusRequest, StatusResponse, TransactionStatus } from '@/types/provider'
 
 // Map generic ChainID to Rango Blockchain Name
 const CHAIN_MAP: Record<number, string> = {
@@ -23,7 +23,7 @@ export class RangoProvider implements IProvider {
     this.client = new RangoClient(apiKey || 'no-api-key')
   }
 
-  async getQuote(request: QuoteRequest): Promise<QuoteResponse[]> {
+  async getQuote(request: QuoteRequest): Promise<UnifiedQuoteResponse[]> {
     try {
       // Skip if no API key configured
       if (!this.hasApiKey) {
@@ -53,44 +53,7 @@ export class RangoProvider implements IProvider {
       console.log('route.path:', JSON.stringify(quote.route.path, null, 2))
       console.log('===========================')
 
-      // Get estimated time from route or first path element
-      const estimatedTime = quote.route.estimatedTime || 
-        quote.route.path?.[0]?.estimatedTimeInSeconds || 
-        60
-
-      return [{
-        provider: 'rango',
-        id: quote.requestId,
-        fromAmount: request.fromAmount,
-        toAmount: quote.route.outputAmount,
-        toAmountMin: quote.route.outputAmountMin || quote.route.outputAmount,
-        estimatedGas: quote.route.feeUsd || '0',
-        estimatedDuration: estimatedTime,
-        transactionRequest: null, // Fetch at execution time via swap() call
-        routes: [{
-          type: 'swap',
-          tool: 'rango',
-          action: {
-            fromToken: {
-              address: request.fromToken,
-              chainId: request.fromChain,
-              symbol: 'UNKNOWN', 
-              decimals: 18
-            },
-            toToken: {
-              address: request.toToken,
-              chainId: request.toChain,
-              symbol: 'UNKNOWN',
-              decimals: 18
-            },
-            fromAmount: request.fromAmount,
-            toAmount: quote.route.outputAmount
-          },
-          estimate: {
-            executionDuration: quote.route.estimatedTime
-          }
-        }]
-      }]
+      return [this.mapQuoteToResponse(quote, request.fromAmount)]
     } catch (error) {
       console.error('Rango Quote Error:', error)
       return []
@@ -117,6 +80,83 @@ export class RangoProvider implements IProvider {
     } catch (error) {
       console.error('Rango Status Error:', error)
       return { status: 'NOT_FOUND' }
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private mapQuoteToResponse(quote: any, fromAmount: string): UnifiedQuoteResponse {
+    if (!quote.route) throw new Error('No route in quote')
+
+    // Map fees
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fees = quote.route.fee.map((f: any) => ({
+      type: f.name.toLowerCase().includes('gas') ? 'GAS' : 'BRIDGE' as const,
+      name: f.name,
+      amount: f.amount,
+      amountUSD: f.amountUSD || '0',
+      description: f.expenseType,
+      included: f.expenseType === 'DECREASE_FROM_OUTPUT',
+      token: {
+        address: f.token.address || '',
+        chainId: -1, 
+        symbol: f.token.symbol,
+        decimals: f.token.decimals
+      }
+    }))
+
+    // Extract tool logos/names from path
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const toolsUsed: string[] = quote.route.path?.map((p: any) => p.swapper.title) || []
+    
+    // Get estimated time
+    const estimatedTime = quote.route.estimatedTime || 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        quote.route.path?.reduce((acc: number, p: any) => acc + (p.estimatedTimeInSeconds || 0), 0) || 
+        60
+
+     return {
+      provider: 'rango',
+      id: quote.requestId,
+      fromAmount: fromAmount, 
+      toAmount: quote.route.outputAmount,
+      toAmountMin: quote.route.outputAmountMin,
+      estimatedGas: quote.route.feeUsd?.toString() || '0',
+      estimatedDuration: estimatedTime,
+      transactionRequest: null, 
+      routes: [{
+        type: 'bridge',
+        tool: quote.route.swapper.title, 
+        toolName: quote.route.swapper.title,
+        toolLogoURI: quote.route.swapper.logo,
+        action: {
+          fromToken: {
+            address: quote.route.from.address || '',
+            chainId: -1,
+            symbol: quote.route.from.symbol,
+            decimals: quote.route.from.decimals
+          },
+          toToken: {
+            address: quote.route.to.address || '',
+            chainId: -1,
+            symbol: quote.route.to.symbol,
+            decimals: quote.route.to.decimals
+          },
+          fromAmount: fromAmount,
+          toAmount: quote.route.outputAmount
+        },
+        estimate: {
+          executionDuration: estimatedTime,
+          feeCosts: fees
+        }
+      }],
+      toolsUsed: [...new Set(toolsUsed)],
+      fees: {
+        totalFeeUSD: quote.route.feeUsd?.toString() || '0',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        bridgeFee: fees.filter((f: any) => f.type === 'BRIDGE').reduce((acc: number, f: any) => acc + parseFloat(f.amountUSD), 0).toFixed(4),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        gasCost: fees.filter((f: any) => f.type === 'GAS').reduce((acc: number, f: any) => acc + parseFloat(f.amountUSD), 0).toFixed(4),
+      }
     }
   }
 }
