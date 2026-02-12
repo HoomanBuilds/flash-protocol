@@ -7,8 +7,6 @@ export function middleware(request: NextRequest) {
 
   // 1. Define Paths
   const isDashboard = path.startsWith('/dashboard')
-  const isApi = path.startsWith('/api')
-  const isAuthApi = path.startsWith('/api/auth')
 
   // 2. Protect /dashboard
   if (isDashboard && !session) {

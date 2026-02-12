@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { z } from 'zod'
-import { inngest } from '@/inngest/client'
 
 const initiateSchema = z.object({
   paymentLinkId: z.string().nullable().optional(), // Accept null or undefined
@@ -13,7 +12,8 @@ const initiateSchema = z.object({
   fromAmount: z.string(),
   toAmount: z.string(),
   provider: z.string().default('lifi'),
-  route: z.any(), // Store route JSON
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  route: z.any(),
 })
 
 export async function POST(request: Request) {
@@ -37,6 +37,7 @@ export async function POST(request: Request) {
         provider: params.provider,
         route_details: params.route,
         payment_link_id: params.paymentLinkId || null // Allow null for testing
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
       .select()
       .single()
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
     // 2. Record created - polling will be triggered when user submits tx hash via PATCH /api/transactions/[id]/hash
     // We don't start polling yet because we don't have a tx hash until user signs
 
-    return NextResponse.json({ success: true, transactionId: (data as any).id })
+    return NextResponse.json({ success: true, transactionId: (data as { id: string }).id })
   } catch (error) {
     console.error('Init Tx Error:', error)
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })

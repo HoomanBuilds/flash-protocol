@@ -63,6 +63,7 @@ create table if not exists payment_links (
     recipient_address varchar,
     title text,
     customization jsonb default '{}'::jsonb,
+    receive_mode varchar default 'specific_chain' check (receive_mode in ('same_chain', 'specific_chain')),
     status payment_link_status default 'active',
     max_uses integer, -- nullable, null means unlimited
     current_uses integer default 0,
@@ -75,7 +76,7 @@ create table if not exists payment_links (
 alter table payment_links enable row level security;
 create policy "Payment links viewable by everyone" on payment_links for select using (true);
 create policy "Merchants can insert own links" on payment_links for insert with check (true);
-create policy "Merchants can update own links" on payment_links for update using (true);
+create policy "Merchants can update own links" on payment_links for update using (false); -- Enforce API-only updates
 
 -- Transactions Table
 create table if not exists transactions (
@@ -256,3 +257,31 @@ begin
 exception when others then
   null;
 end $$;
+
+-- RPC for atomic updates
+
+create or replace function increment_payment_link_uses(link_id uuid)
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  update payment_links
+  set current_uses = current_uses + 1,
+      updated_at = now()
+  where id = link_id;
+end;
+$$;
+
+create or replace function update_merchant_revenue(merchant_uuid uuid, amount decimal)
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  update merchants
+  set total_revenue = total_revenue + amount,
+      total_links_created = total_links_created -- no change
+  where id = merchant_uuid;
+end;
+$$;

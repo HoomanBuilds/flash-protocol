@@ -28,7 +28,7 @@ export async function GET() {
   
   if (!session) return NextResponse.json({ authenticated: false })
 
-  const user = await UserService.findUserByWallet((session as any).wallet_address)
+  const user = await UserService.findUserByWallet((session as { wallet_address: string }).wallet_address)
   
   return NextResponse.json({ authenticated: true, user })
 }

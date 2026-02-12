@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { inngest } from '@/inngest/client'
 
+interface TransactionRecord {
+  id: string
+  from_chain_id: number
+  to_chain_id: number
+  provider: string
+  route_details?: { requestId?: string }
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -18,8 +26,8 @@ export async function PATCH(
     const supabase = createServerClient()
 
     // 1. Update transaction with tx hash
-    const { data, error } = await (supabase
-      .from('transactions') as any)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from('transactions') as any)
       .update({ 
         tx_hash: txHash,
         status: 'pending',
@@ -34,17 +42,19 @@ export async function PATCH(
       return NextResponse.json({ error: 'Database error' }, { status: 500 })
     }
 
+    const tx = data as TransactionRecord
+
     // 2. Now trigger Inngest polling with the actual tx hash
     await inngest.send({
       name: 'transaction/poll',
       data: {
         transactionId: id,
         txHash,
-        fromChainId: (data as any).from_chain_id,
-        toChainId: (data as any).to_chain_id,
-        bridge: (data as any).provider,
-        provider: (data as any).provider,
-        requestId: requestId || (data as any).route_details?.requestId,
+        fromChainId: tx.from_chain_id,
+        toChainId: tx.to_chain_id,
+        bridge: tx.provider,
+        provider: tx.provider,
+        requestId: requestId || tx.route_details?.requestId,
       }
     })
 
