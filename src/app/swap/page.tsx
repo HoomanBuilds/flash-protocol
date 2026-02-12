@@ -10,8 +10,8 @@ import { Label } from '@/components/ui/label'
 import { QuoteDisplay } from '@/components/QuoteDisplay'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-import { CHAINS, getMainnetChains, getEVMChains, ChainConfig } from '@/lib/chains'
-import { TOKENS, getTokensByChain, TokenConfig } from '@/lib/tokens'
+import { CHAINS } from '@/lib/chains'
+import { getTokensByChain } from '@/lib/tokens'
 
 const SUPPORTED_CHAINS = CHAINS.filter(c => 
   c.type === 'evm' && !c.isTestnet
@@ -29,7 +29,7 @@ interface QuoteData {
   toAmountMin?: string
   estimatedGas: string
   estimatedDuration: number
-  transactionRequest?: any
+  transactionRequest?: Record<string, unknown>
   fees?: {
     totalFeeUSD: string
     bridgeFee?: string
@@ -38,7 +38,27 @@ interface QuoteData {
     slippage?: string
   }
   toolsUsed?: string[]
-  routes?: any[]
+  routes?: Array<{
+    type?: 'swap' | 'bridge' | 'cross' | 'custom'
+    tool?: string
+    toolName?: string
+    toolLogoURI?: string
+    action: {
+      fromToken: { symbol: string; chainId: number; decimals: number }
+      toToken: { symbol: string; chainId: number; decimals: number }
+      fromAmount?: string
+      toAmount?: string
+    }
+    estimate?: {
+      feeCosts?: Array<{
+        name: string
+        amountUSD: string
+        percentage?: number
+        description?: string
+        included?: boolean
+      }>
+    }
+  }>
 }
 
 export default function SwapPage() {
@@ -116,6 +136,7 @@ export default function SwapPage() {
     }, 1000)
 
     return () => clearInterval(interval)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expiresAt, quotes.length])
 
   const handleGetQuote = useCallback(async () => {
@@ -201,9 +222,9 @@ export default function SwapPage() {
 
       const txRequest = selectedQuote.transactionRequest
       if (txRequest) {
-        const txTarget = (txRequest as any).to
-        const txData = (txRequest as any).data
-        const txValue = (txRequest as any).value
+        const txTarget = (txRequest as Record<string, unknown>).to as string | undefined
+        const txData = (txRequest as Record<string, unknown>).data as string | undefined
+        const txValue = (txRequest as Record<string, unknown>).value as string | undefined
 
         if (txTarget && txData) {
           const hash = await sendTransactionAsync({
@@ -218,7 +239,7 @@ export default function SwapPage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
               txHash: hash,
-              requestId: (txRequest as any).requestId
+              requestId: (txRequest as Record<string, unknown>).requestId
             })
           })
 

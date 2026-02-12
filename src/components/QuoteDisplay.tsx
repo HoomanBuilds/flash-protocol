@@ -1,5 +1,5 @@
 import { formatUnits } from 'viem'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
 import { Button } from '@/components/ui/button'
 
 interface QuoteDisplayProps {
@@ -26,6 +26,8 @@ interface QuoteDisplayProps {
           name: string
           amountUSD: string
           percentage?: number
+          description?: string
+          included?: boolean
         }>
       }
     }>
@@ -38,7 +40,6 @@ interface QuoteDisplayProps {
     }
     toolsUsed?: string[]
   }
-  // Pass token info from parent for accurate display
   fromTokenInfo?: { symbol: string; decimals: number }
   toTokenInfo?: { symbol: string; decimals: number }
   onSwap: () => void
@@ -47,14 +48,12 @@ interface QuoteDisplayProps {
 
 export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoading }: QuoteDisplayProps) {
   const firstStep = route.routes?.[0]
-  
-  // Use passed token info first, fallback to route data
+
   const fromToken = fromTokenInfo || firstStep?.action?.fromToken || { symbol: 'TOKEN', decimals: 18 }
   const toToken = toTokenInfo || firstStep?.action?.toToken || { symbol: 'TOKEN', decimals: 18 }
   const fromChainId = firstStep?.action?.fromToken?.chainId || 1
   const toChainId = firstStep?.action?.toToken?.chainId || 1
 
-  // Safely parse amounts with correct decimals
   const safeFormatUnits = (value: string | undefined, decimals: number): string => {
     if (!value || value === '0') return '0'
     try {
@@ -67,10 +66,7 @@ export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoad
   const fromAmount = safeFormatUnits(route.fromAmount, fromToken.decimals)
   const toAmount = safeFormatUnits(route.toAmount, toToken.decimals)
   const minAmount = route.toAmountMin ? safeFormatUnits(route.toAmountMin, toToken.decimals) : toAmount
-  
-  const gasCostUSD = route.estimatedGas || '0.00'
 
-  // Get chain names
   const getChainName = (chainId: number) => {
     const chains: Record<number, string> = {
       1: 'Ethereum',
@@ -87,12 +83,9 @@ export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoad
     return chains[chainId] || `Chain ${chainId}`
   }
 
-  // Format number with appropriate precision
   const formatAmount = (amount: string, decimals: number) => {
     const num = parseFloat(amount)
     if (num === 0) return '0'
-    // For stablecoins (6 decimals)
-    // For ETH/tokens (18 decimals)
     if (decimals <= 8) {
       return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
     }
@@ -102,147 +95,94 @@ export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoad
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto mt-4 bg-white border-slate-200 text-slate-900 shadow-xl">
-      <CardHeader className="pb-3 border-b border-slate-100">
-        <CardTitle className="flex justify-between items-center">
-          <span className="text-slate-800">Swap Details</span>
-          <div className="flex items-center gap-2">
-            <span className="bg-blue-50 text-blue-600 px-2 py-1 rounded text-xs font-bold uppercase border border-blue-100">
-              {route.provider}
-            </span>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 pt-4">
-        {/* From Amount */}
-        <div className="flex justify-between items-center p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-300 transition-colors">
-          <div>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">You Pay</p>
-            <p className="text-xl font-bold text-slate-900 tracking-tight">{formatAmount(fromAmount, fromToken.decimals)} <span className="text-slate-500 text-lg">{fromToken.symbol}</span></p>
-          </div>
-          <div className="text-right">
-            <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-slate-100">
-              {/* Could add chain icon here */}
-              <p className="text-sm font-medium text-slate-600">{getChainName(fromChainId)}</p>
-            </div>
+    <div className="w-full mt-6 space-y-4 font-mono text-sm">
+      {/* Route Header */}
+      <div className="flex justify-between items-center pb-4 border-b border-border text-muted-foreground">
+        <span className="text-xs uppercase tracking-widest">[ ROUTE_DETAILS ]</span>
+        <div className="flex items-center gap-2 px-2 py-1 border border-border text-xs font-bold">
+          {route.provider.toUpperCase()}
+        </div>
+      </div>
+
+      {/* From Amount */}
+      <div className="bg-muted/30 border border-border p-4 flex justify-between items-center hover:bg-muted/50 transition-colors">
+        <div>
+          <div className="text-[10px] text-muted-foreground uppercase mb-1 tracking-wider">Input Source</div>
+          <div className="text-xl text-foreground font-bold">
+            {formatAmount(fromAmount, fromToken.decimals)} <span className="text-muted-foreground">{fromToken.symbol}</span>
           </div>
         </div>
-
-        {/* Route Steps */}
-        {route.routes && route.routes.length > 0 && (
-          <div className="relative pl-4 ml-4 border-l-2 border-slate-200 space-y-4 py-2">
-            {route.routes.map((step, idx) => (
-              <div key={idx} className="flex items-center gap-3 text-sm">
-                <div className="absolute -left-[9px] w-4 h-4 rounded-full bg-slate-100 border-2 border-slate-300" />
-                {step.toolLogoURI ? (
-                  <img src={step.toolLogoURI} alt={step.tool} className="w-6 h-6 rounded-full bg-white border border-slate-200" />
-                ) : (
-                  <div className="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-xs">🛠️</div>
-                )}
-                <div className="flex flex-col">
-                  <span className="text-slate-500 text-xs uppercase font-semibold tracking-wider">
-                    {step.type === 'bridge' ? 'Bridge via' : 'Swap via'}
-                  </span>
-                  <span className="font-medium text-blue-600">{step.toolName || step.tool}</span>
-                </div>
-              </div>
-            ))}
+        <div className="text-right">
+          <div className="inline-block px-3 py-1.5 border border-border text-muted-foreground text-xs font-medium">
+            {getChainName(fromChainId)}
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* Flow Arrow */}
+      {/* Route Steps */}
+      <div className="py-2 pl-6 ml-4 border-l-2 border-dashed border-border space-y-4">
+        {route.routes?.map((step, idx) => (
+          <div key={idx} className="relative">
+            <div className="absolute -left-[29px] top-1/2 -translate-y-1/2 w-3 h-3 bg-muted border-2 border-border" />
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-muted-foreground font-medium px-2 py-1 bg-muted border border-border text-xs">{step.type === 'bridge' ? 'BRIDGE' : 'SWAP'}</span>
+              <span className="text-muted-foreground">via</span>
+              <span className="text-foreground font-bold">{step.toolName || step.tool}</span>
+            </div>
+          </div>
+        ))}
         {!route.routes?.length && (
-          <div className="flex justify-center -my-2 relative z-10">
-            <div className="bg-white rounded-full p-2 border-4 border-slate-50 text-slate-400 shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-            </div>
-          </div>
+          <div className="text-muted-foreground text-xs">Direct Transfer</div>
         )}
+      </div>
 
-        {/* To Amount */}
-        <div className="flex justify-between items-center p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-300 transition-colors">
-          <div>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">You Receive</p>
-            <p className="text-xl font-bold text-green-600 tracking-tight">{formatAmount(toAmount, toToken.decimals)} <span className="text-green-600/70 text-lg">{toToken.symbol}</span></p>
-            {minAmount !== toAmount && (
-              <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                <span>Min:</span>
-                <span className="font-mono text-slate-600">{formatAmount(minAmount, toToken.decimals)}</span>
-              </p>
-            )}
+      {/* To Amount */}
+      <div className="bg-green-50 border border-green-200 p-4 flex justify-between items-center">
+        <div>
+          <div className="text-[10px] text-green-600 uppercase mb-1 tracking-wider">Estimated Output</div>
+          <div className="text-xl text-green-700 font-bold">
+            {formatAmount(toAmount, toToken.decimals)} <span className="text-green-500">{toToken.symbol}</span>
           </div>
-          <div className="text-right">
-            <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-slate-100">
-              <p className="text-sm font-medium text-slate-600">{getChainName(toChainId)}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Fee Breakdown */}
-        <div className="p-4 bg-slate-50/50 border border-slate-200 rounded-xl space-y-3">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Transaction Costs</p>
-
-          {/* Gas Cost */}
-          <div className="flex justify-between text-sm items-center">
-            <span className="text-slate-500">Gas Cost</span>
-            <span className="font-mono text-slate-900">${parseFloat(gasCostUSD).toFixed(4)}</span>
-          </div>
-
-          {/* Bridge/Protocol Fees */}
-          {route.fees?.bridgeFee && parseFloat(route.fees.bridgeFee) > 0 && (
-            <div className="flex justify-between text-sm items-center">
-              <span className="text-slate-500">Bridge Fee</span>
-              <span className="font-mono text-slate-900">${route.fees.bridgeFee}</span>
-            </div>
-          )}
-
-          {/* LP Fees */}
-          {route.fees?.lpFee && parseFloat(route.fees.lpFee) > 0 && (
-            <div className="flex justify-between text-sm items-center">
-              <span className="text-slate-500">LP/DEX Fee</span>
-              <span className="font-mono text-slate-900">${route.fees.lpFee}</span>
-            </div>
-          )}
-
-          {/* Total Fees in USD */}
-          {route.fees?.totalFeeUSD && parseFloat(route.fees.totalFeeUSD) > 0 && (
-            <div className="flex justify-between text-sm pt-3 mt-1 border-t border-slate-200 items-center">
-              <span className="text-slate-600 font-medium">Total Fees</span>
-              <span className="text-orange-600 font-bold bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
-                ${parseFloat(route.fees.totalFeeUSD).toFixed(2)}
-              </span>
-            </div>
+          {minAmount !== toAmount && (
+            <div className="text-[10px] text-muted-foreground mt-1">Min: {formatAmount(minAmount, toToken.decimals)}</div>
           )}
         </div>
-
-        {/* Route Info */}
-        <div className="text-xs text-slate-500 space-y-2 px-1">
-          {route.toolsUsed && route.toolsUsed.length > 0 && (
-            <div className="flex justify-between items-center">
-              <span>Optimized Route</span>
-              <span className="text-blue-600 font-medium">{route.toolsUsed.join(' → ')}</span>
-            </div>
-          )}
-          <div className="flex justify-between items-center">
-            <span>Estimated Duration</span>
-            <span className="font-medium text-slate-600">
-              {route.estimatedDuration ? `${Math.floor(route.estimatedDuration / 60)}m ${route.estimatedDuration % 60}s` : '~1m'}
-            </span>
+        <div className="text-right">
+          <div className="inline-block px-3 py-1.5 bg-green-100 border border-green-200 text-green-700 text-xs font-medium">
+            {getChainName(toChainId)}
           </div>
         </div>
+      </div>
 
-        <Button 
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 text-lg rounded-xl shadow-lg shadow-blue-500/20 transition-all transform hover:scale-[1.02]"
-          onClick={onSwap}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <span className="animate-spin">⏳</span> Processing...
-            </span>
-          ) : 'Confirm Swap'}
-        </Button>
-      </CardContent>
-    </Card>
+      {/* Cost Breakdown */}
+      <div className="bg-muted/30 border border-border p-4 space-y-2">
+        {firstStep?.estimate?.feeCosts?.map((fee, idx) => (
+          <div key={idx} className="flex justify-between text-xs text-muted-foreground">
+            <span>{fee.name}</span>
+            <span>${parseFloat(fee.amountUSD).toFixed(2)}</span>
+          </div>
+        ))}
+        <div className="flex justify-between text-sm text-foreground pt-2 border-t border-border font-bold">
+          <span>Estimated Network Cost</span>
+          <span>~${(firstStep?.estimate?.feeCosts?.reduce((acc, fee) => acc + parseFloat(fee.amountUSD), 0) || 0).toFixed(2)}</span>
+        </div>
+      </div>
+
+      {/* Confirm Button */}
+      <Button
+        className="w-full h-14 text-base font-bold tracking-wide bg-foreground text-background hover:bg-foreground/90 transition-all font-mono"
+        onClick={onSwap}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <span className="animate-spin w-4 h-4 border-2 border-background/30 border-t-background rounded-full" />
+            <span>Processing...</span>
+          </div>
+        ) : (
+          <span>[ CONFIRM_TRANSACTION ]</span>
+        )}
+      </Button>
+    </div>
   )
 }
