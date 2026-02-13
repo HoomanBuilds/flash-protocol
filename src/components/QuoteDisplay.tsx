@@ -89,8 +89,14 @@ export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoad
     if (decimals <= 8) {
       return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
     }
-    if (num < 0.0001) return num.toExponential(4)
-    if (num < 1) return num.toFixed(6)
+    // Fixed: Avoid scientific notation for small numbers
+    if (num < 0.000001) {
+      return '< 0.000001'
+    }
+    if (num < 0.0001) {
+      return num.toLocaleString(undefined, { maximumFractionDigits: 8 }) 
+    }
+    if (num < 1) return num.toLocaleString(undefined, { maximumFractionDigits: 6 })
     return num.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 6 })
   }
 

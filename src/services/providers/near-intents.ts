@@ -1,5 +1,5 @@
 import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus, FeeCost } from '@/types/provider'
-import { OneClickService, QuoteRequest as DefuseQuoteRequest, OpenAPI } from '@defuse-protocol/one-click-sdk-typescript'
+import { OneClickService, QuoteRequest as DefuseQuoteRequest, OpenAPI, TokenResponse } from '@defuse-protocol/one-click-sdk-typescript'
 
 OpenAPI.BASE = 'https://1click.chaindefuser.com'
 
@@ -61,12 +61,30 @@ export class NearIntentsProvider implements IProvider {
     return `nep141:${chainPrefix}-${address}.omft.near`
   }
 
+  // Cache for token metadata
+  private tokenCache: Record<string, TokenResponse> | null = null
+  private tokenCacheTime = 0
+
   async getQuote(request: QuoteRequest): Promise<QuoteResponse[]> {
     try {
       // Check if JWT is configured
       if (!process.env.NEAR_INTENTS_JWT) {
         console.log('NEAR Intents: JWT not configured (NEAR_INTENTS_JWT)')
         return []
+      }
+
+      // Fetch tokens if cache is empty or stale (1 hour)
+      if (!this.tokenCache || Date.now() - this.tokenCacheTime > 3600000) {
+        try {
+          const tokens = await OneClickService.getTokens()
+          this.tokenCache = tokens.reduce((acc, t) => {
+            acc[t.assetId] = t
+            return acc
+          }, {} as Record<string, TokenResponse>)
+          this.tokenCacheTime = Date.now()
+        } catch (e) {
+          console.warn('NEAR Intents: Failed to fetch tokens, using fallback', e)
+        }
       }
 
       const originAsset = this.getAssetId(request.fromChain, request.fromToken)
@@ -76,6 +94,10 @@ export class NearIntentsProvider implements IProvider {
         console.log('NEAR Intents: Could not generate asset IDs')
         return []
       }
+
+      // Lookup metadata
+      const fromTokenMeta = this.tokenCache?.[originAsset]
+      const toTokenMeta = this.tokenCache?.[destinationAsset]
 
       console.log('NEAR Intents: Fetching quote with SDK', {
         originAsset,
@@ -162,14 +184,14 @@ export class NearIntentsProvider implements IProvider {
             fromToken: {
               address: request.fromToken,
               chainId: request.fromChain,
-              symbol: 'UNKNOWN',
-              decimals: 18
+              symbol: fromTokenMeta?.symbol || 'UNKNOWN',
+              decimals: fromTokenMeta?.decimals || 18
             },
             toToken: {
               address: request.toToken,
               chainId: request.toChain,
-              symbol: 'UNKNOWN',
-              decimals: 18
+              symbol: toTokenMeta?.symbol || 'UNKNOWN',
+              decimals: toTokenMeta?.decimals || 18
             },
             fromAmount: request.fromAmount,
             toAmount: quote.amountOut

@@ -416,6 +416,11 @@ export default function PaymentInterface({ link }: PaymentInterfaceProps) {
                 route={selectedQuote}
                 onSwap={handleExecute}
                 isLoading={isLoading}
+                fromTokenInfo={fromToken ? { symbol: fromToken.symbol, decimals: fromToken.decimals } : undefined}
+                toTokenInfo={{
+                  symbol: link.receive_token_symbol || 'USDC',
+                  decimals: (link.receive_token_symbol === 'DAI' || link.receive_token_symbol === 'ETH') ? 18 : 6
+                }}
               />
             </div>
           )}

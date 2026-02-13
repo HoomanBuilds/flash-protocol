@@ -110,7 +110,7 @@ export class SymbiosisProvider implements IProvider {
             toToken: {
               address: request.toToken,
               chainId: request.toChain,
-              symbol: data.tokenAmountOut?.symbol || 'UNKNOWN',
+              symbol: (data.tokenAmountOut?.symbol && data.tokenAmountOut.symbol !== 'tokenOut') ? data.tokenAmountOut.symbol : 'UNKNOWN',
               decimals: data.tokenAmountOut?.decimals || 18
             },
             fromAmount: request.fromAmount,
