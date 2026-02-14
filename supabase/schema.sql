@@ -41,6 +41,14 @@ create table if not exists merchants (
     branding_settings jsonb default '{}'::jsonb,
     total_links_created integer default 0,
     total_revenue decimal default 0,
+    -- API Integration columns (Phase 4B)
+    api_key_hash varchar(255) unique,
+    api_key_prefix varchar(20),
+    api_enabled boolean default false,
+    api_created_at timestamp with time zone,
+    api_last_used_at timestamp with time zone,
+    api_total_calls integer default 0,
+    -- Timestamps
     created_at timestamp with time zone default now(),
     last_login_at timestamp with time zone
 );
@@ -50,6 +58,17 @@ alter table merchants enable row level security;
 create policy "Public profiles are viewable by everyone" on merchants for select using (true);
 create policy "Anyone can insert profile" on merchants for insert with check (true);
 create policy "Users can update own profile" on merchants for update using (false); -- Strict: Only Service Role can update
+
+-- Indexes for Merchants
+create index if not exists idx_merchants_wallet on merchants(wallet_address);
+create index if not exists idx_merchants_api_key_hash on merchants(api_key_hash);
+create index if not exists idx_merchants_api_enabled on merchants(api_enabled);
+
+-- Comments
+comment on column merchants.api_key_hash is 'Hashed API key for programmatic access (bcrypt)';
+comment on column merchants.api_key_prefix is 'First 16 chars of API key for display (e.g., cp_live_abc12345)';
+comment on column merchants.api_enabled is 'Whether API access is enabled for this merchant';
+comment on column merchants.api_total_calls is 'Total number of API calls made by this merchant';
 
 -- Payment Links Table
 create table if not exists payment_links (
@@ -68,6 +87,12 @@ create table if not exists payment_links (
     max_uses integer, -- nullable, null means unlimited
     current_uses integer default 0,
     expires_at timestamp with time zone,
+    -- API Integration columns (Phase 4B)
+    created_via varchar(20) default 'dashboard' check (created_via in ('dashboard', 'api')),
+    success_url text,
+    cancel_url text,
+    api_metadata jsonb default '{}'::jsonb,
+    -- Timestamps
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now()
 );
@@ -77,6 +102,18 @@ alter table payment_links enable row level security;
 create policy "Payment links viewable by everyone" on payment_links for select using (true);
 create policy "Merchants can insert own links" on payment_links for insert with check (true);
 create policy "Merchants can update own links" on payment_links for update using (false); -- Enforce API-only updates
+
+-- Indexes for Payment Links
+create index if not exists idx_payment_links_merchant_id on payment_links(merchant_id);
+create index if not exists idx_payment_links_status on payment_links(status);
+create index if not exists idx_payment_links_expires on payment_links(expires_at);
+create index if not exists idx_payment_links_created_via on payment_links(created_via);
+
+-- Comments
+comment on column payment_links.created_via is 'How link was created: dashboard (UI) or api (programmatic)';
+comment on column payment_links.success_url is 'Redirect URL after successful payment (API users only)';
+comment on column payment_links.cancel_url is 'Redirect URL if payment cancelled (API users only)';
+comment on column payment_links.api_metadata is 'Custom metadata from API user (e.g., order_id, customer_email)';
 
 -- Transactions Table
 create table if not exists transactions (
@@ -118,6 +155,14 @@ create table if not exists transactions (
 alter table transactions enable row level security;
 create policy "Transactions viewable by everyone" on transactions for select using (true);
 create policy "System can insert transactions" on transactions for insert with check (true); 
+
+-- Indexes for Transactions
+create index if not exists idx_tx_payment_link_id on transactions(payment_link_id);
+create index if not exists idx_tx_status on transactions(status);
+create index if not exists idx_tx_provider on transactions(provider);
+create index if not exists idx_tx_source_hash on transactions(source_tx_hash);
+create index if not exists idx_tx_customer_wallet on transactions(customer_wallet);
+create index if not exists idx_tx_created_at on transactions(created_at desc);
 
 -- Quotes Table
 create table if not exists quotes (
@@ -207,6 +252,11 @@ create table if not exists failure_logs (
 alter table failure_logs enable row level security;
 create policy "Failure logs viewable by system" on failure_logs for select using (true);
 
+-- Indexes for Failure Logs
+create index if not exists idx_failure_tx_id on failure_logs(transaction_id);
+create index if not exists idx_failure_provider_stage on failure_logs(provider, failure_stage);
+create index if not exists idx_failure_created_at on failure_logs(created_at desc);
+
 -- Analytics Table (Optional for MVP but good to have)
 create table if not exists analytics (
     id uuid primary key default uuid_generate_v4(),
@@ -229,25 +279,40 @@ create table if not exists analytics (
 alter table analytics enable row level security;
 create policy "Analytics viewable by everyone" on analytics for select using (true);
 
-
--- Indexes
-create index if not exists idx_merchant_id on payment_links(merchant_id);
-create index if not exists idx_payment_link_status on payment_links(status);
-create index if not exists idx_payment_link_expires on payment_links(expires_at);
-
-create index if not exists idx_tx_payment_link_id on transactions(payment_link_id);
-create index if not exists idx_tx_status on transactions(status);
-create index if not exists idx_tx_provider on transactions(provider);
-create index if not exists idx_tx_source_hash on transactions(source_tx_hash);
-create index if not exists idx_tx_customer_wallet on transactions(customer_wallet);
-create index if not exists idx_tx_created_at on transactions(created_at desc);
-
-create index if not exists idx_failure_tx_id on failure_logs(transaction_id);
-create index if not exists idx_failure_provider_stage on failure_logs(provider, failure_stage);
-create index if not exists idx_failure_created_at on failure_logs(created_at desc);
-
+-- Indexes for Analytics
 create index if not exists idx_analytics_date_provider on analytics(date, provider);
 create index if not exists idx_analytics_date on analytics(date desc);
+
+-- API Logs Table (Phase 4B - Optional for debugging)
+create table if not exists api_logs (
+    id uuid primary key default uuid_generate_v4(),
+    merchant_id uuid references merchants(id),
+    endpoint varchar(255) not null,
+    method varchar(10) not null,
+    status_code integer,
+    request_body jsonb,
+    response_body jsonb,
+    error_message text,
+    ip_address varchar(45),
+    user_agent text,
+    execution_time_ms integer,
+    created_at timestamp with time zone default now()
+);
+
+-- RLS for API Logs
+alter table api_logs enable row level security;
+create policy "Merchants can view own API logs" on api_logs 
+    for select 
+    using (merchant_id = (select id from merchants where wallet_address = auth.jwt()->>'sub'));
+
+-- Indexes for API Logs
+create index if not exists idx_api_logs_merchant on api_logs(merchant_id);
+create index if not exists idx_api_logs_created_at on api_logs(created_at desc);
+create index if not exists idx_api_logs_endpoint on api_logs(endpoint);
+create index if not exists idx_api_logs_status on api_logs(status_code);
+
+-- Comment
+comment on table api_logs is 'API request logs for debugging (automatically deleted after 30 days)';
 
 -- Realtime Subscriptions
 do $$
@@ -285,3 +350,25 @@ begin
   where id = merchant_uuid;
 end;
 $$;
+
+-- Function to delete old API logs (keep last 30 days)
+create or replace function delete_old_api_logs()
+returns void
+language plpgsql
+security definer
+as $$
+begin
+    delete from api_logs 
+    where created_at < now() - interval '30 days';
+end;
+$$;
+
+-- Optional: Set up cron job to auto-delete old logs (requires pg_cron extension)
+-- This is commented out by default, enable if needed
+/*
+select cron.schedule(
+    'delete-old-api-logs',
+    '0 3 * * *', -- Run daily at 3 AM
+    $$select delete_old_api_logs()$$
+);
+*/

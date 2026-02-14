@@ -22,6 +22,12 @@ export type Database = {
           total_revenue: number
           created_at: string
           last_login_at: string | null
+          api_key_hash: string | null
+          api_key_prefix: string | null
+          api_enabled: boolean
+          api_created_at: string | null
+          api_last_used_at: string | null
+          api_total_calls: number
         }
         Insert: {
           id: string
@@ -35,6 +41,12 @@ export type Database = {
           total_revenue?: number
           created_at?: string
           last_login_at?: string | null
+          api_key_hash?: string | null
+          api_key_prefix?: string | null
+          api_enabled?: boolean
+          api_created_at?: string | null
+          api_last_used_at?: string | null
+          api_total_calls?: number
         }
         Update: {
           id: string
@@ -48,6 +60,12 @@ export type Database = {
           total_revenue?: number
           created_at?: string
           last_login_at?: string | null
+          api_key_hash?: string | null
+          api_key_prefix?: string | null
+          api_enabled?: boolean
+          api_created_at?: string | null
+          api_last_used_at?: string | null
+          api_total_calls?: number
         }
       }
       payment_links: {
@@ -68,9 +86,13 @@ export type Database = {
           expires_at: string | null
           created_at: string
           updated_at: string
+          created_via: 'dashboard' | 'api'
+          success_url: string | null
+          cancel_url: string | null
+          api_metadata: Json | null
         }
         Insert: {
-          id: string
+          id?: string
           merchant_id: string
           amount?: number | null
           currency?: string
@@ -86,9 +108,13 @@ export type Database = {
           expires_at?: string | null
           created_at?: string
           updated_at?: string
+          created_via?: 'dashboard' | 'api'
+          success_url?: string | null
+          cancel_url?: string | null
+          api_metadata?: Json | null
         }
         Update: {
-          id: string
+          id?: string
           merchant_id?: string
           amount?: number | null
           currency?: string
@@ -104,6 +130,10 @@ export type Database = {
           expires_at?: string | null
           created_at?: string
           updated_at?: string
+          created_via?: 'dashboard' | 'api'
+          success_url?: string | null
+          cancel_url?: string | null
+          api_metadata?: Json | null
         }
       }
       transactions: {
@@ -142,7 +172,7 @@ export type Database = {
           completed_at: string | null
         }
         Insert: {
-          id: string
+          id?: string
           payment_link_id?: string | null
           customer_wallet?: string | null
           from_chain_id?: number | null
@@ -176,7 +206,7 @@ export type Database = {
           completed_at?: string | null
         }
         Update: {
-          id: string
+          id?: string
           payment_link_id?: string | null
           customer_wallet?: string | null
           from_chain_id?: number | null
@@ -208,6 +238,50 @@ export type Database = {
           created_at?: string
           updated_at?: string
           completed_at?: string | null
+        }
+      }
+      api_logs: {
+        Row: {
+          id: string
+          merchant_id: string
+          endpoint: string
+          method: string
+          status_code: number
+          request_body: Json | null
+          response_body: Json | null
+          error_message: string | null
+          ip_address: string | null
+          user_agent: string | null
+          duration_ms: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          merchant_id: string
+          endpoint: string
+          method: string
+          status_code: number
+          request_body?: Json | null
+          response_body?: Json | null
+          error_message?: string | null
+          ip_address?: string | null
+          user_agent?: string | null
+          duration_ms?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          merchant_id?: string
+          endpoint?: string
+          method?: string
+          status_code?: number
+          request_body?: Json | null
+          response_body?: Json | null
+          error_message?: string | null
+          ip_address?: string | null
+          user_agent?: string | null
+          duration_ms?: number | null
+          created_at?: string
         }
       }
       quotes: {
@@ -454,3 +528,4 @@ export type Database = {
     }
   }
 }
+
