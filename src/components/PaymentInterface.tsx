@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useAccount, useSendTransaction, useSwitchChain } from 'wagmi'
+import { useAccount, useSwitchChain } from 'wagmi'
 import { parseUnits } from 'viem'
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,7 @@ import { QuoteDisplay } from '@/components/QuoteDisplay'
 import { CHAINS } from '@/lib/chains'
 import { getTokensByChain, getUSDCAddress } from '@/lib/tokens'
 import { QuoteResponse } from '@/types/provider'
+import { useTransactionExecutor } from '@/hooks/useTransactionExecutor'
 
 const PAYER_CHAINS = CHAINS.filter(c => c.type === 'evm' && !c.isTestnet)
 const PRICE_REFRESH_INTERVAL = 30_000
@@ -27,13 +28,18 @@ interface PaymentInterfaceProps {
     receive_token?: string
     receive_token_symbol?: string
     recipient_address: string
+    success_url?: string | null
+    cancel_url?: string | null
   }
+  onSuccess?: (txHash: string) => void
 }
 
-export default function PaymentInterface({ link }: PaymentInterfaceProps) {
+export default function PaymentInterface({ link, onSuccess }: PaymentInterfaceProps) {
   const { address, isConnected, chain: connectedChain } = useAccount()
   const { switchChain } = useSwitchChain()
-  const { sendTransactionAsync } = useSendTransaction()
+  
+  // Custom Executor Hook
+  const { execute, status: executorStatus, step: executorStep, error: executorError, txHash } = useTransactionExecutor()
 
   const [fromChainId, setFromChainId] = useState(
     connectedChain?.id && PAYER_CHAINS.find(c => c.chainId === connectedChain.id)
@@ -208,28 +214,39 @@ export default function PaymentInterface({ link }: PaymentInterfaceProps) {
         await switchChain({ chainId: fromChainId })
       }
 
+      // 1. Initialize DB Record
       const initRes = await fetch('/api/transactions/initiate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           linkId: link.id,
-          quoteId: selectedQuote.id,
+          quoteId: selectedQuote.id, // Using quote ID as request ID for Rango/LiFi
           route: selectedQuote,
           payerAddress: address,
         }),
       })
       const { transactionId } = await initRes.json()
 
-      const txRequest = selectedQuote.transactionRequest
-      if (!txRequest) throw new Error('No transaction request in quote')
+      // 2. Execute via Executor Hook (Handles LiFi/Rango logic)
+      const hash = await execute(selectedQuote)
+      
+      if (!hash) throw new Error('Execution completed but no hash returned')
 
-      const hash = await sendTransactionAsync({
-        to: txRequest.to as `0x${string}`,
-        data: txRequest.data as `0x${string}`,
-        value: BigInt(txRequest.value || 0),
-      })
+      // 3. Update Backend with Hash
+      try {
+        await fetch(`/api/transactions/${transactionId}/hash`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ txHash: hash })
+        })
+      } catch (err) {
+        console.error('Failed to update backend with hash:', err)
+      }
 
-      alert(`Transaction submitted! Hash: ${hash}`)
+      if (onSuccess) {
+        onSuccess(hash)
+      }
+
     } catch (e) {
       console.error(e)
       const message = e instanceof Error ? e.message : 'Transaction Failed'
@@ -239,7 +256,18 @@ export default function PaymentInterface({ link }: PaymentInterfaceProps) {
     }
   }
 
+  // Effect to sync executor internal error/status to UI
+  useEffect(() => {
+    if (executorError) {
+      setError(executorError)
+      setIsLoading(false)
+    }
+    // We don't auto-handle success status here because handleExecute awaits execute() 
+    // and calls onSuccess manually.
+  }, [executorError])
+
   const timeSinceUpdate = lastPriceUpdate > 0 ? Math.floor((Date.now() - lastPriceUpdate) / 1000) : null
+  const isExecuting = isLoading || executorStatus === 'approving' || executorStatus === 'executing'
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -385,9 +413,9 @@ export default function PaymentInterface({ link }: PaymentInterfaceProps) {
           <Button
             className="w-full h-16 text-base font-bold tracking-wide bg-foreground text-background hover:bg-foreground/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-mono"
             onClick={handleGetQuote}
-            disabled={isLoading || (isFixedAmount ? !convertedAmount : !manualAmount) || priceLoading}
+            disabled={isExecuting || (isFixedAmount ? !convertedAmount : !manualAmount) || priceLoading}
           >
-            {isLoading ? (
+            {isExecuting ? (
               <div className="flex items-center gap-2">
                 <Loader2 className="animate-spin h-5 w-5" />
                 <span>Processing Route...</span>
@@ -398,8 +426,8 @@ export default function PaymentInterface({ link }: PaymentInterfaceProps) {
           </Button>
 
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-sm flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive text-sm flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -415,7 +443,8 @@ export default function PaymentInterface({ link }: PaymentInterfaceProps) {
               <QuoteDisplay
                 route={selectedQuote}
                 onSwap={handleExecute}
-                isLoading={isLoading}
+                isLoading={isExecuting}
+                loadingStep={executorStep || undefined}
                 fromTokenInfo={fromToken ? { symbol: fromToken.symbol, decimals: fromToken.decimals } : undefined}
                 toTokenInfo={{
                   symbol: link.receive_token_symbol || 'USDC',

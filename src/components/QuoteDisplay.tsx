@@ -44,9 +44,10 @@ interface QuoteDisplayProps {
   toTokenInfo?: { symbol: string; decimals: number }
   onSwap: () => void
   isLoading?: boolean
+  loadingStep?: string
 }
 
-export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoading }: QuoteDisplayProps) {
+export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoading, loadingStep }: QuoteDisplayProps) {
   const firstStep = route.routes?.[0]
 
   const fromToken = fromTokenInfo || firstStep?.action?.fromToken || { symbol: 'TOKEN', decimals: 18 }
@@ -183,7 +184,7 @@ export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoad
         {isLoading ? (
           <div className="flex items-center gap-2">
             <span className="animate-spin w-4 h-4 border-2 border-background/30 border-t-background rounded-full" />
-            <span>Processing...</span>
+            <span>{loadingStep || 'Processing...'}</span>
           </div>
         ) : (
           <span>[ CONFIRM_TRANSACTION ]</span>
