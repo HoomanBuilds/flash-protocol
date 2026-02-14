@@ -18,6 +18,8 @@ interface PaymentLinkData {
   receive_chain_id?: number
   receive_token?: string
   receive_token_symbol?: string
+  success_url?: string | null
+  cancel_url?: string | null
 }
 
 export default function PayPage({ params: paramsPromise }: { params: Promise<{ linkId: string }> }) {
@@ -27,6 +29,7 @@ export default function PayPage({ params: paramsPromise }: { params: Promise<{ l
   const [error, setError] = useState('')
   const [linkId, setLinkId] = useState<string>('')
   const [amount, setAmount] = useState<string>('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     paramsPromise.then(p => setLinkId(p.linkId))
@@ -53,6 +56,29 @@ export default function PayPage({ params: paramsPromise }: { params: Promise<{ l
     if (linkId) fetchLink()
   }, [linkId])
 
+  const handlePaymentComplete = (txHash: string) => {
+    setSuccessMessage('Payment successful! Redirecting...')
+    
+    // Wait 3 seconds then redirect
+    setTimeout(() => {
+      if (link?.success_url) {
+        // Redirect to merchant's success URL with payment details
+        const redirectUrl = new URL(link.success_url)
+        redirectUrl.searchParams.set('payment_id', link.id)
+        redirectUrl.searchParams.set('tx_hash', txHash)
+        redirectUrl.searchParams.set('status', 'completed')
+        
+        window.location.href = redirectUrl.toString()
+      }
+    }, 3000)
+  }
+
+  const handleCancel = () => {
+    if (link?.cancel_url) {
+      window.location.href = link.cancel_url
+    }
+  }
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground font-mono">
       <div className="flex flex-col items-center gap-4">
@@ -73,6 +99,20 @@ export default function PayPage({ params: paramsPromise }: { params: Promise<{ l
   )
 
   if (!link) return null
+
+  if (successMessage) return (
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 font-mono">
+       <div className="text-center space-y-4">
+          <div className="w-16 h-16 bg-green-500 rounded-full mx-auto flex items-center justify-center animate-bounce">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-background">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold">{successMessage}</h2>
+          {link.success_url && <p className="text-muted-foreground text-sm">You are being redirected...</p>}
+       </div>
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden font-mono flex flex-col">
@@ -129,7 +169,7 @@ export default function PayPage({ params: paramsPromise }: { params: Promise<{ l
         </div>
 
         {/* Interface Container */}
-        <div className="w-full max-w-2xl px-4">
+        <div className="w-full max-w-2xl px-4 space-y-4">
           {!isConnected ? (
             <div className="text-center py-12 border border-dashed border-border bg-background">
               <p className="text-muted-foreground mb-6 font-mono text-sm">WALLET_REQUIRED</p>
@@ -146,7 +186,16 @@ export default function PayPage({ params: paramsPromise }: { params: Promise<{ l
               </ConnectButton.Custom>
             </div>
           ) : (
-            <PaymentInterface link={link} />
+            <PaymentInterface link={link} onSuccess={handlePaymentComplete} />
+          )}
+
+          {link.cancel_url && (
+            <button 
+              onClick={handleCancel}
+              className="w-full text-center text-xs text-muted-foreground hover:text-red-500 transition-colors uppercase tracking-widest py-4 border border-transparent hover:border-red-200"
+            >
+              [ CANCEL_PAYMENT ]
+            </button>
           )}
         </div>
 

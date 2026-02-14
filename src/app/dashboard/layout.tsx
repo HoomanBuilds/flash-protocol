@@ -7,7 +7,9 @@ import {
   LayoutDashboard,
   Link as LinkIcon,
   PlusCircle,
-  Terminal
+  Terminal,
+  Settings,
+  Activity
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -20,8 +22,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navigation = [
     { name: './overview', href: '/dashboard', icon: LayoutDashboard },
+    { name: './transactions', href: '/dashboard/transactions', icon: Activity },
     { name: './create', href: '/dashboard/create', icon: PlusCircle },
     { name: './links', href: '/dashboard/links', icon: LinkIcon },
+    { name: './settings', href: '/dashboard/settings', icon: Settings },
   ]
 
   return (
