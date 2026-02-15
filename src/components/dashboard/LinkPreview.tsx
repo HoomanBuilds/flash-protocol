@@ -3,14 +3,17 @@ import { Wallet } from "lucide-react"
 interface LinkPreviewProps {
   title?: string
   description?: string
-  accepts?: {
-    usdc: boolean
-    usdt: boolean
-    eth: boolean
-  }
+  amount?: number
+  currency?: string
 }
 
-export function LinkPreview({ title, description, accepts }: LinkPreviewProps) {
+export function LinkPreview({ title, description, amount, currency = 'USD' }: LinkPreviewProps) {
+  const displayAmount = amount
+    ? currency === 'USD' ? `$${amount.toFixed(2)}` : `${amount}`
+    : '$0.00'
+
+  const displayUnit = currency === 'USD' ? 'USDC' : currency
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-muted/30 border border-border relative overflow-hidden">
       <div className="w-full max-w-md relative">
@@ -21,7 +24,7 @@ export function LinkPreview({ title, description, accepts }: LinkPreviewProps) {
         <div className="w-full relative overflow-hidden border border-border bg-background p-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
               <span className="text-xs font-mono">PAYMENT_GATEWAY</span>
             </div>
             <span className="px-2 py-0.5 text-[10px] font-mono border border-border text-muted-foreground">
@@ -35,26 +38,26 @@ export function LinkPreview({ title, description, accepts }: LinkPreviewProps) {
                 {title || "Payment Title"}
               </h1>
               <p className="text-muted-foreground text-sm">
-                {description || "Enter a description for this payment link."}
+                {description || "Set a title and amount to preview."}
               </p>
             </div>
 
             <div className="py-8 border-y border-border">
               <div className="flex items-end justify-center gap-2">
-                <span className="text-5xl md:text-6xl font-bold text-foreground tracking-tighter">$0.00</span>
-                <span className="text-xl text-muted-foreground mb-2 font-medium">USDC</span>
+                <span className="text-5xl md:text-6xl font-bold text-foreground tracking-tighter">
+                  {displayAmount}
+                </span>
+                <span className="text-xl text-muted-foreground mb-2 font-medium">{displayUnit}</span>
               </div>
-            </div>
+              </div>
 
             <div className="flex gap-2 justify-center">
-              {accepts?.usdc && <span className="px-3 py-1 text-xs font-mono border border-border text-muted-foreground">USDC</span>}
-              {accepts?.usdt && <span className="px-3 py-1 text-xs font-mono border border-border text-muted-foreground">USDT</span>}
-              {accepts?.eth && <span className="px-3 py-1 text-xs font-mono border border-border text-muted-foreground">ETH</span>}
+              <span className="px-3 py-1 text-xs font-mono border border-border text-muted-foreground">USDC</span>
             </div>
 
             <button disabled className="w-full py-4 bg-foreground text-background font-bold text-lg transition-all flex items-center justify-center gap-2 opacity-80">
               <Wallet className="w-5 h-5" />
-              [ CONNECT_WALLET ]
+              PAY NOW
             </button>
           </div>
         </div>

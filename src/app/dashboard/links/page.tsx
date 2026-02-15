@@ -339,7 +339,7 @@ function LinksPageContent() {
         </div>
         <Link href="/dashboard/create">
           <Button className="bg-foreground text-background hover:bg-foreground/90 font-mono text-sm">
-            <Plus className="mr-2 h-4 w-4" /> [ CREATE_LINK ]
+            <Plus className="mr-2 h-4 w-4" />  CREATE_LINK 
           </Button>
         </Link>
       </div>

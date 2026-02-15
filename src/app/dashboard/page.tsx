@@ -49,7 +49,7 @@ export default function DashboardOverview() {
         </div>
         <Link href="/dashboard/create">
           <Button className="bg-foreground text-background hover:bg-foreground/90 font-mono text-sm">
-            <Plus className="mr-2 h-4 w-4" /> [ CREATE_LINK ]
+            <Plus className="mr-2 h-4 w-4" />  CREATE_LINK 
           </Button>
         </Link>
       </div>
@@ -77,7 +77,7 @@ export default function DashboardOverview() {
 
       {/* Recent Links */}
       <div className="space-y-6">
-        <h3 className="text-sm font-mono tracking-widest uppercase text-muted-foreground">[ RECENT_ACTIVITY ]</h3>
+        <h3 className="text-sm font-mono tracking-widest uppercase text-muted-foreground"> RECENT_ACTIVITY </h3>
 
         {loading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -95,7 +95,7 @@ export default function DashboardOverview() {
               Get started by creating your first payment link.
             </p>
             <Link href="/dashboard/create">
-              <Button variant="outline" className="font-mono">[ CREATE_LINK ]</Button>
+              <Button variant="outline" className="font-mono"> CREATE_LINK </Button>
             </Link>
           </div>
         ) : (

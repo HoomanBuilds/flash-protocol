@@ -47,7 +47,6 @@ export default function CreateLinkPage() {
         theme: 'light',
       },
       recipient_address: '',
-      amount: undefined,
       receive_chain_id: undefined,
     },
   })
@@ -115,13 +114,13 @@ export default function CreateLinkPage() {
                   )}
                 />
 
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs tracking-widest uppercase text-muted-foreground">Amount (Optional)</FormLabel>
+                <FormField
+                  control={form.control}
+                  name="amount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs tracking-widest uppercase text-muted-foreground">Amount (USDC)</FormLabel>
+                      <div className="relative">
                         <FormControl>
                           <Input
                             type="number"
@@ -129,37 +128,15 @@ export default function CreateLinkPage() {
                             {...field}
                             value={field.value ?? ''}
                             onChange={e => field.onChange(e.target.valueAsNumber || undefined)}
-                            className="border-border font-mono"
+                            className="border-border font-mono pr-16"
                           />
                         </FormControl>
-                        <FormDescription className="text-xs">Leave empty for open amount.</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="currency"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs tracking-widest uppercase text-muted-foreground">Settlement Currency</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="border-border">
-                              <SelectValue placeholder="Select currency" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="USD">USD (Stablecoin)</SelectItem>
-                            <SelectItem value="ETH">ETH</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-muted-foreground">USDC</span>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}
@@ -217,7 +194,7 @@ export default function CreateLinkPage() {
                               <SelectValue placeholder="Select a chain" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent position="popper" className="max-h-60 overflow-y-auto">
                             {SUPPORTED_CHAINS.map(chain => (
                               <SelectItem key={chain.chainId} value={chain.chainId.toString()}>
                                 {chain.name}
@@ -234,7 +211,7 @@ export default function CreateLinkPage() {
 
                 <Button type="submit" className="w-full h-12 text-lg bg-foreground text-background hover:bg-foreground/90 font-mono" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-                  [ CREATE_LINK ]
+                   CREATE_LINK 
                 </Button>
               </form>
             </Form>
@@ -245,12 +222,8 @@ export default function CreateLinkPage() {
         <div className="hidden lg:block sticky top-36 h-[600px]">
           <LinkPreview
             title={watchedValues.title}
-            description={watchedValues.currency === 'USD' ? 'Price: $100.00' : 'Price: 0.05 ETH'}
-            accepts={{
-              usdc: true,
-              usdt: true,
-              eth: true
-            }}
+            amount={watchedValues.amount}
+            currency="USD"
           />
         </div>
       </div>

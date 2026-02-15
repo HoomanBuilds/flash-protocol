@@ -21,11 +21,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname()
 
   const navigation = [
-    { name: './overview', href: '/dashboard', icon: LayoutDashboard },
-    { name: './transactions', href: '/dashboard/transactions', icon: Activity },
-    { name: './create', href: '/dashboard/create', icon: PlusCircle },
-    { name: './links', href: '/dashboard/links', icon: LinkIcon },
-    { name: './settings', href: '/dashboard/settings', icon: Settings },
+    { name: 'overview', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'transactions', href: '/dashboard/transactions', icon: Activity },
+    { name: 'create', href: '/dashboard/create', icon: PlusCircle },
+    { name: 'links', href: '/dashboard/links', icon: LinkIcon },
+    { name: 'settings', href: '/dashboard/settings', icon: Settings },
   ]
 
   return (
@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-2">
               <Terminal className="h-4 w-4 text-muted-foreground" />
-              <h1 className="text-sm font-bold tracking-widest uppercase text-muted-foreground">[ DASHBOARD ]</h1>
+              <h1 className="text-sm font-bold tracking-widest uppercase text-muted-foreground"> DASHBOARD </h1>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
