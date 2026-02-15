@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <footer className="border-t border-border py-12 mt-24 relative z-10 bg-background">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 px-6 md:px-10">
         <div className="text-sm text-muted-foreground">
           © {new Date().getFullYear()} FLASH PROTOCOL. ALL RIGHTS RESERVED.
         </div>

@@ -1,286 +1,356 @@
 'use client'
 
-import { Zap, Globe2, ShieldCheck, Percent, Wallet, Layers, Cpu, Network, ArrowRight } from 'lucide-react'
+import { Zap, Globe2, ShieldCheck, Percent, Wallet, Layers, ArrowRight, Terminal, Activity, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import PixelBlast from '@/components/ui/pixel-blast'
-import GradientText from '@/components/ui/gradient-text'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useRef } from 'react'
+import { FlickeringGrid } from '@/components/ui/flickering-grid'
+import { motion } from 'framer-motion'
 import { useAccount } from 'wagmi'
+
+const SUPPORTED_CHAINS = [
+  { name: 'Ethereum', id: '1', status: 'active' },
+  { name: 'Arbitrum', id: '42161', status: 'active' },
+  { name: 'Optimism', id: '10', status: 'active' },
+  { name: 'Base', id: '8453', status: 'active' },
+  { name: 'Polygon', id: '137', status: 'active' },
+  { name: 'Avalanche', id: '43114', status: 'active' },
+  { name: 'BSC', id: '56', status: 'active' },
+  { name: 'zkSync', id: '324', status: 'active' },
+  { name: 'Scroll', id: '534352', status: 'active' },
+  { name: 'Linea', id: '59144', status: 'active' },
+]
+
+const BENEFITS = [
+  { title: 'Global Reach', stat: '70+', unit: 'Chains', desc: 'Accept payments from customers on any supported blockchain network.', icon: Globe2 },
+  { title: 'Instant Settlement', stat: '<30', unit: 'Seconds', desc: 'Receive funds immediately. No T+2 delays, no waiting.', icon: Zap },
+  { title: 'Lower Fees', stat: '80%', unit: 'Savings', desc: 'Drastically reduce processing costs versus traditional card rails.', icon: Percent },
+  { title: 'Non-Custodial', stat: '0', unit: 'Trust Required', desc: 'Funds go directly to your wallet. We never hold your money.', icon: ShieldCheck },
+  { title: 'Stable Settlement', stat: 'USDC', unit: 'Default', desc: 'Never worry about crypto volatility with stablecoin settlement.', icon: Wallet },
+  { title: 'Auto-Bridge', stat: 'Any→Any', unit: 'Route', desc: 'We handle cross-chain bridging and swapping behind the scenes.', icon: Layers },
+]
+
+const PIPELINE_STEPS = [
+  { num: '01', cmd: 'configure', title: 'Set Parameters', desc: 'Define amount, accepted tokens, and your settlement chain from the dashboard.' },
+  { num: '02', cmd: 'generate', title: 'Create Payment Link', desc: 'Generate a unique URL. Share via email, embed in your site, or print a QR code.' },
+  { num: '03', cmd: 'settle', title: 'Receive Funds', desc: 'Payer sends any token on any chain. We route, bridge, and settle to your wallet in USDC.' },
+]
 
 export default function Home() {
   const { isConnected } = useAccount()
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  })
 
   return (
     <div className="min-h-screen bg-background text-foreground font-mono selection:bg-foreground selection:text-background relative overflow-hidden">
-      <main className="relative" ref={containerRef}>
-        {/* Hero Section */}
-        <div className="relative min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center overflow-hidden bg-white">
-          <div className="absolute inset-0 z-0">
-            <PixelBlast
-              variant="square"
-              pixelSize={4}
-              color="#bababa"
-              patternScale={3}
-              enableRipples
-              rippleSpeed={0.4}
-              rippleThickness={0.12}
-              rippleIntensityScale={1.5}
-              liquid={false}
-              speed={4}
-              edgeFade={0.25}
-              transparent
-            />
-          </div>
-          <section className="space-y-12 pt-12 flex flex-col items-center text-center relative z-10 w-full">
-            <div className="space-y-8 w-full flex flex-col items-center">
-              <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-black leading-[0.9]">
-                FLASH PROTOCOL
-              </h1>
-              <p className="text-md font-medium text-center max-w-2xl px-4 leading-relaxed bg-white/50 backdrop-blur-sm p-2 border border-black/5">
-                Cross-Chain Payment Orchestration
-                <br />
-                Accept Crypto on Any Chain, Settle Instantly
-              </p>
-            </div>
+      <main className="relative">
 
-            <div className="flex flex-col sm:flex-row gap-4">
+        {/* ═══════════════════════════════════════════════════════════
+            HERO — Typographic + Grid Dot Background
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="relative min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center overflow-hidden">
+          {/* Flickering grid background */}
+          <FlickeringGrid
+            className="absolute inset-0 z-0 size-full"
+            squareSize={4}
+            gridGap={6}
+            color="#C0C0C0"
+            maxOpacity={0.5}
+            flickerChance={0.1}
+          />
+          {/* Top fade from navbar */}
+          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent z-[1]" />
+
+          <div className="relative z-10 flex flex-col items-center text-center px-4 space-y-10">
+           
+
+            {/* Main title */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-foreground leading-[0.9]"
+            >
+              FLASH_PROTOCOL
+            </motion.h1>
+
+            {/* Subtitle as terminal command */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex items-center gap-2 text-sm text-muted-foreground max-w-lg"
+            >
+              <span>Cross-chain payment orchestration. <br />Accept crypto on any chain, settle instantly in USDC.</span>
+            </motion.div>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="flex flex-col sm:flex-row gap-4 pt-4"
+            >
               <motion.div whileHover={isConnected ? { scale: 1.05 } : {}} whileTap={isConnected ? { scale: 0.95 } : {}}>
                 {isConnected ? (
-                  <Link href="/dashboard" className="bg-foreground text-background px-8 py-3 text-sm font-bold hover:bg-foreground/90 transition-colors inline-block text-center">
-                    [ DASHBOARD ]
+                  <Link href="/dashboard" className="bg-foreground text-background px-8 h-[40px] text-sm font-bold hover:bg-foreground/90 transition-colors inline-flex items-center justify-center">
+                    DASHBOARD 
                   </Link>
                 ) : (
-                  <div className="scale-105">
-                    <ConnectButton label="[ CONNECT_WALLET ]" showBalance={false} />
+                  <div>
+                    <ConnectButton label=" CONNECT_WALLET " showBalance={false} />
                   </div>
                 )}
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
-                  href="/#features"
-                  className="border border-border px-8 py-3 text-sm font-bold transition-colors bg-white inline-block"
+                  href="/#pipeline"
+                  className="border border-border px-8 h-[40px] text-sm font-bold transition-colors bg-background hover:bg-muted/50 inline-flex items-center justify-center"
                 >
-                  [ LEARN_MORE ]
+                   LEARN_MORE 
                 </Link>
               </motion.div>
-            </div>
-          </section>
-        </div>
-
-        {/* Scrolling Chain Marquee */}
-        <div className="w-full mt-20 mb-12 overflow-hidden">
-          <h4 className="text-sm font-mono text-black/40 mb-8 tracking-widest uppercase text-center">[ SUPPORTED ECOSYSTEMS ]</h4>
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10" />
-            <div className="flex animate-scroll">
-              {[...Array(2)].map((_, setIndex) => (
-                <div key={setIndex} className="flex items-center gap-24 px-12">
-                  {[
-                    { name: 'Ethereum', icon: Layers },
-                    { name: 'Arbitrum', icon: Cpu },
-                    { name: 'Optimism', icon: Network },
-                    { name: 'Base', icon: Globe2 },
-                    { name: 'Polygon', icon: Layers },
-                    { name: 'Avalanche', icon: Zap },
-                  ].map((chain, i) => (
-                    <div key={`${setIndex}-${i}`} className="flex flex-col items-center gap-4 opacity-60 hover:opacity-100 transition-opacity">
-                      <chain.icon className="w-16 h-16 text-black" />
-                      <span className="font-mono text-lg text-black font-medium">{chain.name}</span>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
+            </motion.div>
           </div>
-        </div>
 
-        {/* Settlement Chains Grid */}
-        <div className="w-full max-w-5xl mx-auto mb-24 px-4">
-          <h4 className="text-sm font-mono text-black/40 mb-8 tracking-widest uppercase text-center">[ SETTLEMENT CHAINS ]</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { name: 'Ethereum', chainId: '1', Icon: Layers },
-              { name: 'Arbitrum', chainId: '42161', Icon: Cpu },
-              { name: 'Base', chainId: '8453', Icon: Globe2 },
-              { name: 'Optimism', chainId: '10', Icon: Network },
-            ].map((chain, i) => (
-              <div
-                key={i}
-                className="group relative bg-white border border-black/10 p-8 hover:border-black/30 hover:shadow-lg transition-all duration-300"
-              >
-                <div className="absolute top-4 right-4 px-2 py-1 bg-black/5 text-black/40 font-mono text-xs">
-                  {chain.chainId}
+          {/* Bottom fade */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            NETWORK STATUS — Terminal Window Block
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="py-20 px-4">
+          <div className="max-w-4xl mx-auto">
+            <motion.h4
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-sm font-mono text-muted-foreground mb-6 tracking-widest uppercase text-center"
+            >
+              [ NETWORK_STATUS ]
+            </motion.h4>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="border border-border bg-background overflow-hidden"
+            >
+              {/* Terminal title bar */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <Terminal className="w-3.5 h-3.5 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">flash-protocol — supported chains</span>
                 </div>
-                <div className="w-24 h-24 bg-black/5 flex items-center justify-center mb-5 group-hover:bg-black/10 transition-colors">
-                  <chain.Icon className="w-16 h-16 text-black" />
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 bg-foreground/20" />
+                  <div className="w-2 h-2 bg-foreground/20" />
+                  <div className="w-2 h-2 bg-foreground/20" />
                 </div>
-                <h5 className="font-mono text-lg font-bold text-black mb-1">{chain.name}</h5>
-                <p className="font-mono text-sm text-black/40 uppercase tracking-wider">Settlement</p>
               </div>
-            ))}
-          </div>
-          <div className="flex justify-center mt-10">
-            <div className="inline-flex items-center gap-3 px-5 py-3 bg-black/5 border border-black/10 font-mono text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-black/50">All networks operational</span>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Features Section */}
-        <section id="features" className="relative py-24 overflow-hidden bg-white">
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
+              {/* Chain list */}
+              <div className="p-4 space-y-0">
+                {/* Table header */}
+                <div className="grid grid-cols-[2rem_1fr_6rem_5rem] gap-4 text-[10px] text-muted-foreground uppercase tracking-widest pb-2 border-b border-border">
+                  <span>#</span>
+                  <span>Network</span>
+                  <span className="text-right">Chain ID</span>
+                  <span className="text-right">Status</span>
+                </div>
+
+                {SUPPORTED_CHAINS.map((chain, i) => (
+                  <motion.div
+                    key={chain.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.04 }}
+                    className="grid grid-cols-[2rem_1fr_6rem_5rem] gap-4 py-2.5 border-b border-border/50 text-sm hover:bg-muted/20 transition-colors group"
+                  >
+                    <span className="text-muted-foreground text-xs">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="text-foreground font-medium group-hover:text-foreground/80">{chain.name}</span>
+                    <span className="text-right text-muted-foreground text-xs font-mono">{chain.id}</span>
+                    <span className="text-right flex items-center justify-end gap-1.5">
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                      <span className="text-xs text-muted-foreground">live</span>
+                    </span>
+                  </motion.div>
+                ))}
+
+                {/* Summary line */}
+                <div className="pt-3 flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{SUPPORTED_CHAINS.length} networks indexed · 70+ supported via aggregation</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                    all systems operational
+                  </span>
+                </div>
+              </div>
+            </motion.div>
           </div>
-          <div className="relative z-10 container mx-auto px-4">
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            PIPELINE — 3 Horizontal Cards
+        ═══════════════════════════════════════════════════════════ */}
+        <section id="pipeline" className="min-h-screen flex items-center justify-center py-24 px-4">
+          <div className="max-w-5xl mx-auto">
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="text-center mb-12"
+              className="text-center mb-16"
             >
-              <div className="inline-block px-4 py-1.5 border border-black/20 mb-6">
-                <span className="text-black font-mono text-xs tracking-widest uppercase">How It Works</span>
+              <div className="inline-block px-4 py-1.5 border border-border mb-6">
+                <span className="text-foreground font-mono text-xs tracking-widest uppercase">How It Works</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-mono font-bold text-black mb-3">
-                Create Payment Links
+              <h2 className="text-3xl md:text-4xl font-mono font-bold text-foreground mb-3">
+                Payment Pipeline
               </h2>
-              <p className="text-black/50 font-mono text-sm">
-                3 steps from idea to live payment
+              <p className="text-muted-foreground font-mono text-sm">
+                3 steps from setup to settlement
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {[
-                { num: '01', title: 'Configure', desc: 'Set amount, token, and settlement chain. All from your dashboard.' },
-                { num: '02', title: 'Share Link', desc: 'Generate a unique payment URL. Share it anywhere — email, socials, QR code.' },
-                { num: '03', title: 'Get Paid', desc: 'Accept any token. We route and bridge automatically. Settle in USDC.' },
-              ].map((step, i) => (
+            <div className="grid md:grid-cols-3 gap-6">
+              {PIPELINE_STEPS.map((step, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="relative bg-gray-50 border border-black/10 overflow-hidden hover:border-black/30 hover:shadow-xl transition-all duration-300 p-8"
+                  transition={{ delay: i * 0.15 }}
+                  whileHover={{ y: -4 }}
+                  className="group border border-border bg-background p-6 md:p-8 hover:border-foreground/30 hover:shadow-lg transition-all duration-300"
                 >
-                  <div className="px-2 py-1 bg-black text-white font-mono text-[10px] font-bold inline-block mb-6">
-                    STEP {step.num}
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="px-2.5 py-1.5 bg-foreground text-background text-xs font-bold font-mono">
+                      {step.num}
+                    </span>
+                    <span className="text-xs text-muted-foreground font-mono">$ flash {step.cmd}</span>
                   </div>
-                  <h3 className="font-mono text-xl font-bold text-black mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="font-mono text-sm text-black/50 leading-relaxed">
-                    {step.desc}
-                  </p>
+                  <h3 className="text-lg font-bold text-foreground mb-3">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
                 </motion.div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            BENEFITS — Metrics Grid
+        ═══════════════════════════════════════════════════════════ */}
+        <section id="features" className="py-24 px-4 border-t border-border">
+          <div className="max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <div className="inline-block px-4 py-1.5 border border-border mb-6">
+                <span className="text-foreground font-mono text-xs tracking-widest uppercase">Why Flash Protocol</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-mono font-bold text-foreground mb-3">
+                Built for Scale
+              </h2>
+              <p className="text-muted-foreground font-mono text-sm">
+                Infrastructure-grade payment orchestration
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border">
+              {BENEFITS.map((benefit, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  whileHover={{ y: -3 }}
+                  className="group bg-background p-8 hover:bg-muted/20 transition-all duration-300"
+                >
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="inline-flex p-3 border border-border text-foreground group-hover:bg-foreground group-hover:text-background transition-all duration-300">
+                      <benefit.icon className="w-5 h-5" />
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-foreground tracking-tight">{benefit.stat}</div>
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{benefit.unit}</div>
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-foreground">{benefit.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{benefit.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            FOOTER CTA
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="py-32 px-4">
+          <div className="max-w-3xl mx-auto text-center space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-foreground mb-4">
+                Start accepting payments
+              </h2>
+              <p className="text-muted-foreground text-sm max-w-md mx-auto">
+                Create your first payment link in under 60 seconds. No integration required — just connect your wallet.
+              </p>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="flex justify-center mt-12"
+              transition={{ delay: 0.2 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              <div className="inline-flex items-center gap-4 px-6 py-3 bg-black/5 border border-black/10 font-mono text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-black/50">System Active</span>
+              {isConnected ? (
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link
+                    href="/dashboard/create"
+                    className="bg-foreground text-background px-8 h-[40px] text-sm font-bold hover:bg-foreground/90 transition-colors inline-flex items-center gap-2"
+                  >
+                     CREATE_PAYMENT_LINK  <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </motion.div>
+              ) : (
+                <div>
+                  <ConnectButton label=" CONNECT_WALLET " showBalance={false} />
                 </div>
-                <div className="w-px h-4 bg-black/10" />
-                <span className="text-black/30">Scroll to explore</span>
+              )}
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/docs"
+                  className="border border-border px-8 h-[40px] text-sm font-bold transition-colors bg-background hover:bg-muted/50 inline-flex items-center justify-center"
+                >
+                   VIEW_DOCS 
+                </Link>
+              </motion.div>
+            </motion.div>
+
+            {/* Subtle system status */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="pt-8"
+            >
+              <div className="inline-flex items-center gap-3 px-4 py-2 border border-border text-xs text-muted-foreground">
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                <span>mainnet · 6 providers · 70+ chains</span>
               </div>
             </motion.div>
           </div>
         </section>
 
-        {/* Global Benefits — Dark Band */}
-        <section className="relative py-32 overflow-hidden bg-slate-950 text-white">
-          <div className="absolute inset-0 bg-slate-950">
-            <div className="absolute inset-0 bg-black/30" />
-            <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-background via-background/80 to-transparent z-10" />
-            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background via-background/80 to-transparent z-10" />
-          </div>
-
-          <div className="relative z-10 container mx-auto px-4">
-            <div className="text-center mb-24 space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 border border-white/20 backdrop-blur-md"
-              >
-                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                <span className="text-xs font-mono text-white/80 font-bold tracking-wider">LIVE ON MAINNET</span>
-              </motion.div>
-
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-4xl md:text-6xl font-bold tracking-tight text-white font-mono"
-              >
-                The Future of Payments
-              </motion.h2>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
-              >
-                Accept crypto worldwide with instant settlement, lower fees, and zero complexity.
-              </motion.p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-32">
-              {[
-                { title: 'Global Reach', subtitle: '70+ Chains', desc: 'Accept payments from customers on any supported chain.', icon: Globe2 },
-                { title: 'Instant Settlement', subtitle: 'No T+2 Delays', desc: 'Receive funds immediately. No waiting.', icon: Zap },
-                { title: 'Lower Fees', subtitle: 'Save vs Cards', desc: 'Drastically reduce processing costs vs traditional rails.', icon: Percent },
-                { title: 'Stable Value', subtitle: 'USDC Settlement', desc: 'Never worry about volatility with stablecoin settlement.', icon: Wallet },
-                { title: 'Non-Custodial', subtitle: 'Your Keys', desc: 'Funds go directly to your wallet. We never touch them.', icon: ShieldCheck },
-                { title: 'Cross-Chain', subtitle: 'Auto-Bridge', desc: 'We handle bridging and swapping behind the scenes.', icon: Layers },
-              ].map((benefit, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  whileHover={{ y: -5 }}
-                  className="group relative"
-                >
-                  <div className="relative h-full p-8 border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden">
-                    <div className="relative z-10">
-                      <div className="mb-6 inline-flex p-3 bg-white/5 border border-white/10 text-white group-hover:scale-110 transition-all duration-300">
-                        <benefit.icon className="w-6 h-6" />
-                      </div>
-                      <h3 className="text-xl font-bold mb-2 text-white">{benefit.title}</h3>
-                      <div className="inline-block px-3 py-1 bg-white/5 border border-white/10 text-xs font-mono text-white/60 mb-4">
-                        {benefit.subtitle}
-                      </div>
-                      <p className="text-gray-400 leading-relaxed text-sm">{benefit.desc}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
     </div>
   )

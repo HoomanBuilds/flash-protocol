@@ -149,3 +149,27 @@
 .animate-scroll {
   animation: marquee 25s linear infinite;
 }
+
+/* RainbowKit — scope to connect trigger only, not modal buttons */
+[data-rk] [data-testid='rk-connect-button'],
+[data-rk] [data-testid='rk-account-button'] {
+  font-family: 'Geist Mono', monospace !important;
+  height: 40px !important;
+  font-size: 14px !important;
+  border-radius: 0 !important;
+}
+
+/* Square corners on RainbowKit dialogs */
+[data-rk] [role='dialog'] {
+  border-radius: 0 !important;
+}
+
+/* Ensure Switch component stays rounded despite global resets */
+[data-slot='switch'] {
+  border-radius: 9999px !important;
+  height: auto !important;
+}
+
+[data-slot='switch-thumb'] {
+  border-radius: 9999px !important;
+}
