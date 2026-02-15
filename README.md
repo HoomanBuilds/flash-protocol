@@ -1,10 +1,25 @@
-# Flash Protocol
+# Flash Protocol Payment Gateway
+
+<div align="center">
+  <img src="public/logo-white.png" alt="Flash Protocol Logo" width="120" height="120" />
+  
+  <br />
+
+[![Next.js](https://img.shields.io/badge/Next.js-15.0-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](https://flashprotocol.com)
+
+</div>
+
+<br />
 
 Flash Protocol is an enterprise-grade, non-custodial cryptocurrency payment orchestration platform. It is engineered to bridge the gap between traditional commerce and decentralized finance, empowering merchants to accept payments in any token across over 70 blockchain networks while maintaining a seamless, single-currency settlement workflow.
 
 ## Strategic Overview
 
-The platform operates as a liquidity aggregator and payment orchestrator. By leveraging advanced cross-chain routing protocols, it guarantees the most efficient execution path for every transaction. The system aggregates liquidity from six major cross-chain providers, ensuring minimal slippage and optimal gas costs for users, while delivering settlement in the merchant's preferred stablecoin.
+The platform operates as a liquidity aggregator and payment orchestrator. By leveraging advanced cross-chain routing protocols, it guarantees the most efficient execution path for every transaction. The system aggregates liquidity from **six major cross-chain providers**, ensuring minimal slippage and optimal gas costs for users, while delivering settlement in the merchant's preferred stablecoin.
 
 ### Core Value Proposition
 
@@ -23,18 +38,20 @@ The platform supports payments across **70+ blockchain networks**, ensuring maxi
 - **Non-EVM Ecosystem:** Solana, Cosmos (via IBC), Tron, TON, Starknet.
 - **Bitcoin Ecosystem:** Bitcoin, Litecoin.
 
-### Liquidity Aggregation Engine
+### Liquidity & Integration Engine
 
 Our proprietary `TransactionExecutor` aggregates and compares routes from the industry's leading cross-chain bridges and DEX aggregators to orchestrate the optimal path for every payment.
 
 **Integrated Providers:**
 
-1.  **LI.FI:** Comprehensive bridge and DEX aggregator for any-to-any swaps.
-2.  **Rango Exchange:** Cross-chain DEX aggregator connecting Cosmos, Solana, and EVM ecosystems.
-3.  **Rubic:** Multi-chain tech aggregator supporting over 70 blockchains.
-4.  **Symbiosis:** Decentralized liquidity protocol enabling single-click cross-chain swaps.
-5.  **Circle CCTP:** Cross-Chain Transfer Protocol for capital-efficient, native USDC transfers.
-6.  **Near Intents:** Intent-based execution for highly efficient, slippage-protected swaps.
+| Provider           | Type               | Ecosystem Coverage               |
+| :----------------- | :----------------- | :------------------------------- |
+| **LI.FI**          | Aggregator         | EVM, Solana, Bitcoin (upcoming)  |
+| **Rango Exchange** | Aggregator         | EVM, Cosmos, Solana, UTXO        |
+| **Rubic**          | Aggregator         | EVM, Tron, Solana, others        |
+| **Symbiosis**      | Liquidity Protocol | EVM, Tron, TON                   |
+| **Circle CCTP**    | Bridge Protocol    | Native USDC (EVM, Solana, Noble) |
+| **Near Intents**   | Intent Network     | Near, Ethereum, others           |
 
 ## Key Features
 
@@ -65,12 +82,31 @@ We provide a comprehensive RESTful API to enable businesses to integrate custom 
 
 ## Technical Architecture
 
-The application is built on a modern, scalable stack designed for security and performance:
+The application is built on a modern, scalable stack designed for security and performance.
 
-- **Frontend:** Next.js 16 (React), Tailwind CSS, Shadcn UI
-- **Blockchain Interaction:** Wagmi, Viem, TanStack Query
-- **Backend/Database:** Supabase (PostgreSQL), Next.js API Routes
-- **Integration:** @lifi/sdk, rango-sdk-basic, Symbiosis API
+### Frontend Layer
+
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS, Shadcn UI, Framer Motion
+- **State Management:** TanStack Query (Server State), Zustand (Client State)
+- **Blockchain Hooks:** Wagmi (EVM), Custom Hooks (Solana/Cosmos)
+
+### Backend & Data Layer
+
+- **API Runtime:** Next.js API Routes (Edge & Serverless)
+- **Database:** Supabase (PostgreSQL)
+- **Auth:** Supabase Auth + HttpOnly Session Cookies
+- **Security:** Server-side API Key Hashing, Rate Limiting
+
+### Integration Layer (The "Brain")
+
+The core logic resides in a unified `PaymentInterface` that abstracts the complexity of 6 different SDKs:
+
+1.  **Quote Aggregation:** Fetches quotes from all providers in parallel.
+2.  **Normalization:** Standardizes different quote formats into a single `Quote` interface.
+3.  **Route Scoring:** Ranks routes based on `(Output Amount - Fees) / Time`.
+4.  **Execution Orchestrator:** Handles the specific transaction lifecycle (Approve -> Swap -> Bridge) for the selected provider.
 
 ## API Documentation
 
@@ -78,7 +114,7 @@ For integrators and developers, the platform includes a dedicated documentation 
 
 **Access the Documentation:**
 
-- **Local Development:** Navigate to `/docs` (e.g., `https://flash-protocol.vercel.app/docs`)
+- **Local Development:** Navigate to `/docs` (e.g., `http://localhost:3000/docs`)
 - **Key Sections:**
   - **Authentication:** API Key generation and security best practices.
   - **Payment Links:** Creating, retrieving, and managing payment sessions.
@@ -87,7 +123,7 @@ For integrators and developers, the platform includes a dedicated documentation 
 ### Example: Create a Payment Link
 
 ```bash
-curl -X POST https://flash-protocol.vercel.app/api/v1/payment-links \
+curl -X POST https://flashprotocol.com/api/v1/payment-links \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
