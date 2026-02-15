@@ -1,4 +1,4 @@
-# Flash Protocol Payment Gateway
+# Flash Protocol
 
 Flash Protocol is an enterprise-grade, non-custodial cryptocurrency payment orchestration platform. It is engineered to bridge the gap between traditional commerce and decentralized finance, empowering merchants to accept payments in any token across over 70 blockchain networks while maintaining a seamless, single-currency settlement workflow.
 
@@ -78,7 +78,7 @@ For integrators and developers, the platform includes a dedicated documentation 
 
 **Access the Documentation:**
 
-- **Local Development:** Navigate to `/docs` (e.g., `http://localhost:3000/docs`)
+- **Local Development:** Navigate to `/docs` (e.g., `https://flash-protocol.vercel.app/docs`)
 - **Key Sections:**
   - **Authentication:** API Key generation and security best practices.
   - **Payment Links:** Creating, retrieving, and managing payment sessions.
@@ -87,7 +87,7 @@ For integrators and developers, the platform includes a dedicated documentation 
 ### Example: Create a Payment Link
 
 ```bash
-curl -X POST https://flashprotocol.com/api/v1/payment-links \
+curl -X POST https://flash-protocol.vercel.app/api/v1/payment-links \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
