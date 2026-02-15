@@ -1,15 +1,13 @@
-# Flash Protocol Payment Gateway
-
 <div align="center">
   <img src="public/logo-white.png" alt="Flash Protocol Logo" width="120" height="120" />
   
-  <br />
+  # Flash Protocol Payment Gateway
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.0-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
-[![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](https://flashprotocol.com)
+
 
 </div>
 
@@ -44,14 +42,14 @@ Our proprietary `TransactionExecutor` aggregates and compares routes from the in
 
 **Integrated Providers:**
 
-| Provider           | Type               | Ecosystem Coverage               |
-| :----------------- | :----------------- | :------------------------------- |
-| **LI.FI**          | Aggregator         | EVM, Solana, Bitcoin (upcoming)  |
-| **Rango Exchange** | Aggregator         | EVM, Cosmos, Solana, UTXO        |
-| **Rubic**          | Aggregator         | EVM, Tron, Solana, others        |
-| **Symbiosis**      | Liquidity Protocol | EVM, Tron, TON                   |
-| **Circle CCTP**    | Bridge Protocol    | Native USDC (EVM, Solana, Noble) |
-| **Near Intents**   | Intent Network     | Near, Ethereum, others           |
+| Provider           | Type               |
+| :----------------- | :----------------- |
+| **LI.FI**          | Aggregator         |
+| **Rango Exchange** | Aggregator         |
+| **Rubic**          | Aggregator         |
+| **Symbiosis**      | Liquidity Protocol |
+| **Circle CCTP**    | Bridge Protocol    |
+| **Near Intents**   | Intent Network     |
 
 ## Key Features
 
@@ -146,7 +144,7 @@ curl -X POST https://flashprotocol.com/api/v1/payment-links \
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/flash-protocol/payment-gateway.git
+    git clone https://github.com/HoomanBuilds/flash-protocol.git
     cd payment-gateway
     ```
 
@@ -161,9 +159,18 @@ curl -X POST https://flashprotocol.com/api/v1/payment-links \
     Create a `.env.local` file with the required keys (Supabase, WalletConnect, Provider Keys).
 
     ```env
-    NEXT_PUBLIC_SUPABASE_URL=...
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-    NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=...
+    NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+    SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-for-admin-operations
+
+    NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_reown_project_id
+    NEXT_PUBLIC_ALCHEMY_KEY=your_alchemy_api_key
+
+    # Exchange Providers
+    RANGO_API_KEY=c6381a79-2817-4602-83bf-6a641a409e32
+    NEAR_INTENTS_JWT=your_near_intents_jwt_token
+
+    NEXT_PUBLIC_ENABLE_TESTNETS=true
     ```
 
 4.  **Launch development environment:**
@@ -173,6 +180,4 @@ curl -X POST https://flashprotocol.com/api/v1/payment-links \
     ```
 
 ## License
-
-Copyright © 2024 Flash Protocol. All rights reserved.
-This project is proprietary and confidential. Unauthorized copying, distribution, or modification of this file, via any medium, is strictly prohibited.
+MIT
