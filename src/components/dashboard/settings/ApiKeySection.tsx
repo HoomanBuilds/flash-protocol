@@ -4,27 +4,23 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Copy, Eye, EyeOff, Key, Trash2, CheckCircle2 } from 'lucide-react'
-import { useSession } from '@/lib/hooks/use-session'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function ApiKeySection({ merchantId }: { merchantId: string }) {
-  const { sessionToken } = useSession()
+  const { toast } = useToast()
   const [apiKey, setApiKey] = useState<string | null>(null)
   const [showKey, setShowKey] = useState(false)
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
 
   async function generateApiKey() {
-    if (!confirm('Generate a new API key? This will revoke any existing key.')) return
-    
     setLoading(true)
     setApiKey(null)
     
     try {
       const response = await fetch('/api/v1/auth/api-keys', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${sessionToken}` // From SIWE session hook
-        }
+        credentials: 'include',
       })
       
       const data = await response.json()
@@ -36,31 +32,27 @@ export default function ApiKeySection({ merchantId }: { merchantId: string }) {
       setApiKey(data.api_key)
     } catch (error) {
       console.error('Failed to generate API key:', error)
-      alert('Failed to generate API Key')
+      toast({ title: 'Error', description: 'Failed to generate API Key', variant: 'destructive' })
     } finally {
       setLoading(false)
     }
   }
 
   async function revokeApiKey() {
-    if (!confirm('Are you sure you want to revoke your API key? API integrations will stop working immediately.')) return
-
     setLoading(true)
     try {
       const response = await fetch('/api/v1/auth/api-keys', {
         method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${sessionToken}`
-        }
+        credentials: 'include',
       })
       
       if (!response.ok) throw new Error('Failed to revoke')
       
       setApiKey(null)
-      alert('API Key revoked successfully')
+      toast({ title: 'Revoked', description: 'API key revoked successfully' })
     } catch (e) {
         console.error(e)
-        alert('Failed to revoke key')
+        toast({ title: 'Error', description: 'Failed to revoke key', variant: 'destructive' })
     } finally {
         setLoading(false)
     }
@@ -75,7 +67,7 @@ export default function ApiKeySection({ merchantId }: { merchantId: string }) {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
             <h3 className="text-lg font-semibold flex items-center gap-2">

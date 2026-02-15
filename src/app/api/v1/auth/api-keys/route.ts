@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
+import { cookies } from 'next/headers'
 
 export async function POST(req: NextRequest) {
-  // 1. Verify Session (Auth check)
-  
-  const authHeader = req.headers.get('authorization')
-  const sessionToken = authHeader?.replace('Bearer ', '')
+  // 1. Verify Session (Auth check via httpOnly cookie)
+  const cookieStore = await cookies()
+  const sessionToken = cookieStore.get('session_id')?.value
   
   if (!sessionToken) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -58,8 +58,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const authHeader = req.headers.get('authorization')
-  const sessionToken = authHeader?.replace('Bearer ', '')
+  const cookieStore = await cookies()
+  const sessionToken = cookieStore.get('session_id')?.value
   
   if (!sessionToken) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
