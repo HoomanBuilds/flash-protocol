@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const createPaymentLinkSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
   description: z.string().max(500, 'Description is too long').optional(),
-  amount: z.number().positive('Amount must be positive').optional(),
+  amount: z.number().positive('Amount must be positive'),
   currency: z.string(),
   receive_token: z.string().optional(),
   receive_token_symbol: z.string().optional(),
