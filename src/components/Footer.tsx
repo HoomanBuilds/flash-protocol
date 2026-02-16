@@ -6,9 +6,7 @@ export function Footer() {
           © {new Date().getFullYear()} FLASH PROTOCOL. ALL RIGHTS RESERVED.
         </div>
         <div className="flex gap-6 text-sm">
-          <a href="#" className="hover:text-foreground text-muted-foreground transition-colors">GITHUB</a>
-          <a href="#" className="hover:text-foreground text-muted-foreground transition-colors">TWITTER</a>
-          <a href="#" className="hover:text-foreground text-muted-foreground transition-colors">DISCORD</a>
+          <a href="https://github.com/HoomanBuilds/flash-protocol" target="_blank" rel="noopener noreferrer" className="hover:text-foreground text-muted-foreground transition-colors">GITHUB</a>
         </div>
       </div>
     </footer>
