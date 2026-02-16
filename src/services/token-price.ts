@@ -3,6 +3,8 @@
  * Primary: LiFi API -> Fallback: CoinGecko free API
  */
 
+import { CHAINS } from '@/lib/chains'
+
 // In-memory price cache (30s TTL)
 const CACHE_TTL_MS = 30_000
 
@@ -44,19 +46,15 @@ const COINGECKO_IDS: Record<string, string> = {
   'TRX': 'tron',
 }
 
-// LiFi chain ID mapping
-const LIFI_CHAIN_IDS: Record<number, number> = {
-  1: 1, 10: 10, 56: 56, 137: 137, 250: 250,
-  324: 324, 8453: 8453, 42161: 42161, 43114: 43114,
-  59144: 59144, 534352: 534352,
-}
-
 /**
  * Fetch token price from LiFi API
  */
 async function fetchFromLiFi(chainId: number, tokenAddress: string): Promise<number | null> {
-  const lifiChainId = LIFI_CHAIN_IDS[chainId]
-  if (!lifiChainId) return null
+  const chain = CHAINS.find(c => c.chainId === chainId)
+  if (!chain?.providers.lifi) return null
+
+  // Use provider-specific ID if available, otherwise use chainId
+  const lifiChainId = chain.providerChainIds?.lifi || chainId
 
   try {
     const url = `https://li.quest/v1/token?chain=${lifiChainId}&token=${tokenAddress}`
