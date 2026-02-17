@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useAccount, useSwitchChain } from 'wagmi'
+import { useAccount, useSwitchChain, useBalance } from 'wagmi'
 import { parseUnits } from 'viem'
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -72,6 +72,17 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   const availableTokens = getTokensByChain(fromChainId)
   const fromToken = availableTokens.find(t => t.address.toLowerCase() === fromTokenAddress.toLowerCase())
   const destinationToken = link.receive_token || getUSDCAddress(toChainId)
+
+  // Fetch Bundle
+  const { data: balanceData } = useBalance({
+    address: address,
+    chainId: fromChainId,
+    token: fromTokenAddress === '0x0000000000000000000000000000000000000000' ? undefined : fromTokenAddress as `0x${string}`,
+    query: {
+      enabled: !!address && !!fromChainId,
+      refetchInterval: 10000
+    }
+  })
 
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -219,10 +230,16 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          linkId: link.id,
-          quoteId: selectedQuote.id, // Using quote ID as request ID for Rango/LiFi
+          paymentLinkId: link.id,
+          walletAddress: address,
+          fromChainId,
+          toChainId,
+          fromToken: fromTokenAddress,
+          toToken: destinationToken,
+          fromAmount: selectedQuote.fromAmount,
+          toAmount: selectedQuote.toAmount,
+          provider: selectedQuote.provider,
           route: selectedQuote,
-          payerAddress: address,
         }),
       })
       const { transactionId } = await initRes.json()

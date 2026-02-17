@@ -126,6 +126,7 @@ export class LifiProvider implements IProvider {
       estimatedGas: route.gasCostUSD || '0',
       estimatedDuration: route.steps.reduce((acc, step) => acc + (step.estimate.executionDuration || 0), 0),
       transactionRequest: txData || route,
+      metadata: { lifiRoute: route },
       fees: {
         totalFeeUSD: (totalBridgeFee + gasCostUSD).toFixed(4),
         bridgeFee: totalBridgeFee > 0 ? totalBridgeFee.toFixed(4) : undefined,

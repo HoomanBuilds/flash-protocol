@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
-import { useWalletClient, usePublicClient, useSwitchChain } from 'wagmi'
+import { useWalletClient, usePublicClient, useSwitchChain, useConfig } from 'wagmi'
+import { getWalletClient } from '@wagmi/core'
 import { executeRoute, Route, createConfig, EVM } from '@lifi/sdk'
 import { RangoClient } from 'rango-sdk-basic'
 import { QuoteResponse } from '@/types/provider'
@@ -31,6 +32,7 @@ export function useTransactionExecutor() {
   const { data: walletClient } = useWalletClient()
   const publicClient = usePublicClient()
   const { switchChainAsync } = useSwitchChain()
+  const config = useConfig()
   
   const [status, setStatus] = useState<ExecutorStatus>('idle')
   const [error, setError] = useState<string | null>(null)
@@ -47,7 +49,8 @@ export function useTransactionExecutor() {
             getWalletClient: () => Promise.resolve(walletClient),
             switchChain: async (chainId) => {
               await switchChainAsync({ chainId })
-              return walletClient
+              const client = await getWalletClient(config, { chainId })
+              return client
             }
           })
         ]
@@ -179,8 +182,8 @@ export function useTransactionExecutor() {
     
     try {
       if (quote.provider === 'lifi') {
-        // @ts-ignore
-        return await executeLifi(quote.routes[0] || quote.route) 
+        const route = (quote.metadata?.lifiRoute as Route) || quote.routes[0] || quote.transactionRequest
+        return await executeLifi(route) 
       } 
       else if (quote.provider === 'rango') {
         return await executeRango(quote.id)
