@@ -195,6 +195,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
           toTokenAddress: destinationToken,
           fromAmount: amountInWei,
           fromAddress: address,
+          toAddress: link.recipient_address,
         }),
       })
 

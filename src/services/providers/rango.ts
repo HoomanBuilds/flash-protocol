@@ -48,8 +48,8 @@ export class RangoProvider implements IProvider {
         from: { blockchain: fromChain, address: request.fromToken },
         to: { blockchain: toChain, address: request.toToken },
         amount: request.fromAmount,
-        referrerAddress: null,
-        referrerFee: null,
+        referrerAddress: process.env.NEXT_PUBLIC_PLATFORM_REFERRER_ADDRESS || null,
+        referrerFee: 0.5, // 0.5%
         disableEstimate: false,
         slippage: request.slippage || 1.0, 
       }

@@ -3,7 +3,7 @@ import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, 
 
 // Initialize LI.FI SDK
 createConfig({
-  integrator: 'crypto-payment-gateway',
+  integrator: process.env.NEXT_PUBLIC_LIFI_INTEGRATOR_ID || 'crypto-payment-gateway',
 })
 
 export class LifiProvider implements IProvider {
@@ -11,6 +11,16 @@ export class LifiProvider implements IProvider {
 
   async getQuote(request: QuoteRequest): Promise<QuoteResponse[]> {
     try {
+      const referrer = process.env.NEXT_PUBLIC_PLATFORM_REFERRER_ADDRESS
+      const options: any = {
+        slippage: request.slippage ? request.slippage / 100 : undefined,
+      }
+
+      if (referrer) {
+        options.fee = 0.005 // 0.5% platform fee
+        options.referrer = referrer
+      }
+
       const routesResponse = await getRoutes({
         fromChainId: request.fromChain,
         toChainId: request.toChain,
@@ -19,9 +29,7 @@ export class LifiProvider implements IProvider {
         fromAmount: request.fromAmount,
         fromAddress: request.fromAddress,
         toAddress: request.toAddress,
-        options: {
-          slippage: request.slippage ? request.slippage / 100 : undefined, // 0.005 for 0.5%
-        }
+        options
       })
 
       // Map routes and fetch transaction data for each
