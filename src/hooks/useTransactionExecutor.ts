@@ -89,26 +89,37 @@ export function useTransactionExecutor() {
     }
   }, [walletClient])
 
-  const executeRango = useCallback(async (requestId: string) => {
+  const executeRango = useCallback(async (quote: QuoteResponse, recipientAddress?: string) => {
     if (!walletClient || !publicClient) throw new Error('Wallet not connected')
+    const params = quote.metadata?.rangoParams as any
+    if (!params) throw new Error('Rango params missing from quote metadata')
 
     try {
-      // 1. Check Approval
-      setStep('Checking Allowance...')
+      // 1. Prepare Swap Request
+      // Rango expects the full params again for the swap
+      const swapRequest = {
+        ...params,
+        fromAddress: walletClient.account.address,
+        toAddress: recipientAddress || walletClient.account.address,
+        slippage: params.slippage || 1.0,
+        disableEstimate: false
+      }
+
+      setStep('Requesting Swap Transaction...')
       setStatus('approving')
-      
-      // Attempt main swap to see if it asks for approval
-      const swapResponse = await rangoClient.swap({
-        requestId: requestId,
-        step: 1
-      })
+
+      // 2. Call Swap API (Step 1)
+      // We pass the full request to get the tx data
+      const swapResponse = await rangoClient.swap(swapRequest)
 
       if (swapResponse.error) throw new Error(swapResponse.error)
-
+      
+      const requestId = swapResponse.requestId
       let tx = swapResponse.tx
+      
       if (!tx) throw new Error('Failed to get transaction data from Rango')
 
-      // 2. Handle Approval if present
+      // 3. Handle Approval if present
       // @ts-ignore - Local enum matching
       if (tx.type === TransactionType.EVM && tx.approveData && tx.approveTo) {
         setStep('Approving Token...')
@@ -128,9 +139,6 @@ export function useTransactionExecutor() {
             if (check.isApproved) isApproved = true
         }
 
-        // 3. Get Main Swap TX again after approval
-        const mainSwap = await rangoClient.swap({ requestId, step: 2 })
-        if (mainSwap.tx) tx = mainSwap.tx
       }
 
       // 4. Execute Main Swap
@@ -176,7 +184,7 @@ export function useTransactionExecutor() {
   }, [walletClient, publicClient])
 
   // Main Entry Point
-  const execute = useCallback(async (quote: QuoteResponse) => {
+  const execute = useCallback(async (quote: QuoteResponse, recipientAddress?: string) => {
     setError(null)
     setTxHash(null)
     
@@ -186,7 +194,7 @@ export function useTransactionExecutor() {
         return await executeLifi(route) 
       } 
       else if (quote.provider === 'rango') {
-        return await executeRango(quote.id)
+        return await executeRango(quote, recipientAddress)
       }
       else {
         // Atomic Providers (Symbiosis, Rubic)

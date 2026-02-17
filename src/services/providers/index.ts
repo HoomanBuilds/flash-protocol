@@ -16,8 +16,8 @@ import { cctpProvider } from './cctp'
 export const providers = [
   lifiProvider,
   rangoProvider,
-  rubicProvider,
-  symbiosisProvider,
-  nearIntentsProvider,
-  cctpProvider,
+  // rubicProvider,
+  // symbiosisProvider,
+  // nearIntentsProvider,
+  // cctpProvider,
 ]

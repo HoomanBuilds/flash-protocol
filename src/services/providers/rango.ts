@@ -44,6 +44,16 @@ export class RangoProvider implements IProvider {
 
       if (!quote || !quote.route) return []
 
+      const rangoParams = {
+        from: { blockchain: fromChain, address: request.fromToken },
+        to: { blockchain: toChain, address: request.toToken },
+        amount: request.fromAmount,
+        referrerAddress: null,
+        referrerFee: null,
+        disableEstimate: false,
+        slippage: request.slippage || 1.0, 
+      }
+
       console.log('=== RANGO RAW RESPONSE ===')
       console.log('requestId:', quote.requestId)
       console.log('route.outputAmount:', quote.route.outputAmount)
@@ -53,7 +63,7 @@ export class RangoProvider implements IProvider {
       console.log('route.path:', JSON.stringify(quote.route.path, null, 2))
       console.log('===========================')
 
-      return [this.mapQuoteToResponse(quote, request.fromAmount)]
+      return [this.mapQuoteToResponse(quote, request.fromAmount, rangoParams)]
     } catch (error) {
       console.error('Rango Quote Error:', error)
       return []
@@ -84,7 +94,7 @@ export class RangoProvider implements IProvider {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private mapQuoteToResponse(quote: any, fromAmount: string): UnifiedQuoteResponse {
+  private mapQuoteToResponse(quote: any, fromAmount: string, rangoParams: any): UnifiedQuoteResponse {
     if (!quote.route) throw new Error('No route in quote')
 
     // Map fees
@@ -123,6 +133,7 @@ export class RangoProvider implements IProvider {
       estimatedGas: quote.route.feeUsd?.toString() || '0',
       estimatedDuration: estimatedTime,
       transactionRequest: null, 
+      metadata: { rangoParams },
       routes: [{
         type: 'bridge',
         tool: quote.route.swapper.title, 

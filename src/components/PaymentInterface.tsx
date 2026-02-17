@@ -245,7 +245,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
       const { transactionId } = await initRes.json()
 
       // 2. Execute via Executor Hook (Handles LiFi/Rango logic)
-      const hash = await execute(selectedQuote)
+      const hash = await execute(selectedQuote, link.recipient_address)
       
       if (!hash) throw new Error('Execution completed but no hash returned')
 
