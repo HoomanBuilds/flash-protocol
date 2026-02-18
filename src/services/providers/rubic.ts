@@ -5,6 +5,7 @@ const RUBIC_API_BASE = 'https://api-v2.rubic.exchange/api'
 
 // Map chain IDs to Rubic blockchain identifiers
 const CHAIN_MAP: Record<number, string> = {
+  // EVM Chains
   1: 'ETH',
   137: 'POLYGON',
   42161: 'ARBITRUM',
@@ -12,6 +13,19 @@ const CHAIN_MAP: Record<number, string> = {
   8453: 'BASE',
   56: 'BSC',
   43114: 'AVALANCHE',
+  250: 'FANTOM',
+  100: 'GNOSIS',
+  1101: 'POLYGON_ZKEVM',
+  324: 'ZK_SYNC',
+  59144: 'LINEA',
+  1313161554: 'AURORA',
+  169: 'MANTA_PACIFIC',
+  534352: 'SCROLL',
+  5000: 'MANTLE',
+  81457: 'BLAST',
+  // Non-EVM Chains (future support)
+  // 'SOLANA': 'SOLANA',
+  // 'BITCOIN': 'BITCOIN',
 }
 
 export class RubicProvider implements IProvider {
@@ -33,21 +47,24 @@ export class RubicProvider implements IProvider {
         : request.toToken
 
       // Rubic quoteBest endpoint
+      const commonParams = {
+        srcTokenAddress,
+        srcTokenBlockchain,
+        srcTokenAmount: this.formatAmount(request.fromAmount, request.fromTokenDecimals || 18),
+        dstTokenAddress,
+        dstTokenBlockchain,
+        referrer: 'rubic.exchange',
+        fromAddress: request.fromAddress || undefined,
+        slippage: Math.max(0.01, (request.slippage || 1) / 100), // Min 0.01 (1%)
+      }
+
+      // Rubic quoteBest endpoint
       const response = await fetch(`${RUBIC_API_BASE}/routes/quoteBest`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          srcTokenAddress,
-          srcTokenBlockchain,
-          srcTokenAmount: this.formatAmount(request.fromAmount, 18),
-          dstTokenAddress,
-          dstTokenBlockchain,
-          referrer: 'rubic.exchange',
-          fromAddress: request.fromAddress || undefined,
-          slippage: Math.max(0.01, (request.slippage || 1) / 100), // Min 0.01 (1%)
-        })
+        body: JSON.stringify(commonParams)
       })
 
       if (!response.ok) {
@@ -79,6 +96,57 @@ export class RubicProvider implements IProvider {
       const toAmountHuman = data.estimate.destinationTokenAmount
       const toAmountMinHuman = data.estimate.destinationTokenMinAmount || toAmountHuman
       
+      // Process EVM transaction data
+      let transactionRequest = null
+      let approvalAddress = data.transaction?.approvalAddress
+
+      if (data.id) {
+        try {
+          // Fetch actual swap data
+          const swapResponse = await fetch(`${RUBIC_API_BASE}/routes/swap`, {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({
+               ...commonParams,
+               id: data.id
+             })
+          })
+          
+          if (swapResponse.ok) {
+            const swapData = await swapResponse.json()
+            if (swapData.transaction) {
+               transactionRequest = {
+                 to: swapData.transaction.to,
+                 data: swapData.transaction.data,
+                 value: swapData.transaction.value,
+                 type: 'evm',
+               }
+              
+               approvalAddress = swapData.transaction.approvalAddress || approvalAddress
+            }
+          } else {
+             const errorText = await swapResponse.text()
+             try {
+                const errorJson = JSON.parse(errorText)
+                if (errorJson.error?.code === 3003 || errorJson.error?.reason?.includes('not enough balance')) {
+                  console.warn(`Insufficient balance on ${srcTokenBlockchain}`)
+                }
+             } catch (e) {
+                // Ignore parse errors
+             }
+             console.warn('Rubic Swap Data Error:', errorText)
+          }
+        } catch (swapErr) {
+          console.warn('Failed to fetch Rubic swap data:', swapErr)
+        }
+      }
+
+      const insufficientBalance = !transactionRequest && approvalAddress 
+      // Calculate total fees
+      const protocolFeeUSD = data.fees?.gasTokenFees?.protocol?.fixedUsdAmount || 0
+      const providerFeeUSD = data.fees?.gasTokenFees?.provider?.fixedUsdAmount || 0
+      const totalFeeUSD = (parseFloat(gasCostUSD) + protocolFeeUSD + providerFeeUSD).toFixed(4)
+
       return [{
         provider: 'rubic',
         id: data.id || Math.random().toString(36).substring(7),
@@ -87,16 +155,16 @@ export class RubicProvider implements IProvider {
         toAmountMin: this.toWei(toAmountMinHuman, toDecimals),
         estimatedGas: gasCostUSD,
         estimatedDuration: data.estimate.estimatedTime || 300,
-        transactionRequest: data.transaction ? {
-          to: data.transaction.to,
-          data: data.transaction.data,
-          value: data.transaction.value,
-        } : null,
+        transactionRequest,
         fees: {
-          totalFeeUSD: gasCostUSD,
+          totalFeeUSD,
           gasCost: gasCostUSD,
+          bridgeFee: (protocolFeeUSD + providerFeeUSD).toFixed(4)
         },
         toolsUsed: [underlyingProvider],
+        metadata: {
+           insufficientBalance: !transactionRequest ? true : undefined
+        },
         routes: [{
           type: 'bridge' as const,
           tool: underlyingProvider,
@@ -117,23 +185,44 @@ export class RubicProvider implements IProvider {
             fromAmount: request.fromAmount,
             toAmount: this.toWei(data.estimate.destinationTokenAmount, 18)
           },
+          // TODO: Add support for platform fees
           estimate: {
+            approvalAddress,
             executionDuration: data.estimate.estimatedTime,
             feeCosts: [
-              ...(gasCostUSD !== '0' ? [{
+              // Gas Fees
+              ...(data.fees?.gasTokenFees?.gas?.totalUsdAmount ? [{
                 type: 'GAS' as const,
                 name: 'Network Gas',
-                description: 'Estimated gas fee',
-                amount: '0', // Rubic often gives USD value directly
-                amountUSD: gasCostUSD,
-                included: false
+                description: 'Estimated gas fee for transaction',
+                amount: data.fees.gasTokenFees.gas.totalWeiAmount || '0',
+                amountUSD: data.fees.gasTokenFees.gas.totalUsdAmount.toString(),
+                included: false,
+                token: {
+                  address: data.fees.gasTokenFees.nativeToken?.address || '',
+                  chainId: data.fees.gasTokenFees.nativeToken?.blockchainId || request.fromChain,
+                  symbol: data.fees.gasTokenFees.nativeToken?.symbol || 'ETH',
+                  decimals: data.fees.gasTokenFees.nativeToken?.decimals || 18
+                }
               }] : []),
-              ...(data.estimate.fixedFee ? [{
+
+              // Rubic Protocol Fee
+              ...(data.fees?.gasTokenFees?.protocol?.fixedUsdAmount ? [{
                 type: 'PROTOCOL' as const,
-                name: 'Fixed Fee',
-                description: 'Rubic Fixed Fee',
-                amount: data.estimate.fixedFee,
-                amountUSD: data.estimate.fixedFee, // Assuming USD for now
+                name: 'Rubic Protocol Fee',
+                description: 'Fixed fee charged by Rubic',
+                amount: data.fees.gasTokenFees.protocol.fixedWeiAmount || '0',
+                amountUSD: data.fees.gasTokenFees.protocol.fixedUsdAmount.toString(),
+                included: true
+              }] : []),
+
+              // Provider/Bridge Fee
+              ...(data.fees?.gasTokenFees?.provider?.fixedUsdAmount ? [{
+                type: 'BRIDGE' as const,
+                name: 'Provider Fee',
+                description: 'Fee charged by the underlying bridge/provider',
+                amount: data.fees.gasTokenFees.provider.fixedWeiAmount || '0',
+                amountUSD: data.fees.gasTokenFees.provider.fixedUsdAmount.toString(),
                 included: true
               }] : [])
             ]
@@ -150,7 +239,7 @@ export class RubicProvider implements IProvider {
   async getStatus(request: StatusRequest): Promise<StatusResponse> {
     try {
       const response = await fetch(
-        `${RUBIC_API_BASE}/info/status_by_src_hash?srcHash=${request.txHash}`
+        `${RUBIC_API_BASE}/info/status?srcTxHash=${request.txHash}`
       )
       
       if (!response.ok) return { status: 'NOT_FOUND' }
@@ -160,21 +249,38 @@ export class RubicProvider implements IProvider {
       let finalStatus: TransactionStatus = 'PENDING'
       const statusLower = (data.status || '').toLowerCase()
       
-      if (['success', 'completed', 'done'].includes(statusLower)) {
+      if (['success', 'completed', 'done', 'ready_to_claim'].includes(statusLower)) {
         finalStatus = 'DONE'
-      } else if (['failed', 'reverted', 'error'].includes(statusLower)) {
+      } else if (['failed', 'reverted', 'error', 'fail'].includes(statusLower)) {
         finalStatus = 'FAILED'
       }
       
       return {
         status: finalStatus,
         subStatus: data.status,
-        txLink: data.dstTxLink || data.explorerUrl
+        txLink: data.destinationTxHash 
+          ? (data.destinationNetworkChainId ? this.getExplorerLink(data.destinationNetworkChainId, data.destinationTxHash) : data.destinationTxHash)
+          : undefined
       }
     } catch (error) {
       console.error('Rubic Status Error:', error)
       return { status: 'NOT_FOUND' }
     }
+  }
+
+  private getExplorerLink(chainId: number, hash: string): string {
+      // Simple helper to try and generate a link if we have the chain ID
+      const scanMap: Record<number, string> = {
+          1: 'https://etherscan.io/tx/',
+          137: 'https://polygonscan.com/tx/',
+          42161: 'https://arbiscan.io/tx/',
+          10: 'https://optimistic.etherscan.io/tx/',
+          8453: 'https://basescan.org/tx/',
+          56: 'https://bscscan.com/tx/',
+          43114: 'https://snowtrace.io/tx/',
+      }
+      const base = scanMap[chainId]
+      return base ? `${base}${hash}` : hash
   }
 
   private formatAmount(weiAmount: string, decimals: number): string {

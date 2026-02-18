@@ -10,6 +10,7 @@ const quoteSchema = z.object({
   fromAmount: z.string(),
   fromAddress: z.string().optional(),
   toAddress: z.string().optional(), 
+  fromTokenDecimals: z.number().optional(),
 })
 
 export async function POST(request: Request) {
@@ -26,7 +27,8 @@ export async function POST(request: Request) {
       fromAmount: params.fromAmount,
       fromAddress: params.fromAddress || '',
       toAddress: params.toAddress, 
-      slippage: 0.5 // Default 0.5%
+      slippage: 0.5, // Default 0.5%
+      fromTokenDecimals: params.fromTokenDecimals
     })
 
     return NextResponse.json({ 

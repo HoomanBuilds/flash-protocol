@@ -16,6 +16,7 @@ const rangoClient = new RangoClient(RANGO_API_KEY)
 const erc20Abi = parseAbi([
   'function transfer(address to, uint256 amount) returns (bool)',
   'function approve(address spender, uint256 amount) returns (bool)',
+  'function allowance(address owner, address spender) view returns (uint256)',
 ])
 
 // Define Rango Enums locally to avoid import issues
@@ -270,7 +271,40 @@ export function useTransactionExecutor() {
         // Atomic Providers (Symbiosis, Rubic)
         if (!quote.transactionRequest) throw new Error('No transaction request found')
         
-        if (!walletClient) throw new Error('Wallet not connected')
+        if (!walletClient || !publicClient) throw new Error('Wallet not connected')
+
+        // 1. Handle Approvals if needed
+        const approvalAddress = quote.routes[0]?.estimate?.approvalAddress
+        if (approvalAddress && quote.routes[0]?.action?.fromToken?.address !== '0x0000000000000000000000000000000000000000') {
+           const tokenAddress = quote.routes[0].action.fromToken.address as `0x${string}`
+           const amount = BigInt(quote.fromAmount)
+           
+           try {
+             // Check allowance
+             const allowance = await publicClient.readContract({
+               address: tokenAddress,
+               abi: erc20Abi,
+               functionName: 'allowance',
+               args: [walletClient.account.address, approvalAddress as `0x${string}`]
+             }) as bigint
+
+             if (allowance < amount) {
+               setStep('Approving Token...')
+               setStatus('approving')
+               const approveHash = await walletClient.writeContract({
+                 address: tokenAddress,
+                 abi: erc20Abi,
+                 functionName: 'approve',
+                 args: [approvalAddress as `0x${string}`, amount]
+               })
+               
+               setStep('Waiting for Approval...')
+               await publicClient.waitForTransactionReceipt({ hash: approveHash })
+             }
+           } catch (e) {
+             console.warn('Approval check failed, proceeding to tx (might fail):', e)
+           }
+        }
         
         setStatus('executing')
         setStep('Sending Transaction...')

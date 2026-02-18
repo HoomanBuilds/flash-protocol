@@ -1,7 +1,7 @@
 import { providers } from './providers'
 import { QuoteRequest, QuoteResponse } from '@/types/provider'
 
-const PROVIDER_TIMEOUT_MS = 10000 
+const PROVIDER_TIMEOUT_MS = 20000 
 const QUOTE_VALIDITY_MS = 60000
 
 // Provider reliability scores
@@ -23,6 +23,7 @@ export interface AggregatedQuoteResponse {
     succeeded: string[]
     failed: string[]
     timedOut: string[]
+    errors?: Record<string, string>
   }
 }
 
@@ -109,6 +110,7 @@ export const QuoteAggregator = {
       succeeded: [] as string[],
       failed: [] as string[],
       timedOut: [] as string[],
+      errors: {} as Record<string, string>,
     }
 
     console.log('=== QUOTE AGGREGATOR START ===')
@@ -136,6 +138,9 @@ export const QuoteAggregator = {
 
       if (result.error || !result.result) {
         providerStats.failed.push(provider.name)
+        if (result.error) {
+           providerStats.errors[provider.name] = result.error
+        }
         console.error(`[${provider.name}] ❌ FAILED after ${elapsed}ms:`, result.error)
         return []
       }

@@ -12,6 +12,7 @@ import { CHAINS } from '@/lib/chains'
 import { getTokensByChain, getUSDCAddress } from '@/lib/tokens'
 import { QuoteResponse } from '@/types/provider'
 import { useTransactionExecutor } from '@/hooks/useTransactionExecutor'
+import { useToast } from '@/components/ui/use-toast'
 
 const PAYER_CHAINS = CHAINS.filter(c => c.type === 'evm' && !c.isTestnet)
 const PRICE_REFRESH_INTERVAL = 30_000
@@ -37,6 +38,7 @@ interface PaymentInterfaceProps {
 export default function PaymentInterface({ link, onSuccess }: PaymentInterfaceProps) {
   const { address, isConnected, chain: connectedChain } = useAccount()
   const { switchChain } = useSwitchChain()
+  const { toast } = useToast()
   
   // Custom Executor Hook
   const { execute, status: executorStatus, step: executorStep, error: executorError, txHash } = useTransactionExecutor()
@@ -196,6 +198,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
           fromAmount: amountInWei,
           fromAddress: address,
           toAddress: link.recipient_address,
+          fromTokenDecimals: fromToken.decimals,
         }),
       })
 
@@ -205,7 +208,11 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
         const best = data.bestQuote || data.routes[0]
         setSelectedQuote(best)
       } else {
-        throw new Error(data.error || 'No routes found')
+        // Check for specific provider errors
+        const providerErrors = data.providerStats?.errors || {}
+        const errorMsg = Object.values(providerErrors).find((e: any) => e.includes('Insufficient balance'))
+        
+        throw new Error(errorMsg || data.error || 'No routes found')
       }
     } catch (e) {
       console.error(e)
@@ -215,6 +222,18 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    const insufficientBalanceQuote = quotes.find(q => q.metadata?.insufficientBalance)
+    if (insufficientBalanceQuote) {
+        toast({
+            variant: "destructive",
+            title: "Insufficient Balance",
+            description: `You don't have enough balance for the ${insufficientBalanceQuote.provider} route.`
+        })
+    }
+  }, [quotes])
+
 
   const handleExecute = async () => {
     if (!selectedQuote || !address) return

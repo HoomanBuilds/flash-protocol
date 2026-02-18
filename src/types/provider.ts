@@ -16,6 +16,7 @@ export interface QuoteRequest {
   fromAddress: string 
   toAddress?: string  
   slippage?: number 
+  fromTokenDecimals?: number // Required for Rubic
 }
 
 export interface FeeCost {
