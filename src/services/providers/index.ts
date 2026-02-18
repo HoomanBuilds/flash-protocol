@@ -18,6 +18,6 @@ export const providers = [
   rangoProvider,
   // rubicProvider,
   // symbiosisProvider,
-  // nearIntentsProvider,
+  nearIntentsProvider,
   // cctpProvider,
 ]

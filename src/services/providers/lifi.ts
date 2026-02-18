@@ -3,7 +3,7 @@ import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, 
 
 // Initialize LI.FI SDK
 createConfig({
-  integrator: process.env.NEXT_PUBLIC_LIFI_INTEGRATOR_ID || 'crypto-payment-gateway',
+  integrator: process.env.NEXT_PUBLIC_LIFI_INTEGRATOR_ID || 'flash-protocol',
 })
 
 export class LifiProvider implements IProvider {

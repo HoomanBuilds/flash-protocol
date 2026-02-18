@@ -108,8 +108,11 @@ export class NearIntentsProvider implements IProvider {
       // Create deadline 1 hour from now in ISO format
       const deadline = new Date(Date.now() + 3600000).toISOString()
 
+      const referral = process.env.NEXT_PUBLIC_NEAR_INTENTS_REFERRAL_ID || 'flash-protocol'
+      const nearReferrer = process.env.NEAR_REFERRER_ACCOUNT
+
       const quoteRequest: DefuseQuoteRequest = {
-        dry: true,
+        dry: false,
         swapType: DefuseQuoteRequest.swapType.EXACT_INPUT,
         slippageTolerance: Math.round((request.slippage || 0.5) * 100), // Basis points (100 = 1%)
         originAsset,
@@ -121,6 +124,13 @@ export class NearIntentsProvider implements IProvider {
         recipient: request.toAddress || request.fromAddress,
         recipientType: DefuseQuoteRequest.recipientType.DESTINATION_CHAIN,
         deadline,
+        referral,
+        ...(nearReferrer && {
+          appFees: [{
+            recipient: nearReferrer,
+            fee: 50 // 0.5% (50 basis points)
+          }]
+        })
       }
 
       console.log('NEAR Intents: Full request payload:', JSON.stringify(quoteRequest, null, 2))
@@ -217,32 +227,39 @@ export class NearIntentsProvider implements IProvider {
   }
 
   async getStatus(request: StatusRequest): Promise<StatusResponse> {
-    try {
-      const response = await OneClickService.getExecutionStatus(request.txHash)
+    const { depositAddress } = request
 
-      if (!response) {
-        return { status: 'NOT_FOUND' }
+    if (!depositAddress) {
+      console.error('NearIntentsProvider: depositAddress missing for status check')
+      return {
+        status: 'NOT_FOUND',
+        subStatus: 'MISSING_DEPOSIT_ADDRESS'
       }
+    }
 
-      let finalStatus: TransactionStatus = 'PENDING'
+    try {
+      const response = await OneClickService.getExecutionStatus(depositAddress)
       
-      const status = (response.status || '').toLowerCase()
-      if (['completed', 'success', 'done', 'settled'].includes(status)) {
+      let finalStatus: TransactionStatus = 'PENDING'
+      const status = (response.status || '').toUpperCase()
+      
+      if (status === 'SUCCESS' || status === 'COMPLETED' || status === 'DONE') {
         finalStatus = 'DONE'
-      } else if (['failed', 'refunded', 'expired', 'error'].includes(status)) {
+      } else if (status === 'FAILED' || status === 'REFUNDED' || status === 'EXPIRED') {
         finalStatus = 'FAILED'
-      } else if (['pending', 'processing', 'waiting', 'in_progress'].includes(status)) {
-        finalStatus = 'PENDING'
       }
 
       return {
         status: finalStatus,
         subStatus: response.status,
-        txLink: undefined
+        txLink: undefined 
       }
     } catch (error) {
-      console.error('NEAR Intents Status Error:', error)
-      return { status: 'NOT_FOUND' }
+      console.error('NearIntentsProvider status check error:', error)
+      return {
+        status: 'PENDING',
+        subStatus: 'ERROR'
+      }
     }
   }
 }

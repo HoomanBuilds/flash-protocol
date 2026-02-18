@@ -4,10 +4,19 @@ import { getWalletClient } from '@wagmi/core'
 import { executeRoute, Route, createConfig, EVM } from '@lifi/sdk'
 import { RangoClient } from 'rango-sdk-basic'
 import { QuoteResponse } from '@/types/provider'
+import { OneClickService, OpenAPI } from '@defuse-protocol/one-click-sdk-typescript'
+import { parseAbi } from 'viem'
+
+OpenAPI.BASE = 'https://1click.chaindefuser.com'
 
 // Initialize Rango Client
 const RANGO_API_KEY = process.env.NEXT_PUBLIC_RANGO_API_KEY || 'c6381a79-2817-4602-83bf-6a641a409e32' 
 const rangoClient = new RangoClient(RANGO_API_KEY)
+
+const erc20Abi = parseAbi([
+  'function transfer(address to, uint256 amount) returns (bool)',
+  'function approve(address spender, uint256 amount) returns (bool)',
+])
 
 // Define Rango Enums locally to avoid import issues
 enum TransactionStatus {
@@ -84,6 +93,64 @@ export function useTransactionExecutor() {
     } catch (e: any) {
       console.error('LI.FI Execution Error:', e)
       setError(e.message || 'LI.FI Execution Failed')
+      setStatus('failed')
+      throw e
+    }
+  }, [walletClient])
+
+  const executeNearIntents = useCallback(async (quote: QuoteResponse) => {
+    if (!walletClient) throw new Error('Wallet not connected')
+    
+    setStatus('executing')
+    setStep('Executing Near Intents Deposit...')
+
+    try {
+      // 1. Extract Deposit Address
+      const depositAddress = quote.transactionRequest?.depositAddress || quote.metadata?.depositAddress
+      if (!depositAddress) throw new Error('Deposit address missing for Near Intents')
+
+      const amount = BigInt(quote.fromAmount)
+      const fromToken = quote.routes[0]?.action.fromToken
+
+      let hash: `0x${string}`
+
+      // 2. Send Transaction (Native vs ERC20)
+      if (fromToken.address === '0x0000000000000000000000000000000000000000') {
+         // Native Transfer
+         hash = await walletClient.sendTransaction({
+            to: depositAddress as `0x${string}`,
+            value: amount
+         })
+      } else {
+         // ERC20 Transfer
+         hash = await walletClient.writeContract({
+            address: fromToken.address as `0x${string}`,
+            abi: erc20Abi,
+            functionName: 'transfer',
+            args: [depositAddress as `0x${string}`, amount]
+         })
+      }
+
+      setTxHash(hash)
+      setStep('Submitting Transaction Hash...')
+
+      // 3. Submit Hash to Solver Network
+      try {
+        await OneClickService.submitDepositTx({
+            txHash: hash,
+            depositAddress
+        })
+      } catch (e) {
+        console.warn('Failed to submit tx hash to Near Intents:', e)
+        // Non-blocking error, solver will find it eventually
+      }
+
+      setStatus('completed')
+      return hash
+
+    } catch (e: any) {
+      console.error('Near Intents Execution Error:', e)
+      setError(e.message || 'Near Intents Execution Failed')
       setStatus('failed')
       throw e
     }
@@ -196,6 +263,9 @@ export function useTransactionExecutor() {
       else if (quote.provider === 'rango') {
         return await executeRango(quote, recipientAddress)
       }
+      else if (quote.provider === 'near-intents') {
+        return await executeNearIntents(quote)
+      }
       else {
         // Atomic Providers (Symbiosis, Rubic)
         if (!quote.transactionRequest) throw new Error('No transaction request found')
@@ -220,7 +290,7 @@ export function useTransactionExecutor() {
        setStatus('failed')
        throw e
     }
-  }, [executeLifi, executeRango, walletClient])
+  }, [executeLifi, executeRango, executeNearIntents, walletClient])
 
   return { execute, status, error, txHash, step }
 }

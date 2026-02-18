@@ -82,6 +82,7 @@ export interface StatusRequest {
   toChainId: ChainId
   bridge?: string 
   requestId?: string 
+  depositAddress?: string
 }
 
 export type TransactionStatus = 'PENDING' | 'DONE' | 'FAILED' | 'NOT_FOUND'

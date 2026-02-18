@@ -18,7 +18,7 @@ exception
 end $$;
 
 do $$ begin
-    create type provider_type as enum ('lifi', 'rango', 'near_intents', 'rubic', 'symbiosis');
+    create type provider_type as enum ('lifi', 'rango', 'near-intents', 'rubic', 'symbiosis', 'cctp');
 exception
     when duplicate_object then null;
 end $$;
