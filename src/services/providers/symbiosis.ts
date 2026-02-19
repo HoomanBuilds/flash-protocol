@@ -1,26 +1,22 @@
 import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus } from '@/types/provider'
+import { SYMBIOSIS_GATEWAY_MAP, SYMBIOSIS_CHAIN_IDS } from './symbiosis-config'
 
 const SYMBIOSIS_API_BASE = 'https://api.symbiosis.finance/crosschain/v1'
-
-const CHAIN_MAP: Record<number, number> = {
-  1: 1,          // Ethereum
-  137: 137,      // Polygon
-  42161: 42161,  // Arbitrum
-  10: 10,        // Optimism
-  8453: 8453,    // Base
-  56: 56,        // BSC
-  43114: 43114,  // Avalanche
-}
 
 export class SymbiosisProvider implements IProvider {
   name = 'symbiosis'
 
   async getQuote(request: QuoteRequest): Promise<QuoteResponse[]> {
     try {
-      const fromChainId = CHAIN_MAP[request.fromChain]
-      const toChainId = CHAIN_MAP[request.toChain]
+      const fromChainId = request.fromChain
+      const toChainId = request.toChain
       
-      if (!fromChainId || !toChainId) return []
+      const isFromSupported = SYMBIOSIS_CHAIN_IDS.includes(fromChainId)
+      const isToSupported = SYMBIOSIS_CHAIN_IDS.includes(toChainId)
+
+      if (!isFromSupported || !isToSupported) {
+        return []
+      }
 
       const response = await fetch(`${SYMBIOSIS_API_BASE}/swap`, {
         method: 'POST',
@@ -30,7 +26,7 @@ export class SymbiosisProvider implements IProvider {
             chainId: fromChainId,
             address: request.fromToken,
             amount: request.fromAmount,
-            decimals: 18
+            decimals: 18 
           },
           tokenOut: {
             chainId: toChainId,
@@ -52,19 +48,21 @@ export class SymbiosisProvider implements IProvider {
       const data = await response.json()
       
       console.log('=== SYMBIOSIS RAW RESPONSE ===')
+      console.log('id:', data.id)
       console.log('tokenAmountOut:', JSON.stringify(data.tokenAmountOut, null, 2))
-      console.log('tokenAmountOutMin:', JSON.stringify(data.tokenAmountOutMin, null, 2))
+      console.log('priceImpact:', data.priceImpact)
       console.log('fee:', JSON.stringify(data.fee, null, 2))
-      console.log('============================')
-      
+      console.log('estimatedTime:', data.estimatedTime)
+      console.log('==============================')
+
       if (!data.tokenAmountOut) return []
 
       // Symbiosis embeds fees in the output
       const inputAmountRaw = request.fromAmount
       const outputAmountRaw = data.tokenAmountOut.amount
       
-      const inputDecimals = data.tokenAmountIn?.decimals || 6
-      const outputDecimals = data.tokenAmountOut?.decimals || 6
+      const inputDecimals = data.tokenAmountIn?.decimals || 18
+      const outputDecimals = data.tokenAmountOut?.decimals || 18
       
       const inputHuman = parseFloat(inputAmountRaw) / Math.pow(10, inputDecimals)
       const outputHuman = parseFloat(outputAmountRaw) / Math.pow(10, outputDecimals)
@@ -75,11 +73,7 @@ export class SymbiosisProvider implements IProvider {
       const bridgeFeeUSD = parseFloat(apiFeeUSD) > 0 ? apiFeeUSD : impliedFeeUSD
       const priceImpact = data.priceImpact?.toString()
 
-      console.log('=== SYMBIOSIS FEE CALCULATION ===')
-      console.log('Input (human):', inputHuman, 'Output (human):', outputHuman)
-      console.log('Implied fee:', impliedFeeUSD, 'API fee:', apiFeeUSD)
-      console.log('Using fee:', bridgeFeeUSD)
-      console.log('================================')
+      const approvalAddress = SYMBIOSIS_GATEWAY_MAP[fromChainId]
 
       return [{
         provider: 'symbiosis',
@@ -89,7 +83,7 @@ export class SymbiosisProvider implements IProvider {
         toAmountMin: data.tokenAmountOutMin?.amount || data.tokenAmountOut.amount,
         estimatedGas: bridgeFeeUSD,
         estimatedDuration: data.estimatedTime || 65,
-        transactionRequest: data.tx,
+        transactionRequest: data.tx, 
         fees: {
           totalFeeUSD: bridgeFeeUSD,
           bridgeFee: bridgeFeeUSD,
@@ -118,6 +112,7 @@ export class SymbiosisProvider implements IProvider {
           },
           estimate: {
             executionDuration: data.estimatedTime,
+            approvalAddress: approvalAddress,
             feeCosts: [
               ...(parseFloat(bridgeFeeUSD) > 0 ? [{
                 type: 'BRIDGE' as const,

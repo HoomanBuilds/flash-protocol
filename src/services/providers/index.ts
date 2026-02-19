@@ -17,7 +17,7 @@ export const providers = [
   lifiProvider,
   rangoProvider,
   rubicProvider,
-  // symbiosisProvider,
+  symbiosisProvider,
   nearIntentsProvider,
   // cctpProvider,
 ]
