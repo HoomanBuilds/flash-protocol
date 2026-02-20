@@ -50,14 +50,14 @@ export default function DocsTransactionsPage() {
         <h3 className="text-sm font-bold font-mono uppercase tracking-widest mt-6 mb-2">Request Example</h3>
         <MultiLangCodeBlock 
           snippets={{
-            bash: `curl -X GET "https://flashprotocol.com/api/v1/transactions?limit=10&status=completed" \\
-  -H "Authorization: Bearer pg_live_..."`,
+            bash: `curl -X GET "https://flash-protocol.vercel.app/api/v1/transactions?limit=10&status=completed" \\
+  -H "Authorization: Bearer pg_live_8cd80b..."`,
             js: `const params = new URLSearchParams({
   limit: '10',
   status: 'completed'
 });
 
-const response = await fetch(\`https://flashprotocol.com/api/v1/transactions?\${params}\`, {
+const response = await fetch(\`https://flash-protocol.vercel.app/api/v1/transactions?\${params}\`, {
   headers: {
     'Authorization': 'Bearer pg_live_...'
   }
@@ -104,11 +104,11 @@ const { data, count } = await response.json();`
 
         <MultiLangCodeBlock 
           snippets={{
-            bash: `curl -X GET https://flashprotocol.com/api/v1/transactions/tx_987654321 \\
-  -H "Authorization: Bearer pg_live_..."`,
+            bash: `curl -X GET https://flash-protocol.vercel.app/api/v1/transactions/tx_987654321 \\
+  -H "Authorization: Bearer pg_live_8cd80b..."`,
             js: `const txId = 'tx_987654321';
 
-const response = await fetch(\`https://flashprotocol.com/api/v1/transactions/\${txId}\`, {
+const response = await fetch(\`https://flash-protocol.vercel.app/api/v1/transactions/\${txId}\`, {
   headers: { 'Authorization': 'Bearer pg_live_...' }
 });
 

@@ -29,7 +29,7 @@ export default function DocsIntroPage() {
 
       <DocNote type="info">
         <p className="font-semibold mb-1">Base URL</p>
-        All API requests should be made to: <code className="bg-muted px-1.5 py-0.5 text-xs font-mono mx-1">https://flashprotocol.com/api/v1</code>
+        All API requests should be made to: <code className="bg-muted px-1.5 py-0.5 text-xs font-mono mx-1">https://flash-protocol.vercel.app/api/v1</code>
       </DocNote>
     </div>
   )

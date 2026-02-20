@@ -91,7 +91,7 @@ export default function DocsPaymentLinksPage() {
         <h3 className="text-sm font-bold font-mono uppercase tracking-widest mt-6 mb-2">Request Example</h3>
         <MultiLangCodeBlock 
           snippets={{
-            bash: `curl -X POST https://flashprotocol.com/api/v1/payment-links \\
+            bash: `curl -X POST https://flash-protocol.vercel.app/api/v1/payment-links \\
   -H "Authorization: Bearer pg_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -101,7 +101,7 @@ export default function DocsPaymentLinksPage() {
     "success_url": "https://myapp.com/success",
     "metadata": { "order_id": "ORD-123" }
   }'`,
-            js: `const response = await fetch('https://flashprotocol.com/api/v1/payment-links', {
+            js: `const response = await fetch('https://flash-protocol.vercel.app/api/v1/payment-links', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer pg_live_...',
@@ -125,7 +125,7 @@ const paymentLink = await response.json();
           title="201 Created"
           code={`{
   "id": "pl_abc123456",
-  "url": "https://flashprotocol.com/pay/pl_abc123456",
+  "url": "https://flash-protocol.vercel.app/pay/pl_abc123456",
   "amount": 49.99,
   "currency": "USD",
   "status": "active",
@@ -153,9 +153,9 @@ const paymentLink = await response.json();
 
         <MultiLangCodeBlock 
           snippets={{
-            bash: `curl -X GET "https://flashprotocol.com/api/v1/payment-links?limit=10" \\
+            bash: `curl -X GET "https://flash-protocol.vercel.app/api/v1/payment-links?limit=10" \\
   -H "Authorization: Bearer pg_live_..."`,
-            js: `const response = await fetch('https://flashprotocol.com/api/v1/payment-links?limit=10', {
+            js: `const response = await fetch('https://flash-protocol.vercel.app/api/v1/payment-links?limit=10', {
   headers: { 'Authorization': 'Bearer pg_live_...' }
 });
 
@@ -176,9 +176,9 @@ const { data, count } = await response.json();`
 
         <MultiLangCodeBlock 
           snippets={{
-            bash: `curl -X GET https://flashprotocol.com/api/v1/payment-links/pl_abc123 \\
+            bash: `curl -X GET https://flash-protocol.vercel.app/api/v1/payment-links/pl_abc123 \\
   -H "Authorization: Bearer pg_live_..."`,
-            js: `const response = await fetch('https://flashprotocol.com/api/v1/payment-links/pl_abc123', {
+            js: `const response = await fetch('https://flash-protocol.vercel.app/api/v1/payment-links/pl_abc123', {
   headers: { 'Authorization': 'Bearer pg_live_...' }
 });
 
@@ -191,7 +191,7 @@ console.log(link.status, link.transactions);`
           title="200 OK"
           code={`{
   "id": "pl_abc123456",
-  "url": "https://flashprotocol.com/pay/pl_abc123456",
+  "url": "https://flash-protocol.vercel.app/pay/pl_abc123456",
   "amount": 49.99,
   "currency": "USD",
   "status": "active",
@@ -231,11 +231,11 @@ console.log(link.status, link.transactions);`
 
         <MultiLangCodeBlock 
           snippets={{
-            bash: `curl -X PATCH https://flashprotocol.com/api/v1/payment-links/pl_abc123 \\
+            bash: `curl -X PATCH https://flash-protocol.vercel.app/api/v1/payment-links/pl_abc123 \\
   -H "Authorization: Bearer pg_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{ "status": "paused" }'`,
-            js: `const response = await fetch('https://flashprotocol.com/api/v1/payment-links/pl_abc123', {
+            js: `const response = await fetch('https://flash-protocol.vercel.app/api/v1/payment-links/pl_abc123', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Bearer pg_live_...',

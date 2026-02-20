@@ -79,7 +79,7 @@ export default function DocsAuthPage() {
       <DocSection title="Example Request">
         <MultiLangCodeBlock 
           snippets={{
-            bash: `curl -X POST https://flashprotocol.com/api/v1/payment-links \\
+            bash: `curl -X POST https://flash-protocol.vercel.app/api/v1/payment-links \\
   -H "Authorization: Bearer pg_live_8cd80b..." \\
   -H "Content-Type: application/json"
   -d '{
@@ -88,7 +88,7 @@ export default function DocsAuthPage() {
     "title": "Premium Subscription",
     "success_url": "https://myapp.com/success"
   }'`,
-            js: `const response = await fetch('https://flashprotocol.com/api/v1/payment-links', {
+            js: `const response = await fetch('https://flash-protocol.vercel.app/api/v1/payment-links', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer pg_live_8cd80b...',

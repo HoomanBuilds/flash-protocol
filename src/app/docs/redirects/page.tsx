@@ -59,7 +59,7 @@ export default function DocsRedirectsPage() {
 const paymentId = req.query.payment_id;
 
 // 2. Call API to verify
-const response = await fetch(\`https://flashprotocol.com/api/v1/transactions?payment_link_id=\${paymentId}\`, {
+const response = await fetch(\`https://flash-protocol.vercel.app/api/v1/transactions?payment_link_id=\${paymentId}\`, {
   headers: { 'Authorization': 'Bearer ...' }
 });
 
