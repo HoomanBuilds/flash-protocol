@@ -47,5 +47,5 @@ next-env.d.ts
 
 # agent & dev tools
 .agent/
-/docs/
+/documentation/
 /inspiration/
