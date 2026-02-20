@@ -6,6 +6,8 @@ import { RangoClient } from 'rango-sdk-basic'
 import { QuoteResponse } from '@/types/provider'
 import { OneClickService, OpenAPI } from '@defuse-protocol/one-click-sdk-typescript'
 import { parseAbi } from 'viem'
+import { useCCTPBridge } from '@/hooks/cctp/useCCTPBridge'
+import { useEvmAdapter } from '@/hooks/cctp/useEvmAdapter'
 
 OpenAPI.BASE = 'https://1click.chaindefuser.com'
 
@@ -48,6 +50,10 @@ export function useTransactionExecutor() {
   const [error, setError] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
   const [step, setStep] = useState<string>('')
+
+  // CCTP Hooks
+  const { bridge: executeCCTPBridge } = useCCTPBridge()
+  const { evmAdapter } = useEvmAdapter()
 
   // Configure LI.FI SDK when wallet is available
   useEffect(() => {
@@ -251,6 +257,62 @@ export function useTransactionExecutor() {
     }
   }, [walletClient, publicClient])
 
+  const executeCCTP = useCallback(async (quote: QuoteResponse, recipientAddress?: string) => {
+    if (!walletClient || !evmAdapter) throw new Error('Wallet or Adapter not ready')
+
+    try {
+      const sourceChain = quote.metadata?.sourceChain as string
+      const destChain = quote.metadata?.destChain as string
+      const amount = (BigInt(quote.fromAmount) / BigInt(1e12)).toString() // Convert Wei (18) 
+      
+      const fromDecimals = quote.routes[0]?.action.fromToken.decimals || 6
+      const amountHuman = (Number(quote.fromAmount) / Math.pow(10, fromDecimals)).toString()
+
+      setStatus('approving')
+      setStep('Initializing CCTP Transfer...')
+
+      const result = await executeCCTPBridge({
+        fromChain: sourceChain,
+        toChain: destChain,
+        amount: amountHuman, 
+        recipientAddress: recipientAddress || walletClient.account.address,
+        fromAdapter: evmAdapter,
+        toAdapter: evmAdapter
+      }, {
+        onEvent: (evt: any) => {
+           console.log('CCTP Event:', evt)
+           
+           if (evt.type === 'APPROVAL_TX_SENT') setStep('Approving USDC...')
+           if (evt.type === 'BURN_TX_SENT') {
+             setStatus('executing')
+             setStep('Burning USDC...')
+           } 
+           if (evt.step === 'burn' && evt.status === 'complete') {
+             setStep('Waiting for Circle Attestation (~20 mins)...')
+           }
+           if (evt.step === 'mint' && evt.status === 'progress') {
+             setStep('Minting on Destination...')
+           }
+        }
+      })
+      
+      if (!result?.data) throw new Error('CCTP Bridge Failed')
+      
+      const burnStep = result.data.steps.find(s => s.name === 'burn')
+      const tx = burnStep?.txHash
+      
+      if (tx) setTxHash(tx)
+      setStatus('completed')
+      return tx || '0x'
+
+    } catch (e: any) {
+      console.error('CCTP Execution Error:', e)
+      setError(e.message || 'CCTP Failed')
+      setStatus('failed')
+      throw e
+    }
+  }, [walletClient, evmAdapter, executeCCTPBridge])
+
   // Main Entry Point
   const execute = useCallback(async (quote: QuoteResponse, recipientAddress?: string) => {
     setError(null)
@@ -266,6 +328,9 @@ export function useTransactionExecutor() {
       }
       else if (quote.provider === 'near-intents') {
         return await executeNearIntents(quote)
+      }
+      else if (quote.provider === 'cctp') {
+        return await executeCCTP(quote, recipientAddress)
       }
       else {
         // Atomic Providers (Symbiosis, Rubic)

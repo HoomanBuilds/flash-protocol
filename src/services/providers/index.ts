@@ -19,5 +19,5 @@ export const providers = [
   rubicProvider,
   symbiosisProvider,
   nearIntentsProvider,
-  // cctpProvider,
+  cctpProvider,
 ]

@@ -190,10 +190,13 @@ export class CCTPProvider implements IProvider {
 
       // CCTP message states
       switch (message.status) {
-        case 'attestation_complete':
         case 'complete':
           status = 'DONE'
           subStatus = 'Transfer complete'
+          break
+        case 'attestation_complete':
+          status = 'PENDING'
+          subStatus = 'Attestation complete, ready to mint'
           break
         case 'attestation_pending':
           status = 'PENDING'
