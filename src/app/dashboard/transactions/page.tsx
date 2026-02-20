@@ -173,11 +173,18 @@ export default function TransactionsPage() {
                       #{tx.payment_link_id?.slice(0, 8)}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <Link href={`/dashboard/transactions/${tx.id}`}>
-                        <Button variant="ghost" size="sm" className="font-mono text-xs">
-                          DETAILS <ArrowUpRight className="ml-1 h-3 w-3" />
-                        </Button>
-                      </Link>
+                      <div className="flex justify-end gap-2">
+                        <Link href={`/pay/${tx.payment_link_id}?txId=${tx.id}`} target="_blank">
+                          <Button variant="outline" size="sm" className="font-mono text-xs h-8">
+                             RECEIPT
+                          </Button>
+                        </Link>
+                        <Link href={`/dashboard/transactions/${tx.id}`}>
+                          <Button variant="ghost" size="sm" className="font-mono text-xs h-8">
+                            DETAILS <ArrowUpRight className="ml-1 h-3 w-3" />
+                          </Button>
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))

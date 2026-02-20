@@ -32,7 +32,7 @@ interface PaymentInterfaceProps {
     success_url?: string | null
     cancel_url?: string | null
   }
-  onSuccess?: (txHash: string) => void
+  onSuccess?: (txHash: string, transactionId: string) => void
 }
 
 export default function PaymentInterface({ link, onSuccess }: PaymentInterfaceProps) {
@@ -281,7 +281,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
       }
 
       if (onSuccess) {
-        onSuccess(hash)
+        onSuccess(hash, transactionId)
       }
 
     } catch (e) {

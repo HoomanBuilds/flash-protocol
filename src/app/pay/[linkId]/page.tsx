@@ -6,6 +6,7 @@ import { useAccount } from 'wagmi'
 import { Loader2, AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import PaymentInterface from '@/components/PaymentInterface'
+import { ReceiptStatus } from '@/components/receipt/ReceiptStatus'
 
 interface PaymentLinkData {
   id: string
@@ -22,7 +23,13 @@ interface PaymentLinkData {
   cancel_url?: string | null
 }
 
-export default function PayPage({ params: paramsPromise }: { params: Promise<{ linkId: string }> }) {
+export default function PayPage({ 
+  params: paramsPromise,
+  searchParams: searchParamsPromise
+}: { 
+  params: Promise<{ linkId: string }>
+  searchParams: Promise<{ txId?: string }>
+}) {
   const { address, isConnected } = useAccount()
   const [link, setLink] = useState<PaymentLinkData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -30,10 +37,16 @@ export default function PayPage({ params: paramsPromise }: { params: Promise<{ l
   const [linkId, setLinkId] = useState<string>('')
   const [amount, setAmount] = useState<string>('')
   const [successMessage, setSuccessMessage] = useState('')
+  
+  // Receipt State
+  const [txId, setTxId] = useState<string | null>(null)
 
   useEffect(() => {
     paramsPromise.then(p => setLinkId(p.linkId))
-  }, [paramsPromise])
+    searchParamsPromise.then(p => {
+      if (p.txId) setTxId(p.txId)
+    })
+  }, [paramsPromise, searchParamsPromise])
 
   useEffect(() => {
     async function fetchLink() {
@@ -56,21 +69,11 @@ export default function PayPage({ params: paramsPromise }: { params: Promise<{ l
     if (linkId) fetchLink()
   }, [linkId])
 
-  const handlePaymentComplete = (txHash: string) => {
-    setSuccessMessage('Payment successful! Redirecting...')
-    
-    // Wait 3 seconds then redirect
-    setTimeout(() => {
-      if (link?.success_url) {
-        // Redirect to merchant's success URL with payment details
-        const redirectUrl = new URL(link.success_url)
-        redirectUrl.searchParams.set('payment_id', link.id)
-        redirectUrl.searchParams.set('tx_hash', txHash)
-        redirectUrl.searchParams.set('status', 'completed')
-        
-        window.location.href = redirectUrl.toString()
-      }
-    }, 3000)
+  const handlePaymentComplete = (txHash: string, transactionId: string) => {
+    // Update URL without full reload to show receipt
+    const newUrl = `${window.location.pathname}?txId=${transactionId}`
+    window.history.pushState({ path: newUrl }, '', newUrl)
+    setTxId(transactionId)
   }
 
   const handleCancel = () => {
@@ -113,6 +116,22 @@ export default function PayPage({ params: paramsPromise }: { params: Promise<{ l
        </div>
     </div>
   )
+
+  if (txId) {
+    return (
+      <div className="min-h-screen bg-background text-foreground relative overflow-hidden font-mono flex flex-col">
+         <header className="px-6 py-4 border-b border-border flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-foreground rounded-full" />
+                  <span className="font-bold tracking-tight">RECEIPT_VIEWER</span>
+              </div>
+         </header>
+         <main className="flex-1 flex items-center justify-center p-4">
+              <ReceiptStatus transactionId={txId} />
+         </main>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden font-mono flex flex-col">
