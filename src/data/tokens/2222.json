@@ -1,0 +1,11 @@
+[
+  {
+    "address": "0x919C1c267BC06a7039e03fcc2eF738525769109c",
+    "symbol": "USDt",
+    "name": "Tether USDt",
+    "decimals": 6,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
+    "isNative": false,
+    "chainKey": "2222"
+  }
+]

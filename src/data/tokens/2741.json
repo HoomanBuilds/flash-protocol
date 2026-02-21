@@ -1,0 +1,87 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "ETH",
+    "name": "ETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": true,
+    "chainKey": "2741"
+  },
+  {
+    "address": "0x84A71ccD554Cc1b02749b35d22F684CC8ec987e1",
+    "symbol": "USDC.e",
+    "name": "Bridged USD (Stargate)",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "2741"
+  },
+  {
+    "address": "0x0709F39376dEEe2A2dfC94A58EdEb2Eb9DF012bD",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "2741"
+  },
+  {
+    "address": "0xc7Ab797019156b543B7a3fBF5A99ECDab9eb4440",
+    "symbol": "frxETH",
+    "name": "Frax Ether",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "2741"
+  },
+  {
+    "address": "0xEa77c590Bb36c43ef7139cE649cFBCFD6163170d",
+    "symbol": "frxUSD",
+    "name": "Frax USD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "2741"
+  },
+  {
+    "address": "0x9A4c8cD493CF0Bf8e14BdA5890e3F03A1cDed719",
+    "symbol": "ORDER",
+    "name": "Orderly Network",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "2741"
+  },
+  {
+    "address": "0x9eBe3A824Ca958e4b3Da772D2065518F009CBa62",
+    "symbol": "PENGU",
+    "name": "Pudgy Penguins",
+    "decimals": 18,
+    "logoUrl": "https://assets.coingecko.com/coins/images/52622/standard/PUDGY_PENGUINS_PENGU_PFP.png?1733809110",
+    "isNative": false,
+    "chainKey": "2741"
+  },
+  {
+    "address": "0xFD78FD3667DeF2F1097Ed221ec503AE477155394",
+    "symbol": "sfrxETH",
+    "name": "Staked Frax Ether",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "2741"
+  },
+  {
+    "address": "0x9F87fbb47C33Cd0614E43500b9511018116F79eE",
+    "symbol": "sfrxUSD",
+    "name": "Staked Frax USD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "2741"
+  },
+  {
+    "address": "0x3439153EB7AF838Ad19d56E1571FBD09333C2809",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/lyra_token/logo_url/lyra/48bfb74adddd170e936578aec422836d.png",
+    "isNative": false,
+    "chainKey": "2741"
+  }
+]

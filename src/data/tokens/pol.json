@@ -1,0 +1,35 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "POL",
+    "name": "POL",
+    "decimals": 18,
+    "isNative": true,
+    "chainKey": "pol",
+    "providerIds": {
+      "nearIntents": "nep245:v2_1.omni.hot.tg:137_11111111111111111111"
+    }
+  },
+  {
+    "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+    "symbol": "USDC",
+    "name": "USDC",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "pol",
+    "providerIds": {
+      "nearIntents": "nep245:v2_1.omni.hot.tg:137_qiStmoQJDQPTebaPjgx5VBxZv6L"
+    }
+  },
+  {
+    "address": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "pol",
+    "providerIds": {
+      "nearIntents": "nep245:v2_1.omni.hot.tg:137_3hpYoaLtt8MP1Z2GH1U473DMRKgr"
+    }
+  }
+]

@@ -1,0 +1,3017 @@
+[
+  {
+    "key": "1",
+    "chainId": 1,
+    "name": "Ethereum",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/ethereum.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": true
+    },
+    "providerIds": {
+      "lifi": 1,
+      "rubic": "ETH",
+      "symbiosis": 1,
+      "cctp": 0,
+      "rango": "ETH",
+      "nearIntents": "eth"
+    }
+  },
+  {
+    "key": "9",
+    "chainId": 9,
+    "name": "Chain 9",
+    "type": "evm",
+    "symbol": "ETH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "symbiosis": 9
+    }
+  },
+  {
+    "key": "10",
+    "chainId": 10,
+    "name": "OP Mainnet",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/optimism.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": true
+    },
+    "providerIds": {
+      "lifi": 10,
+      "rubic": "OPTIMISM",
+      "symbiosis": 10,
+      "cctp": 2,
+      "rango": "OPTIMISM",
+      "nearIntents": "op"
+    }
+  },
+  {
+    "key": "14",
+    "chainId": 14,
+    "name": "Flare",
+    "type": "evm",
+    "symbol": "FLR",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/flare.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 14,
+      "rubic": "FLARE"
+    }
+  },
+  {
+    "key": "25",
+    "chainId": 25,
+    "name": "Cronos",
+    "type": "evm",
+    "symbol": "CRO",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/cronos.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 25,
+      "rubic": "CRONOS",
+      "symbiosis": 25
+    }
+  },
+  {
+    "key": "30",
+    "chainId": 30,
+    "name": "Rootstock",
+    "type": "evm",
+    "symbol": "RBTC",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/rootstock.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 30,
+      "rubic": "ROOTSTOCK",
+      "symbiosis": 30
+    }
+  },
+  {
+    "key": "40",
+    "chainId": 40,
+    "name": "TELOS",
+    "type": "evm",
+    "symbol": "TELOS",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "TELOS",
+      "symbiosis": 40
+    }
+  },
+  {
+    "key": "50",
+    "chainId": 50,
+    "name": "XDC",
+    "type": "evm",
+    "symbol": "XDC",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/xdc.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 50,
+      "rubic": "XDC"
+    }
+  },
+  {
+    "key": "56",
+    "chainId": 56,
+    "name": "BSC",
+    "type": "evm",
+    "symbol": "BNB",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/bsc.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 56,
+      "rubic": "BSC",
+      "symbiosis": 56,
+      "nearIntents": "bsc",
+      "rango": "BSC"
+    }
+  },
+  {
+    "key": "57",
+    "chainId": 57,
+    "name": "SYSCOIN",
+    "type": "evm",
+    "symbol": "SYSCOIN",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "SYSCOIN"
+    }
+  },
+  {
+    "key": "58",
+    "chainId": 58,
+    "name": "ONTOLOGY",
+    "type": "evm",
+    "symbol": "ONTOLOGY",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ONTOLOGY"
+    }
+  },
+  {
+    "key": "59",
+    "chainId": 59,
+    "name": "EOS",
+    "type": "evm",
+    "symbol": "EOS",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "EOS"
+    }
+  },
+  {
+    "key": "66",
+    "chainId": 66,
+    "name": "OKX",
+    "type": "evm",
+    "symbol": "OKX",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "OKX"
+    }
+  },
+  {
+    "key": "88",
+    "chainId": 88,
+    "name": "Viction",
+    "type": "evm",
+    "symbol": "VIC",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/viction.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 88
+    }
+  },
+  {
+    "key": "100",
+    "chainId": 100,
+    "name": "Gnosis",
+    "type": "evm",
+    "symbol": "xDAI",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/gnosis.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 100,
+      "symbiosis": 100,
+      "nearIntents": "gnosis"
+    }
+  },
+  {
+    "key": "106",
+    "chainId": 106,
+    "name": "VELAS",
+    "type": "evm",
+    "symbol": "VELAS",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "VELAS"
+    }
+  },
+  {
+    "key": "122",
+    "chainId": 122,
+    "name": "FUSE",
+    "type": "evm",
+    "symbol": "FUSE",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/fuse.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 122,
+      "rubic": "FUSE"
+    }
+  },
+  {
+    "key": "130",
+    "chainId": 130,
+    "name": "Unichain",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/unichain.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 130,
+      "rubic": "UNICHAIN",
+      "symbiosis": 130
+    }
+  },
+  {
+    "key": "137",
+    "chainId": 137,
+    "name": "Polygon",
+    "type": "evm",
+    "symbol": "POL",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/polygon.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": true
+    },
+    "providerIds": {
+      "lifi": 137,
+      "rubic": "POLYGON",
+      "symbiosis": 137,
+      "cctp": 7,
+      "rango": "POLYGON",
+      "nearIntents": "pol"
+    }
+  },
+  {
+    "key": "143",
+    "chainId": 143,
+    "name": "Monad",
+    "type": "evm",
+    "symbol": "MON",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/monad.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 143,
+      "rubic": "MONAD",
+      "symbiosis": 143
+    }
+  },
+  {
+    "key": "146",
+    "chainId": 146,
+    "name": "Sonic",
+    "type": "evm",
+    "symbol": "S",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/sonic.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": true
+    },
+    "providerIds": {
+      "lifi": 146,
+      "symbiosis": 146,
+      "cctp": 14
+    }
+  },
+  {
+    "key": "169",
+    "chainId": 169,
+    "name": "MANTA_PACIFIC",
+    "type": "evm",
+    "symbol": "MANTA_PACIFIC",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "MANTA_PACIFIC",
+      "symbiosis": 169
+    }
+  },
+  {
+    "key": "196",
+    "chainId": 196,
+    "name": "XLAYER",
+    "type": "evm",
+    "symbol": "XLAYER",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "XLAYER"
+    }
+  },
+  {
+    "key": "204",
+    "chainId": 204,
+    "name": "opBNB",
+    "type": "evm",
+    "symbol": "BNB",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/opbnb.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 204,
+      "symbiosis": 204
+    }
+  },
+  {
+    "key": "223",
+    "chainId": 223,
+    "name": "Chain 223",
+    "type": "evm",
+    "symbol": "ETH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "symbiosis": 223
+    }
+  },
+  {
+    "key": "232",
+    "chainId": 232,
+    "name": "Lens",
+    "type": "evm",
+    "symbol": "GHO",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/lens.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 232
+    }
+  },
+  {
+    "key": "250",
+    "chainId": 250,
+    "name": "FANTOM",
+    "type": "evm",
+    "symbol": "FANTOM",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "FANTOM"
+    }
+  },
+  {
+    "key": "252",
+    "chainId": 252,
+    "name": "Fraxtal",
+    "type": "evm",
+    "symbol": "FRAX",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/fraxtal.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 252,
+      "rubic": "FRAXTAL",
+      "symbiosis": 252
+    }
+  },
+  {
+    "key": "288",
+    "chainId": 288,
+    "name": "Boba",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/boba.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 288,
+      "rubic": "BOBA",
+      "symbiosis": 288
+    }
+  },
+  {
+    "key": "314",
+    "chainId": 314,
+    "name": "FILECOIN",
+    "type": "evm",
+    "symbol": "FILECOIN",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "FILECOIN"
+    }
+  },
+  {
+    "key": "324",
+    "chainId": 324,
+    "name": "zkSync",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/zksync.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 324,
+      "rubic": "ZK_SYNC",
+      "symbiosis": 324
+    }
+  },
+  {
+    "key": "361",
+    "chainId": 361,
+    "name": "THETA",
+    "type": "evm",
+    "symbol": "THETA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "THETA"
+    }
+  },
+  {
+    "key": "369",
+    "chainId": 369,
+    "name": "PULSECHAIN",
+    "type": "evm",
+    "symbol": "PULSECHAIN",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "PULSECHAIN"
+    }
+  },
+  {
+    "key": "388",
+    "chainId": 388,
+    "name": "Chain 388",
+    "type": "evm",
+    "symbol": "ETH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "symbiosis": 388
+    }
+  },
+  {
+    "key": "480",
+    "chainId": 480,
+    "name": "World Chain",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/world.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 480
+    }
+  },
+  {
+    "key": "592",
+    "chainId": 592,
+    "name": "ASTAR_EVM",
+    "type": "evm",
+    "symbol": "ASTAR_EVM",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ASTAR_EVM"
+    }
+  },
+  {
+    "key": "747",
+    "chainId": 747,
+    "name": "Flow",
+    "type": "evm",
+    "symbol": "FLOW",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/flow.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 747
+    }
+  },
+  {
+    "key": "988",
+    "chainId": 988,
+    "name": "Stable",
+    "type": "evm",
+    "symbol": "USDT0",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/stable.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 988
+    }
+  },
+  {
+    "key": "999",
+    "chainId": 999,
+    "name": "HyperEVM",
+    "type": "evm",
+    "symbol": "HYPE",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/hyperevm.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 999,
+      "rubic": "HYPER_EVM",
+      "symbiosis": 999
+    }
+  },
+  {
+    "key": "1088",
+    "chainId": 1088,
+    "name": "Metis",
+    "type": "evm",
+    "symbol": "METIS",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/metis.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1088,
+      "rubic": "METIS",
+      "symbiosis": 1088
+    }
+  },
+  {
+    "key": "1101",
+    "chainId": 1101,
+    "name": "POLYGON_ZKEVM",
+    "type": "evm",
+    "symbol": "POLYGON_ZKEVM",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "POLYGON_ZKEVM",
+      "symbiosis": 1101
+    }
+  },
+  {
+    "key": "1116",
+    "chainId": 1116,
+    "name": "CORE",
+    "type": "evm",
+    "symbol": "CORE",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "CORE",
+      "symbiosis": 1116
+    }
+  },
+  {
+    "key": "1135",
+    "chainId": 1135,
+    "name": "Lisk",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/lisk.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1135
+    }
+  },
+  {
+    "key": "1284",
+    "chainId": 1284,
+    "name": "Moonbeam",
+    "type": "evm",
+    "symbol": "GLMR",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/moonbeam.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1284,
+      "rubic": "MOONBEAM"
+    }
+  },
+  {
+    "key": "1285",
+    "chainId": 1285,
+    "name": "MOONRIVER",
+    "type": "evm",
+    "symbol": "MOONRIVER",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "MOONRIVER"
+    }
+  },
+  {
+    "key": "1329",
+    "chainId": 1329,
+    "name": "Sei",
+    "type": "evm",
+    "symbol": "SEI",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/sei.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1329,
+      "rubic": "SEI",
+      "symbiosis": 1329
+    }
+  },
+  {
+    "key": "1337",
+    "chainId": 1337,
+    "name": "Hyperliquid",
+    "type": "evm",
+    "symbol": "USDC",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/hyperliquid.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1337
+    }
+  },
+  {
+    "key": "1480",
+    "chainId": 1480,
+    "name": "Vana",
+    "type": "evm",
+    "symbol": "VAN",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/vana.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1480
+    }
+  },
+  {
+    "key": "1500",
+    "chainId": 1500,
+    "name": "STELLAR",
+    "type": "evm",
+    "symbol": "STELLAR",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "STELLAR"
+    }
+  },
+  {
+    "key": "1625",
+    "chainId": 1625,
+    "name": "Gravity",
+    "type": "evm",
+    "symbol": "G",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/gravity.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1625,
+      "rubic": "GRAVITY",
+      "symbiosis": 1625
+    }
+  },
+  {
+    "key": "1868",
+    "chainId": 1868,
+    "name": "Soneium",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/soneium.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1868,
+      "rubic": "SONEIUM",
+      "symbiosis": 1868
+    }
+  },
+  {
+    "key": "1923",
+    "chainId": 1923,
+    "name": "Swellchain",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/swell.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1923
+    }
+  },
+  {
+    "key": "2020",
+    "chainId": 2020,
+    "name": "Ronin",
+    "type": "evm",
+    "symbol": "RON",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/ronin.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 2020
+    }
+  },
+  {
+    "key": "2222",
+    "chainId": 2222,
+    "name": "KAVA",
+    "type": "evm",
+    "symbol": "KAVA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "KAVA",
+      "symbiosis": 2222
+    }
+  },
+  {
+    "key": "2345",
+    "chainId": 2345,
+    "name": "Chain 2345",
+    "type": "evm",
+    "symbol": "ETH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "symbiosis": 2345
+    }
+  },
+  {
+    "key": "2741",
+    "chainId": 2741,
+    "name": "Abstract",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/abstract.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 2741,
+      "symbiosis": 2741
+    }
+  },
+  {
+    "key": "2818",
+    "chainId": 2818,
+    "name": "MORPH",
+    "type": "evm",
+    "symbol": "MORPH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "MORPH",
+      "symbiosis": 2818
+    }
+  },
+  {
+    "key": "4114",
+    "chainId": 4114,
+    "name": "Chain 4114",
+    "type": "evm",
+    "symbol": "ETH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "symbiosis": 4114
+    }
+  },
+  {
+    "key": "4200",
+    "chainId": 4200,
+    "name": "MERLIN",
+    "type": "evm",
+    "symbol": "MERLIN",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "MERLIN",
+      "symbiosis": 4200
+    }
+  },
+  {
+    "key": "4326",
+    "chainId": 4326,
+    "name": "MegaETH",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/megaeth.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 4326,
+      "rubic": "MEGAETH"
+    }
+  },
+  {
+    "key": "4689",
+    "chainId": 4689,
+    "name": "IOTEX",
+    "type": "evm",
+    "symbol": "IOTEX",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "IOTEX"
+    }
+  },
+  {
+    "key": "5000",
+    "chainId": 5000,
+    "name": "Mantle",
+    "type": "evm",
+    "symbol": "MNT",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/mantle.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 5000,
+      "rubic": "MANTLE",
+      "symbiosis": 5000
+    }
+  },
+  {
+    "key": "5165",
+    "chainId": 5165,
+    "name": "BAHAMUT",
+    "type": "evm",
+    "symbol": "BAHAMUT",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "BAHAMUT",
+      "symbiosis": 5165
+    }
+  },
+  {
+    "key": "7000",
+    "chainId": 7000,
+    "name": "ZETACHAIN",
+    "type": "evm",
+    "symbol": "ZETACHAIN",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ZETACHAIN",
+      "symbiosis": 7000
+    }
+  },
+  {
+    "key": "7332",
+    "chainId": 7332,
+    "name": "HORIZEN_EON",
+    "type": "evm",
+    "symbol": "HORIZEN_EON",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "HORIZEN_EON"
+    }
+  },
+  {
+    "key": "8217",
+    "chainId": 8217,
+    "name": "Kaia",
+    "type": "evm",
+    "symbol": "KAIA",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/kaia.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 8217,
+      "rubic": "KLAYTN"
+    }
+  },
+  {
+    "key": "8453",
+    "chainId": 8453,
+    "name": "Base",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/base.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": true,
+      "cctp": true
+    },
+    "providerIds": {
+      "lifi": 8453,
+      "rubic": "BASE",
+      "symbiosis": 8453,
+      "nearIntents": "base",
+      "cctp": 6,
+      "rango": "BASE"
+    }
+  },
+  {
+    "key": "9745",
+    "chainId": 9745,
+    "name": "Plasma",
+    "type": "evm",
+    "symbol": "XPL",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/plasma.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 9745,
+      "rubic": "PLASMA",
+      "symbiosis": 9745
+    }
+  },
+  {
+    "key": "13371",
+    "chainId": 13371,
+    "name": "Immutable zkEVM",
+    "type": "evm",
+    "symbol": "IMX",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/imx.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 13371
+    }
+  },
+  {
+    "key": "33139",
+    "chainId": 33139,
+    "name": "Apechain",
+    "type": "evm",
+    "symbol": "APE",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/apechain.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 33139,
+      "symbiosis": 33139
+    }
+  },
+  {
+    "key": "34443",
+    "chainId": 34443,
+    "name": "Mode",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/mode.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 34443,
+      "rubic": "MODE",
+      "symbiosis": 34443
+    }
+  },
+  {
+    "key": "42161",
+    "chainId": 42161,
+    "name": "Arbitrum",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/arbitrum.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": true
+    },
+    "providerIds": {
+      "lifi": 42161,
+      "rubic": "ARBITRUM",
+      "symbiosis": 42161,
+      "cctp": 3,
+      "rango": "ARBITRUM",
+      "nearIntents": "arb"
+    }
+  },
+  {
+    "key": "42170",
+    "chainId": 42170,
+    "name": "Chain 42170",
+    "type": "evm",
+    "symbol": "ETH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "symbiosis": 42170
+    }
+  },
+  {
+    "key": "42220",
+    "chainId": 42220,
+    "name": "Celo",
+    "type": "evm",
+    "symbol": "CELO",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/celo.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 42220,
+      "rubic": "CELO"
+    }
+  },
+  {
+    "key": "42262",
+    "chainId": 42262,
+    "name": "OASIS",
+    "type": "evm",
+    "symbol": "OASIS",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "OASIS"
+    }
+  },
+  {
+    "key": "42766",
+    "chainId": 42766,
+    "name": "ZK_FAIR",
+    "type": "evm",
+    "symbol": "ZK_FAIR",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ZK_FAIR"
+    }
+  },
+  {
+    "key": "42793",
+    "chainId": 42793,
+    "name": "Etherlink",
+    "type": "evm",
+    "symbol": "XTZ",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/etherlink.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 42793
+    }
+  },
+  {
+    "key": "43111",
+    "chainId": 43111,
+    "name": "Hemi",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/hemi.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 43111,
+      "rubic": "HEMI"
+    }
+  },
+  {
+    "key": "43114",
+    "chainId": 43114,
+    "name": "Avalanche",
+    "type": "evm",
+    "symbol": "AVAX",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/avalanche.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": true
+    },
+    "providerIds": {
+      "lifi": 43114,
+      "rubic": "AVALANCHE",
+      "symbiosis": 43114,
+      "cctp": 1,
+      "rango": "AVAX_CCHAIN",
+      "nearIntents": "avax"
+    }
+  },
+  {
+    "key": "50104",
+    "chainId": 50104,
+    "name": "Sophon",
+    "type": "evm",
+    "symbol": "SOPH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/sophon.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 50104
+    }
+  },
+  {
+    "key": "55244",
+    "chainId": 55244,
+    "name": "Superposition",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/superposition.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 55244
+    }
+  },
+  {
+    "key": "56288",
+    "chainId": 56288,
+    "name": "BOBA_BSC",
+    "type": "evm",
+    "symbol": "BOBA_BSC",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "BOBA_BSC"
+    }
+  },
+  {
+    "key": "57073",
+    "chainId": 57073,
+    "name": "Ink",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/ink.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 57073
+    }
+  },
+  {
+    "key": "59144",
+    "chainId": 59144,
+    "name": "Linea",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/linea.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": true
+    },
+    "providerIds": {
+      "lifi": 59144,
+      "rubic": "LINEA",
+      "symbiosis": 59144,
+      "cctp": 11
+    }
+  },
+  {
+    "key": "60808",
+    "chainId": 60808,
+    "name": "BOB",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/bob.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 60808
+    }
+  },
+  {
+    "key": "80094",
+    "chainId": 80094,
+    "name": "Berachain",
+    "type": "evm",
+    "symbol": "BERA",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/bera.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 80094,
+      "rubic": "BERACHAIN",
+      "symbiosis": 80094
+    }
+  },
+  {
+    "key": "81457",
+    "chainId": 81457,
+    "name": "Blast",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/blast.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 81457,
+      "rubic": "BLAST",
+      "symbiosis": 81457
+    }
+  },
+  {
+    "key": "98866",
+    "chainId": 98866,
+    "name": "Plume",
+    "type": "evm",
+    "symbol": "PLUME",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/plume.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 98866
+    }
+  },
+  {
+    "key": "167000",
+    "chainId": 167000,
+    "name": "Taiko",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/taiko.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 167000,
+      "rubic": "TAIKO",
+      "symbiosis": 167000
+    }
+  },
+  {
+    "key": "200901",
+    "chainId": 200901,
+    "name": "BITLAYER",
+    "type": "evm",
+    "symbol": "BITLAYER",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "BITLAYER"
+    }
+  },
+  {
+    "key": "534352",
+    "chainId": 534352,
+    "name": "Scroll",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/scroll.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 534352,
+      "rubic": "SCROLL",
+      "symbiosis": 534352
+    }
+  },
+  {
+    "key": "747474",
+    "chainId": 747474,
+    "name": "Katana",
+    "type": "evm",
+    "symbol": "ETH",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/katana.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 747474,
+      "symbiosis": 747474
+    }
+  },
+  {
+    "key": "810180",
+    "chainId": 810180,
+    "name": "ZK_LINK",
+    "type": "evm",
+    "symbol": "ZK_LINK",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ZK_LINK",
+      "symbiosis": 810180
+    }
+  },
+  {
+    "key": "ton",
+    "chainId": null,
+    "name": "TON",
+    "type": "evm",
+    "symbol": "TON",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "TON",
+      "nearIntents": "ton"
+    }
+  },
+  {
+    "key": "icp",
+    "chainId": null,
+    "name": "ICP",
+    "type": "evm",
+    "symbol": "ICP",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ICP"
+    }
+  },
+  {
+    "key": "cardano",
+    "chainId": null,
+    "name": "CARDANO",
+    "type": "evm",
+    "symbol": "CARDANO",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "CARDANO",
+      "nearIntents": "cardano"
+    }
+  },
+  {
+    "key": "algorand",
+    "chainId": null,
+    "name": "ALGORAND",
+    "type": "evm",
+    "symbol": "ALGORAND",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ALGORAND"
+    }
+  },
+  {
+    "key": "aptos",
+    "chainId": null,
+    "name": "APTOS",
+    "type": "evm",
+    "symbol": "APTOS",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "APTOS",
+      "nearIntents": "aptos"
+    }
+  },
+  {
+    "key": "astar",
+    "chainId": null,
+    "name": "ASTAR",
+    "type": "evm",
+    "symbol": "ASTAR",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ASTAR"
+    }
+  },
+  {
+    "key": "casper",
+    "chainId": null,
+    "name": "CASPER",
+    "type": "evm",
+    "symbol": "CASPER",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "CASPER"
+    }
+  },
+  {
+    "key": "dash",
+    "chainId": null,
+    "name": "DASH",
+    "type": "evm",
+    "symbol": "DASH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "DASH"
+    }
+  },
+  {
+    "key": "dogecoin",
+    "chainId": null,
+    "name": "DOGECOIN",
+    "type": "evm",
+    "symbol": "DOGECOIN",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "DOGECOIN"
+    }
+  },
+  {
+    "key": "polkadot",
+    "chainId": null,
+    "name": "POLKADOT",
+    "type": "evm",
+    "symbol": "POLKADOT",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "POLKADOT"
+    }
+  },
+  {
+    "key": "flow",
+    "chainId": null,
+    "name": "FLOW",
+    "type": "evm",
+    "symbol": "FLOW",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "FLOW"
+    }
+  },
+  {
+    "key": "hedera",
+    "chainId": null,
+    "name": "HEDERA",
+    "type": "evm",
+    "symbol": "HEDERA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "HEDERA"
+    }
+  },
+  {
+    "key": "kadena",
+    "chainId": null,
+    "name": "KADENA",
+    "type": "evm",
+    "symbol": "KADENA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "KADENA"
+    }
+  },
+  {
+    "key": "kusama",
+    "chainId": null,
+    "name": "KUSAMA",
+    "type": "evm",
+    "symbol": "KUSAMA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "KUSAMA"
+    }
+  },
+  {
+    "key": "litecoin",
+    "chainId": null,
+    "name": "LITECOIN",
+    "type": "evm",
+    "symbol": "LITECOIN",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "LITECOIN"
+    }
+  },
+  {
+    "key": "mina_protocol",
+    "chainId": null,
+    "name": "MINA_PROTOCOL",
+    "type": "evm",
+    "symbol": "MINA_PROTOCOL",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "MINA_PROTOCOL"
+    }
+  },
+  {
+    "key": "neo",
+    "chainId": null,
+    "name": "NEO",
+    "type": "evm",
+    "symbol": "NEO",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "NEO"
+    }
+  },
+  {
+    "key": "osmosis",
+    "chainId": null,
+    "name": "OSMOSIS",
+    "type": "evm",
+    "symbol": "OSMOSIS",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "OSMOSIS",
+      "rango": "OSMOSIS"
+    }
+  },
+  {
+    "key": "sia",
+    "chainId": null,
+    "name": "SIA",
+    "type": "evm",
+    "symbol": "SIA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "SIA"
+    }
+  },
+  {
+    "key": "secret",
+    "chainId": null,
+    "name": "SECRET",
+    "type": "evm",
+    "symbol": "SECRET",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "SECRET"
+    }
+  },
+  {
+    "key": "waves",
+    "chainId": null,
+    "name": "WAVES",
+    "type": "evm",
+    "symbol": "WAVES",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "WAVES"
+    }
+  },
+  {
+    "key": "wax",
+    "chainId": null,
+    "name": "WAX",
+    "type": "evm",
+    "symbol": "WAX",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "WAX"
+    }
+  },
+  {
+    "key": "monero",
+    "chainId": null,
+    "name": "MONERO",
+    "type": "evm",
+    "symbol": "MONERO",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "MONERO"
+    }
+  },
+  {
+    "key": "ripple",
+    "chainId": null,
+    "name": "RIPPLE",
+    "type": "evm",
+    "symbol": "RIPPLE",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "RIPPLE"
+    }
+  },
+  {
+    "key": "tezos",
+    "chainId": null,
+    "name": "TEZOS",
+    "type": "evm",
+    "symbol": "TEZOS",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "TEZOS"
+    }
+  },
+  {
+    "key": "zcash",
+    "chainId": null,
+    "name": "ZCASH",
+    "type": "evm",
+    "symbol": "ZCASH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ZCASH"
+    }
+  },
+  {
+    "key": "zilliqa",
+    "chainId": null,
+    "name": "ZILLIQA",
+    "type": "evm",
+    "symbol": "ZILLIQA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "ZILLIQA"
+    }
+  },
+  {
+    "key": "kava_cosmos",
+    "chainId": null,
+    "name": "KAVA_COSMOS",
+    "type": "evm",
+    "symbol": "KAVA_COSMOS",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "KAVA_COSMOS"
+    }
+  },
+  {
+    "key": "starknet",
+    "chainId": null,
+    "name": "STARKNET",
+    "type": "evm",
+    "symbol": "STARKNET",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "STARKNET",
+      "nearIntents": "starknet"
+    }
+  },
+  {
+    "key": "zec",
+    "chainId": null,
+    "name": "Zec",
+    "type": "evm",
+    "symbol": "ZEC",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "zec"
+    }
+  },
+  {
+    "key": "eth",
+    "chainId": null,
+    "name": "Eth",
+    "type": "evm",
+    "symbol": "ETH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "eth"
+    }
+  },
+  {
+    "key": "sui",
+    "chainId": null,
+    "name": "Sui",
+    "type": "evm",
+    "symbol": "SUI",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "sui",
+      "lifi": "SUI"
+    }
+  },
+  {
+    "key": "btc",
+    "chainId": null,
+    "name": "Btc",
+    "type": "evm",
+    "symbol": "BTC",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "btc"
+    }
+  },
+  {
+    "key": "sol",
+    "chainId": null,
+    "name": "Sol",
+    "type": "evm",
+    "symbol": "SOL",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "sol"
+    }
+  },
+  {
+    "key": "arb",
+    "chainId": null,
+    "name": "Arb",
+    "type": "evm",
+    "symbol": "ARB",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "arb"
+    }
+  },
+  {
+    "key": "doge",
+    "chainId": null,
+    "name": "Doge",
+    "type": "evm",
+    "symbol": "DOGE",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "doge"
+    }
+  },
+  {
+    "key": "xrp",
+    "chainId": null,
+    "name": "Xrp",
+    "type": "evm",
+    "symbol": "XRP",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "xrp"
+    }
+  },
+  {
+    "key": "bera",
+    "chainId": null,
+    "name": "Bera",
+    "type": "evm",
+    "symbol": "BERA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "bera"
+    }
+  },
+  {
+    "key": "monad",
+    "chainId": null,
+    "name": "Monad",
+    "type": "evm",
+    "symbol": "MONAD",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "monad"
+    }
+  },
+  {
+    "key": "xlayer",
+    "chainId": null,
+    "name": "Xlayer",
+    "type": "evm",
+    "symbol": "XLAYER",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "xlayer"
+    }
+  },
+  {
+    "key": "plasma",
+    "chainId": null,
+    "name": "Plasma",
+    "type": "evm",
+    "symbol": "PLASMA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "plasma"
+    }
+  },
+  {
+    "key": "pol",
+    "chainId": null,
+    "name": "Pol",
+    "type": "evm",
+    "symbol": "POL",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "pol"
+    }
+  },
+  {
+    "key": "tron",
+    "chainId": null,
+    "name": "Tron",
+    "type": "evm",
+    "symbol": "TRON",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "tron",
+      "rango": "TRON",
+      "rubic": "TRON"
+    }
+  },
+  {
+    "key": "op",
+    "chainId": null,
+    "name": "Op",
+    "type": "evm",
+    "symbol": "OP",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "op"
+    }
+  },
+  {
+    "key": "avax",
+    "chainId": null,
+    "name": "Avax",
+    "type": "evm",
+    "symbol": "AVAX",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "avax"
+    }
+  },
+  {
+    "key": "stellar",
+    "chainId": null,
+    "name": "Stellar",
+    "type": "evm",
+    "symbol": "STELLAR",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "stellar"
+    }
+  },
+  {
+    "key": "ltc",
+    "chainId": null,
+    "name": "Ltc",
+    "type": "evm",
+    "symbol": "LTC",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "ltc"
+    }
+  },
+  {
+    "key": "bch",
+    "chainId": null,
+    "name": "Bch",
+    "type": "evm",
+    "symbol": "BCH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "bch"
+    }
+  },
+  {
+    "key": "aleo",
+    "chainId": null,
+    "name": "Aleo",
+    "type": "evm",
+    "symbol": "ALEO",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "aleo"
+    }
+  },
+  {
+    "key": "adi",
+    "chainId": null,
+    "name": "Adi",
+    "type": "evm",
+    "symbol": "ADI",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "nearIntents": "adi"
+    }
+  },
+  {
+    "key": "13863860",
+    "chainId": 13863860,
+    "name": "Chain 13863860",
+    "type": "evm",
+    "symbol": "ETH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "symbiosis": 13863860
+    }
+  },
+  {
+    "key": "21000000",
+    "chainId": 21000000,
+    "name": "Corn",
+    "type": "evm",
+    "symbol": "BTCN",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/corn.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 21000000
+    }
+  },
+  {
+    "key": "728126428",
+    "chainId": 728126428,
+    "name": "Chain 728126428",
+    "type": "evm",
+    "symbol": "ETH",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": true,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "symbiosis": 728126428
+    }
+  },
+  {
+    "key": "1313161554",
+    "chainId": 1313161554,
+    "name": "AURORA",
+    "type": "evm",
+    "symbol": "AURORA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "AURORA"
+    }
+  },
+  {
+    "key": "1666600000",
+    "chainId": 1666600000,
+    "name": "HARMONY",
+    "type": "evm",
+    "symbol": "HARMONY",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "HARMONY"
+    }
+  },
+  {
+    "key": "20000000000001",
+    "chainId": 20000000000001,
+    "name": "Bitcoin",
+    "type": "bitcoin",
+    "symbol": "BTC",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/bitcoin.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 20000000000001
+    }
+  },
+  {
+    "key": "bitcoin",
+    "chainId": null,
+    "name": "Bitcoin",
+    "type": "bitcoin",
+    "symbol": "BTC",
+    "isTestnet": false,
+    "providers": {
+      "lifi": false,
+      "rango": true,
+      "rubic": true,
+      "symbiosis": true,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {}
+  },
+  {
+    "key": "5555",
+    "chainId": 5555,
+    "name": "BITCOIN",
+    "type": "bitcoin",
+    "symbol": "BITCOIN",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "BITCOIN"
+    }
+  },
+  {
+    "key": "cosmos",
+    "chainId": null,
+    "name": "COSMOS",
+    "type": "cosmos",
+    "symbol": "COSMOS",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "COSMOS",
+      "rango": "COSMOS"
+    }
+  },
+  {
+    "key": "near",
+    "chainId": null,
+    "name": "NEAR",
+    "type": "near",
+    "symbol": "NEAR",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "NEAR",
+      "nearIntents": "near",
+      "rango": "NEAR"
+    }
+  },
+  {
+    "key": "1151111081099710",
+    "chainId": 1151111081099710,
+    "name": "Solana",
+    "type": "solana",
+    "symbol": "SOL",
+    "logoUrl": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/solana.svg",
+    "providers": {
+      "lifi": true,
+      "rango": false,
+      "rubic": false,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "lifi": 1151111081099710
+    }
+  },
+  {
+    "key": "solana",
+    "chainId": null,
+    "name": "Solana",
+    "type": "solana",
+    "symbol": "SOL",
+    "isTestnet": false,
+    "providers": {
+      "lifi": true,
+      "rango": true,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": true,
+      "cctp": false
+    },
+    "providerIds": {}
+  },
+  {
+    "key": "7565164",
+    "chainId": 7565164,
+    "name": "SOLANA",
+    "type": "solana",
+    "symbol": "SOLANA",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "SOLANA"
+    }
+  },
+  {
+    "key": "9999101",
+    "chainId": 9999101,
+    "name": "SUI",
+    "type": "sui",
+    "symbol": "SUI",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "SUI"
+    }
+  },
+  {
+    "key": "195",
+    "chainId": 195,
+    "name": "TRON",
+    "type": "tron",
+    "symbol": "TRON",
+    "providers": {
+      "lifi": false,
+      "rango": false,
+      "rubic": true,
+      "symbiosis": false,
+      "nearIntents": false,
+      "cctp": false
+    },
+    "providerIds": {
+      "rubic": "TRON"
+    }
+  }
+]

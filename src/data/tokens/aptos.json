@@ -1,0 +1,24 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "APT",
+    "name": "APT",
+    "decimals": 8,
+    "isNative": true,
+    "chainKey": "aptos",
+    "providerIds": {
+      "nearIntents": "nep141:aptos.omft.near"
+    }
+  },
+  {
+    "address": "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "aptos",
+    "providerIds": {
+      "nearIntents": "nep141:aptos-88cb7619440a914fe6400149a12b443c3ac21d59.omft.near"
+    }
+  }
+]

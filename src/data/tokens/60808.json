@@ -1,0 +1,113 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "ETH",
+    "name": "ETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": true,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0x05D032ac25d322df992303dCa074EE7392C117b9",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0xDe1763aFA5eB658CfFFfD16835AfeB47e7aC0B8D",
+    "symbol": "EUL",
+    "name": "Euler",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/project/logo_url/euler2/672f19349da6dd7cdf30621720681753.png",
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0xC96dE26018A54D51c097160568752c4E3BD6C364",
+    "symbol": "FBTC",
+    "name": "Fire Bitcoin",
+    "decimals": 8,
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0x1217BfE6c773EEC6cc4A38b5Dc45B92292B6E189",
+    "symbol": "oUSDT",
+    "name": "OpenUSDT",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+    "symbol": "SolvBTC",
+    "name": "Solv BTC",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+    "symbol": "SolvBTC.BBN",
+    "name": "SolvBTC Babylon",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0x6b062AA7F5FC52b530Cb13967aE2E6bc0D8Dd3E4",
+    "symbol": "SolvBTC.JUP",
+    "name": "SolvBTC Jupiter",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0x236f8c0a61dA474dB21B693fB2ea7AAB0c803894",
+    "symbol": "uniBTC",
+    "name": "uniBTC",
+    "decimals": 8,
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0xe75D0fB2C24A55cA1e3F96781a2bCC7bdba058F0",
+    "symbol": "USDCe",
+    "name": "Bridged USDC (BOB)",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",
+    "symbol": "WBTC",
+    "name": "Wrapped BTC",
+    "decimals": 8,
+    "logoUrl": "https://static.debank.com/image/bob_token/logo_url/0x0555e30da8f98308edb960aa94c0db47230d2b9c/d3c52e7c7449afa8bd4fad1c93f50d93.png",
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0x03C7054BCB39f7b2e5B2c7AcB37583e32D70Cfa3",
+    "symbol": "WBTC",
+    "name": "WBTC",
+    "decimals": 8,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+    "isNative": false,
+    "chainKey": "60808"
+  },
+  {
+    "address": "0x4200000000000000000000000000000000000006",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/61844453e63cf81301f845d7864236f6.png",
+    "isNative": false,
+    "chainKey": "60808"
+  }
+]

@@ -3,29 +3,69 @@ import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, 
 // Rubic API v2 
 const RUBIC_API_BASE = 'https://api-v2.rubic.exchange/api'
 
-// Map chain IDs to Rubic blockchain identifiers
-const CHAIN_MAP: Record<number, string> = {
+// Hardcoded fallback — used when /api/info/chains fails
+const FALLBACK_CHAIN_MAP: Record<string, string> = {
   // EVM Chains
-  1: 'ETH',
-  137: 'POLYGON',
-  42161: 'ARBITRUM',
-  10: 'OPTIMISM',
-  8453: 'BASE',
-  56: 'BSC',
-  43114: 'AVALANCHE',
-  250: 'FANTOM',
-  100: 'GNOSIS',
-  1101: 'POLYGON_ZKEVM',
-  324: 'ZK_SYNC',
-  59144: 'LINEA',
-  1313161554: 'AURORA',
-  169: 'MANTA_PACIFIC',
-  534352: 'SCROLL',
-  5000: 'MANTLE',
-  81457: 'BLAST',
-  // Non-EVM Chains (future support)
-  // 'SOLANA': 'SOLANA',
-  // 'BITCOIN': 'BITCOIN',
+  '1': 'ETH',
+  '137': 'POLYGON',
+  '42161': 'ARBITRUM',
+  '10': 'OPTIMISM',
+  '8453': 'BASE',
+  '56': 'BSC',
+  '43114': 'AVALANCHE',
+  '250': 'FANTOM',
+  '100': 'GNOSIS',
+  '1101': 'POLYGON_ZKEVM',
+  '324': 'ZK_SYNC',
+  '59144': 'LINEA',
+  '1313161554': 'AURORA',
+  '169': 'MANTA_PACIFIC',
+  '534352': 'SCROLL',
+  '5000': 'MANTLE',
+  '81457': 'BLAST',
+  // Non-EVM Chains
+  'solana': 'SOLANA',
+  'bitcoin': 'BITCOIN',
+  'tron': 'TRON',
+}
+
+// Dynamic chain map: populated from /api/info/chains at first use
+let dynamicChainMap: Record<string, string> | null = null
+let chainMapLoading: Promise<void> | null = null
+
+async function ensureChainMap(): Promise<void> {
+  if (dynamicChainMap) return
+  if (chainMapLoading) { await chainMapLoading; return }
+
+  chainMapLoading = (async () => {
+    try {
+      const res = await fetch(`${RUBIC_API_BASE}/info/chains?includeTestnets=false`)
+      if (res.ok) {
+        const chains: { id: number; name: string }[] = await res.json()
+        dynamicChainMap = {}
+        for (const c of chains) {
+          // Map by numeric ID (for EVM)
+          if (c.id) dynamicChainMap[String(c.id)] = c.name
+          // Map by lowercase name (for non-EVM)
+          dynamicChainMap[c.name.toLowerCase()] = c.name
+        }
+        console.log(`Rubic: Loaded ${Object.keys(dynamicChainMap).length} chain mappings from API`)
+      } else {
+        throw new Error(`HTTP ${res.status}`)
+      }
+    } catch (error) {
+      console.warn('Rubic: /api/info/chains failed, using fallback:', error)
+      dynamicChainMap = { ...FALLBACK_CHAIN_MAP }
+    }
+  })()
+
+  await chainMapLoading
+  chainMapLoading = null
+}
+
+function resolveChain(chainId: number | string): string | null {
+  const map = dynamicChainMap || FALLBACK_CHAIN_MAP
+  return map[String(chainId)] || null
 }
 
 export class RubicProvider implements IProvider {
@@ -33,8 +73,10 @@ export class RubicProvider implements IProvider {
 
   async getQuote(request: QuoteRequest): Promise<QuoteResponse[]> {
     try {
-      const srcTokenBlockchain = CHAIN_MAP[request.fromChain]
-      const dstTokenBlockchain = CHAIN_MAP[request.toChain]
+      await ensureChainMap()
+
+      const srcTokenBlockchain = resolveChain(request.fromChain)
+      const dstTokenBlockchain = resolveChain(request.toChain)
       
       if (!srcTokenBlockchain || !dstTokenBlockchain) return []
 
@@ -99,6 +141,7 @@ export class RubicProvider implements IProvider {
       // Process EVM transaction data
       let transactionRequest = null
       let approvalAddress = data.transaction?.approvalAddress
+      let insufficientBalance = false
 
       if (data.id) {
         try {
@@ -129,7 +172,8 @@ export class RubicProvider implements IProvider {
              try {
                 const errorJson = JSON.parse(errorText)
                 if (errorJson.error?.code === 3003 || errorJson.error?.reason?.includes('not enough balance')) {
-                  console.warn(`Insufficient balance on ${srcTokenBlockchain}`)
+                  insufficientBalance = true
+                  console.log(`[Rubic] Balance check: user has insufficient ${srcTokenBlockchain} balance`)
                 }
              } catch (e) {
                 // Ignore parse errors
@@ -141,7 +185,6 @@ export class RubicProvider implements IProvider {
         }
       }
 
-      const insufficientBalance = !transactionRequest && approvalAddress 
       // Calculate total fees
       const protocolFeeUSD = data.fees?.gasTokenFees?.protocol?.fixedUsdAmount || 0
       const providerFeeUSD = data.fees?.gasTokenFees?.provider?.fixedUsdAmount || 0
@@ -163,7 +206,7 @@ export class RubicProvider implements IProvider {
         },
         toolsUsed: [underlyingProvider],
         metadata: {
-           insufficientBalance: !transactionRequest ? true : undefined
+           insufficientBalance: insufficientBalance || undefined
         },
         routes: [{
           type: 'bridge' as const,

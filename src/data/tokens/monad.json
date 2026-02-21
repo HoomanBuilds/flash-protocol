@@ -1,0 +1,35 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "MON",
+    "name": "MON",
+    "decimals": 18,
+    "isNative": true,
+    "chainKey": "monad",
+    "providerIds": {
+      "nearIntents": "nep245:v2_1.omni.hot.tg:143_11111111111111111111"
+    }
+  },
+  {
+    "address": "0x754704bc059f8c67012fed69bc8a327a5aafb603",
+    "symbol": "USDC",
+    "name": "USDC",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "monad",
+    "providerIds": {
+      "nearIntents": "nep245:v2_1.omni.hot.tg:143_2dmLwYWkCQKyTjeUPAsGJuiVLbFx"
+    }
+  },
+  {
+    "address": "0xe7cd86e13ac4309349f30b3435a9d337750fc82d",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "monad",
+    "providerIds": {
+      "nearIntents": "nep245:v2_1.omni.hot.tg:143_4EJiJxSALvGoTZbnc8K7Ft9533et"
+    }
+  }
+]

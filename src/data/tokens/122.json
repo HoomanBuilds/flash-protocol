@@ -1,0 +1,370 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "FUSE",
+    "name": "FUSE",
+    "decimals": 18,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/5634.png",
+    "isNative": true,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x94Ba7A27c7A95863d1bdC7645AC2951E0cca06bA",
+    "symbol": "DAI",
+    "name": "DAI Stablecoin",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x620fd5fa44BE6af63715Ef4E65DDFA0387aD13F5",
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xFaDbBF8Ce7D5b7041bE672561bbA99f79c532e10",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x74616164eB1892ceC5fa553D45b3e5D6dF7BC7b9",
+    "symbol": "$Foo",
+    "name": "Foo",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xDe4b9879B56187D13B2c41Da24c72Ff100A5AC9A",
+    "symbol": "$Lady",
+    "name": "Ladybot",
+    "decimals": 9,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0xde4b9879b56187d13b2c41da24c72ff100a5ac9a/2b7ab8b8a87cb547b9afd8c3fa4e9e10.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xCC9d144a8a8A1e71D5EC66A13F301b9E0137e71C",
+    "symbol": "aeETH",
+    "name": "ETH (Allbridge)",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0xcc9d144a8a8a1e71d5ec66a13f301b9e0137e71c/562846b78b33ad7ab6087a20457f3d67.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xeFAeeE334F0Fd1712f9a8cc375f427D9Cdd40d73",
+    "symbol": "agEUR",
+    "name": "agEUR",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x5Cb5249d420639619fFd637C79f0AA5C0a9FcD4B",
+    "symbol": "asSOL",
+    "name": "SOL (Allbridge)",
+    "decimals": 9,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0x5cb5249d420639619ffd637c79f0aa5c0a9fcd4b/89ab5562bab1624672dcbadcc1c86aa7.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x830cFB18ae30B7D989f6950638Be15816416ff5c",
+    "symbol": "asUSDC(solana)",
+    "name": "USDC Solana",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/coin/logo_url/usdc/e87790bfe0b3f2ea855dc29069b38818.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x7641d492c17795Fb4cbaa8DF99116c9c482C81a8",
+    "symbol": "BTZ",
+    "name": "Bitazza Token on Fuse",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x6a5F6A8121592BeCd6747a38d67451B310F7f156",
+    "symbol": "BUSD",
+    "name": "BUSD",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/BUSD-BD1/logo.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x4e69Ae0CD024754655b4eF74F24A8DCB39Ba07e8",
+    "symbol": "CEUS",
+    "name": "Coineus",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0x4e69ae0cd024754655b4ef74f24a8dcb39ba07e8/d03f1f13bd1ac88afab64a4bfa869839.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x440B63C0e7b21a57A3784D8AB8E819B9dA383FDf",
+    "symbol": "DAI (Bridged)",
+    "name": "Dai Stablecoin",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/arb_token/logo_url/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1/549c4205dbb199f1b8b03af783f35e71.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x2f60a843302F1Be3FA87429CA9d684f9091b003c",
+    "symbol": "DEXT",
+    "name": "DEXTools on Fuse",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0x2f60a843302f1be3fa87429ca9d684f9091b003c/94c3404c81be743c40fd7c51df9e068e.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xE1C110E1B1b4A1deD0cAf3E42BfBdbB7b5d7cE1C",
+    "symbol": "ELK(legacy)",
+    "name": "Elk",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0xe1c110e1b1b4a1ded0caf3e42bfbdbb7b5d7ce1c/ffbac32b578122cd46603356861d7011.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
+    "symbol": "ETH(Stargate)",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/swell_token/logo_url/swell/48bfb74adddd170e936578aec422836d.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x8bf40E191Ac82BC09D946629655A6B8Baf8f063E",
+    "symbol": "ezETH",
+    "name": "Renzo Restaked ETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0x8bf40e191ac82bc09d946629655a6b8baf8f063e/a2066140508745073959b4c5ea60eec6.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xa28a758619ba32B11F8D55eB6C0E1C7E5929bF61",
+    "symbol": "FVKSRG",
+    "name": "Fates Violent Kiss Sends Reaper Grim",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x495d133B938596C9984d462F007B676bDc57eCEC",
+    "symbol": "G$",
+    "name": "GoodDollar",
+    "decimals": 2,
+    "logoUrl": "https://raw.githubusercontent.com/voltfinance/token-logos/main/logos/0x495d133B938596C9984d462F007B676bDc57eCEC/logo.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x025a4c577198D116Ea499193E6D735FDb2e6E841",
+    "symbol": "GRT",
+    "name": "Graph Token on Fuse",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x43B17749B246fd2a96DE25d9e4184E27E09765b0",
+    "symbol": "KNC",
+    "name": "Kyber Network Crystal on Fuse",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x0972F26e8943679b043de23df2fD3852177A7c48",
+    "symbol": "LINK",
+    "name": "ChainLink Token on Fuse",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xF2C6C1AA2bf8ec40F564Ea8A483F64907ea37A3F",
+    "symbol": "LIT",
+    "name": "Lightning",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0xf2c6c1aa2bf8ec40f564ea8a483f64907ea37a3f/377487d690354af60fff867c0c889a4f.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x861bF3D382593Ed848972cADFACBA9749AdCE101",
+    "symbol": "MATIC",
+    "name": "Matic Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/hmy_token/logo_url/0xfbdd194376de19a88118e84e279b977f165d01b8/0f047f368f8c0dc532085075956cdadc.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x303CC3f27034C4E3933DaB8E601178eD3d2A1E3c",
+    "symbol": "MKR",
+    "name": "Maker",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0x303cc3f27034c4e3933dab8e601178ed3d2a1e3c/9cb777472c8f67432206da896e1548dc.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xd1b300AEc14c5DDB934C5BBcBA4E9f7463b9e3CA",
+    "symbol": "MKR",
+    "name": "Maker",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x2363Df84fDb7D4ee9d4E1A15c763BB6b7177eAEe",
+    "symbol": "MST",
+    "name": "MST",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/project/logo_url/base_meridianfinance/70622d429db5c1ae0ce2d33b64836242.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x7F59aE3a787C0d1D640F99883d0e48c22188C54f",
+    "symbol": "OM",
+    "name": "MANTRA DAO on Fuse",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x3c5DD992D72D082B44c7505015E09fdb1e975eC2",
+    "symbol": "stETH",
+    "name": "stETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0/7e931af8cb34b6f5671ca2eb1b847849.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x587983b895dB50dDaBC0Aac8aDC592b29bB30D80",
+    "symbol": "stETH",
+    "name": "stETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0x587983b895db50ddabc0aac8adc592b29bb30d80/1ee6279eb283ca3131f834da8ff7db09.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x90708b20ccC1eb95a4FA7C8b18Fd2C22a0Ff9E78",
+    "symbol": "SUSHI",
+    "name": "SUSHI",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B3595068778DD592e39A122f4f5a5cF09C90fE2/logo.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xb10eD6E3810c95a380E4f3e448af1755fa3368cf",
+    "symbol": "ultraETHs",
+    "name": "Affine ultraETHs 2.0",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0xb10ed6e3810c95a380e4f3e448af1755fa3368cf/1c6ab6eae5d2546234e51c4a85f4a817.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xc6Bc407706B7140EE8Eef2f86F9504651b63e7f9",
+    "symbol": "USDC(Stargate)",
+    "name": "Bridged USDC (Stargate)",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0xc6bc407706b7140ee8eef2f86f9504651b63e7f9/406fd13f28c0a6438737035fff2d39e8.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x4447863cddABbF2c3dAC826f042e03c91927A196",
+    "symbol": "USDM (Meridian)",
+    "name": "USDM Stablecoin",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/base_token/logo_url/0x5e06ea564efcb3158a85dbf0b9e017cb003ff56f/5a55649b995a7f45f13be78f630e6607.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x3695Dd1D1D43B794C0B13eb8be8419Eb3ac22bf7",
+    "symbol": "USDT(Stargate)",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/coin/logo_url/usdt/23af7472292cb41dc39b3f1146ead0fe.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x33284f95ccb7B948d9D352e1439561CF83d8d00d",
+    "symbol": "WBTC",
+    "name": "WBTC",
+    "decimals": 8,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xB5D77DB2cd614e0Da80D07E47fEB9Cf118bc6979",
+    "symbol": "WBTC (Bridged)",
+    "name": "Wrapped BTC",
+    "decimals": 8,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599/d3c52e7c7449afa8bd4fad1c93f50d93.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xa722c13135930332Eb3d749B2F0906559D2C5b99",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0xd8Bf72f3e163B9CF0C73dFdCC316417A5ac20670",
+    "symbol": "WETH",
+    "name": "Wrapped Ether on Fuse",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x0BE9e53fd7EDaC9F859882AfdDa116645287C629",
+    "symbol": "WFUSE",
+    "name": "Wrapped Fuse",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0x0be9e53fd7edac9f859882afdda116645287c629/26d6e40e90bb2bf775820b1afef6ffb6.png",
+    "isNative": false,
+    "chainKey": "122"
+  },
+  {
+    "address": "0x2931B47c2cEE4fEBAd348ba3d322cb4A17662C34",
+    "symbol": "wstETH",
+    "name": "Wrapped liquid staked Ether 2.0",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/fuse_token/logo_url/0x2931b47c2cee4febad348ba3d322cb4a17662c34/e71ccd52fb09925f39e5cca8af6d63cd.png",
+    "isNative": false,
+    "chainKey": "122"
+  }
+]

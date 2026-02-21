@@ -1,0 +1,2099 @@
+[
+  {
+    "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "symbol": "USDC",
+    "name": "USD Coin (Perps)",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x6d1e7cde53bA9467B783Cb7c530CE05400000000",
+    "symbol": "USDC",
+    "name": "USDC (Spot)",
+    "decimals": 8,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xEc340db435d4d90899E97655CB8e71f500000000",
+    "symbol": "AAPL",
+    "name": "AAPL",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/AAPL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x49259bc8E57d4a039Fd41f9B40D1A3a600000000",
+    "symbol": "AAVE0",
+    "name": "AAVE spot asset deployed by HyBridge",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/AAVE0_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xbA13ed91905624d50318D54651aD3BaB00000000",
+    "symbol": "ADHD",
+    "name": "Attention Deficit Hyperliquid Disorder",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ADHD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xd35b9Bc1770C7BDda96f65Cf0f76d4d500000000",
+    "symbol": "AMZN",
+    "name": "AMZN",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/AMZN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0d5012952aFd6e4D76BAA0A73D16a93700000000",
+    "symbol": "ANIME",
+    "name": "ANIME",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ANIME_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x5b56AC883c628df1FE24d463B3aC82ac00000000",
+    "symbol": "ANON",
+    "name": "HeyAnon",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ANON_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xA96CFaC10eAEcbA151f646C5CB4C550700000000",
+    "symbol": "ANSEM",
+    "name": "ANSEM",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ANSEM_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x8a7ade54439539Fd1268cA60a528396A00000000",
+    "symbol": "ANT",
+    "name": "ANT POWER",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ANT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xD50882aa1d890629d02b2a616Dde56e500000000",
+    "symbol": "ANZ",
+    "name": "Anzen Token",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ANZ_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xb0027F425afd8F8d7bDAb3d0e22c7e5400000000",
+    "symbol": "ARI",
+    "name": "ARI",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ARI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x8811d8Fc24b9F4Ace2C0bD21996d589900000000",
+    "symbol": "ASI",
+    "name": "Artificial Superintelligence",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ASI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xBeBB35d03B83A302a2AA06DbaA67DD9F00000000",
+    "symbol": "ATEHUN",
+    "name": "The official meme for the $800/pt HL retard",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ATEHUN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7b659352508b25500406B4cD7fdc4f8C00000000",
+    "symbol": "AUTIST",
+    "name": "Hyperautism levels of autism!",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/AUTIST_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x22B40040969D98471f8C57A721a9327d00000000",
+    "symbol": "AVAX0",
+    "name": "$AVAX on Hyperliquid. Deployed by HyBridge",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/AVAX0_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x9Fb16485B70Ac89Fd8c45b1a130e160100000000",
+    "symbol": "AXL",
+    "name": "Axelar",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/AXL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x32B15e526A6136d7215CBBBfa924aFC700000000",
+    "symbol": "AZTEC",
+    "name": "AZTEC",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/AZTEC_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x72c8258401943A45698bE4062A45dAc900000000",
+    "symbol": "BAYC",
+    "name": "BAYC",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BAYC_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0B6Ae68F39bFD088744374daa99dB22600000000",
+    "symbol": "BERA",
+    "name": "BERA",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BERA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x922C9586C47A9e383C9EfB68185A943c00000000",
+    "symbol": "BNB0",
+    "name": "BNB0",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BNB0_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xf574F3e097A19Ad8F184141D669D251400000000",
+    "symbol": "BNB1",
+    "name": "BNB1",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BNB1_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x2030EB01e794E9F7E94b9E6B82A08BFb00000000",
+    "symbol": "BOZO",
+    "name": "BOZO",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BOZO_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc196D2b7598991BD0425Fc959BC1A40f00000000",
+    "symbol": "BRIDGE",
+    "name": "HyBridge",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BRIDGE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x9563495F7d4c195047Fc891e2622673b00000000",
+    "symbol": "BUBZ",
+    "name": "BUBZ",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BUBZ_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x84EcB2340931f6b153FF10bcfAfB672600000000",
+    "symbol": "BUDDY",
+    "name": "alright buddy",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BUDDY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xD27ab3aA48f744ca0c469902a13C865600000000",
+    "symbol": "BUSSY",
+    "name": "Bozoussy",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BUSSY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x33b2c5252E8Ea8431808129C4166812900000000",
+    "symbol": "BZEC",
+    "name": "Bitfrost Native ZEC",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/BZEC_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xd275D730933f351f9aA7ae02929e77A600000000",
+    "symbol": "CASH",
+    "name": "CASH",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CASH_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7631702302E6C7FBF69d369e0bCf45D600000000",
+    "symbol": "CAT",
+    "name": "CAT",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CAT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x38348c17e1A18559bbdA232d2200769500000000",
+    "symbol": "CATBAL",
+    "name": "Password? Paw paw time.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CATBAL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x8bB39ef7881404C5d019a07b1cF2172500000000",
+    "symbol": "CATNIP",
+    "name": "CATNIP",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CATNIP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0CA8F537b3278090678F07d4d3B1fd9800000000",
+    "symbol": "CFX0",
+    "name": "CFX0",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CFX0_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xB59B1334dfeFe55B4D6895BdeC3ed16C00000000",
+    "symbol": "CHEF",
+    "name": "CHEF: The Nourisher of Hyperliquid's Powers",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CHEF_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x650bA53F534D00834002Ca10C4792d0600000000",
+    "symbol": "CHINA",
+    "name": "SUPPORT CHINA TO ONBOARD MORE CHINESE",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CHINA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xF00CF2C0647e1CE1ee5c1274b4650E4000000000",
+    "symbol": "CINDY",
+    "name": "Hyperliquid is a CEX with a couple of extra steps",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CINDY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x2e2c62335d06F2A44d703c66501Ce4d600000000",
+    "symbol": "COOK",
+    "name": "mETH Protocol",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/COOK_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x53184ac4c2f5D4729F4e0C0077Af63E300000000",
+    "symbol": "COPE",
+    "name": "Cope Hard Token",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/COPE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xd998e1032A1fabfEAf6CF11AE7ddEc2a00000000",
+    "symbol": "COZY",
+    "name": "Cozy at the beach",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/COZY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x8b92defB1901e6bE9384d365c4F306A400000000",
+    "symbol": "CRCL",
+    "name": "CRCL",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CRCL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x45B7bA9b61A02d94C19e606D99b7A26300000000",
+    "symbol": "CREAM",
+    "name": "CREAM",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CREAM_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x3B5ff6CB91F71032578b53960090adFb00000000",
+    "symbol": "CZ",
+    "name": "CZ",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/CZ_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x85a17122BF4711227397feEab986297500000000",
+    "symbol": "DBLN",
+    "name": "Doubloon",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/DBLN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x934A7e00c1B047c2d27967663f58BEfE00000000",
+    "symbol": "DEPIN",
+    "name": "DEPIN DEGN DEVICE OFFICIAL TOKEN",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/DEPIN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x9348a089d6fD81EC48699E0ec949480b00000000",
+    "symbol": "DIABLO",
+    "name": "Diablo – The little demon of HyperLiquid",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/DIABLO_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc9a3Be0E82dDe365b038C34674Ed404600000000",
+    "symbol": "EARTH",
+    "name": "We have only one",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/EARTH_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x92c54320963722f8C76bE61a8e655fb900000000",
+    "symbol": "EX",
+    "name": "Yolo ex",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/EX_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x11c83B5Cfeb6419a74A85a5Aaba0511d00000000",
+    "symbol": "FARM",
+    "name": "World's 1st GenAI AI Agent Game",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FARM_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x002911b408c1Ae4dDc144E756cEBDC1700000000",
+    "symbol": "FARMED",
+    "name": "FARMED",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FARMED_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x1b00cbE4C41fC38E2701DF2D75DAD89200000000",
+    "symbol": "FATCAT",
+    "name": "Fat Cat in Catbal",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FATCAT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0c29857bD79A8e17437B19F9Eaa322a400000000",
+    "symbol": "FEIT",
+    "name": "Fortune’s path begins with $FEIT",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FEIT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x88102beA0Bbad5f301f6E9e4dACdf97900000000",
+    "symbol": "FEUSD",
+    "name": "Felix USD",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FEUSD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xBa02a3914eCDdDb7E398112733823a8400000000",
+    "symbol": "FI",
+    "name": "FI",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7edCe821FC9e272192E73420AC9AD31900000000",
+    "symbol": "FLASK",
+    "name": "The flask containing the legendary hyperliquid.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FLASK_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x41b511438587b456cA47322b97A27FB700000000",
+    "symbol": "FLR",
+    "name": "Flare",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FLR_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x58Fb407b5fcE2B90348CDF090d6Dd3D400000000",
+    "symbol": "FRAC",
+    "name": "Fractality",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FRAC_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xFeBf76468dD13f240281E4A8ef11932D00000000",
+    "symbol": "FRCT",
+    "name": "Fractality",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FRCT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xBD859B02096BE7A23dD1527269be10A000000000",
+    "symbol": "FRIED",
+    "name": "Hypurrfried",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FRIED_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xb3D30d38259B99d4A6Daaf72dEd7bF3400000000",
+    "symbol": "FRUDO",
+    "name": "Frudo is here to lead us into a new bold era.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FRUDO_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x3DC9F93c39dDd9f0182Ad1E584BAe0d400000000",
+    "symbol": "FUN",
+    "name": "FUN",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FUN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xB50907c7421090108069DB4681949F1900000000",
+    "symbol": "FUND",
+    "name": "HL Fund",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FUND_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7624bcE759cEb7eB1579fB18839d5fA600000000",
+    "symbol": "FXRP",
+    "name": "FXRP",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/FXRP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7EE78dD38408381C2b5B979b7383E2e100000000",
+    "symbol": "G",
+    "name": "G",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/G_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc8469678541042226507fD880A10552300000000",
+    "symbol": "GENESY",
+    "name": "First P2E on Hyperliquid, optimize and earn.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/GENESY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xD0B13A173230B8e8dfD664ac0A00c9A800000000",
+    "symbol": "GLD",
+    "name": "GLD",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/GLD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x5E525C76aa6E1f0a80Fd8a0E71b77C4500000000",
+    "symbol": "GOD",
+    "name": "GOD",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/GOD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xBa48F5724bE19bf0b127BB4c7FBeB9db00000000",
+    "symbol": "GOOGL",
+    "name": "GOOGL",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/GOOGL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x8211Bcb445C7c006059CFCCcb4F1a1B800000000",
+    "symbol": "GUESS",
+    "name": "GUESS",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/GUESS_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x5A9A44de6fbDb012284EEc608c1cF9B800000000",
+    "symbol": "GUP",
+    "name": "GUP",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/GUP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x52A110041682Dbf38277C80a72Eecba600000000",
+    "symbol": "H",
+    "name": "H",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/H_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x3d06ABBbc860b7E97Feb1478C21c5cd600000000",
+    "symbol": "HAPPY",
+    "name": "HAPPY",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HAPPY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x9325025f805731935C1DF7F97e654CDa00000000",
+    "symbol": "HAR",
+    "name": "Harmonix Finance",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HAR_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x8A1c119f82fC528492b8A353c053A82e00000000",
+    "symbol": "HEAD",
+    "name": "Head to Head",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HEAD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xbAF265ef389dA684513D98D68eDF4EAe00000000",
+    "symbol": "HFUN",
+    "name": "HFUN",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HFUN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xD84e1b57DAD6c106C3Eb8842905d773C00000000",
+    "symbol": "HGOD",
+    "name": "The Goddess of Hyperliquid",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HGOD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x74884e899270a3f5A76742344856640600000000",
+    "symbol": "HMT",
+    "name": "HUMAN Token",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HMT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x33b1ee8dB7496B484db887a7B748D20f00000000",
+    "symbol": "HODL",
+    "name": "HODL",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HODL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xdaf550b8afca818dAdB7949937528Bc600000000",
+    "symbol": "HOLD",
+    "name": "HyperGold",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HOLD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xe101753DcFeA619a512111D3AE54A59200000000",
+    "symbol": "HOOD",
+    "name": "HOOD",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HOOD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x9B2cFF929D260E8d5015FA188167Be7400000000",
+    "symbol": "HOP",
+    "name": "Hopurr",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HOP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x259267575e6dA365E8d6292A7640e67500000000",
+    "symbol": "HORSY",
+    "name": "$HORSY",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HORSY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x1765b5a9Ec8fC3cdbC209C63cac68E8600000000",
+    "symbol": "HPENGU",
+    "name": "Pudgy Penguins",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HPENGU_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x501EbedDF15e7433cB84d7CC396cDfA500000000",
+    "symbol": "HPEPE",
+    "name": "HypurrPepe",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HPEPE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xAA6F295683BeB4906A9d21aCcBE5e60400000000",
+    "symbol": "HPUMP",
+    "name": "HPUMP",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HPUMP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x18A98375Ce42A0f1e40D0D666eB69E1500000000",
+    "symbol": "HPYH",
+    "name": "quant turned memecoin trader trying to make a buck",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HPYH_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x4519b5C4A2fd0bEB66306336F63C7b9900000000",
+    "symbol": "HSEI",
+    "name": "hSEI",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HSEI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0A036982bC089f1F9DA1A664a698948d00000000",
+    "symbol": "HWAVE",
+    "name": "Hyperwave",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HWAVE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xf1B242b9725266C3c634909fB575Ef1000000000",
+    "symbol": "HYENA",
+    "name": "Hyena - The Predator on HyperLiquid",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/HYENA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0D01DC56DcaaCa66aD901c959B4011ec00000000",
+    "symbol": "HYPE",
+    "name": "HYPE",
+    "decimals": 8,
+    "logoUrl": "https://static.debank.com/image/hyper_token/logo_url/hyper/0b3e288cfe418e9ce69eef4c96374583.png",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7663C492F7cFDbb149486af546Ee7F9a00000000",
+    "symbol": "ISLAND",
+    "name": "Nifty Island",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ISLAND_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x2BfAd83B63d172b0B74279BD1F282D2000000000",
+    "symbol": "IZEC",
+    "name": "iZEC",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/IZEC_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x15Fa03f87df338eb7D858dA86498EA0e00000000",
+    "symbol": "JEET",
+    "name": "“DEVS ARE FROM USA”",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/JEET_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xfcF28885456bF7E7CBE5b7a25407C5bc00000000",
+    "symbol": "JEFF",
+    "name": "JEFF",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/JEFF_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc1918b90eC9dd64eD6d226600e9f91C700000000",
+    "symbol": "JPEG",
+    "name": "JPEG",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/JPEG_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xEBE075B89Fd49398ccE2F786906ac6b300000000",
+    "symbol": "KEI",
+    "name": "KEI",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/KEI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xbC8A22F25703a03101630Ce6B09f4baA00000000",
+    "symbol": "KHYPE",
+    "name": "Kinetiq Staked HYPE",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/KHYPE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x3BD699153fEf2806ffE90f3175D916dB00000000",
+    "symbol": "KITTEN",
+    "name": "Kittenswap",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/KITTEN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x29337E3b3bb954244d4b384b5B3c9C2400000000",
+    "symbol": "KITTY",
+    "name": "A fully on-chain game built on Hyperliquid.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/KITTY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xbD31bD605C0a1B82C72AAE3587f9061f00000000",
+    "symbol": "KNTQ",
+    "name": "Kinetiq",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/KNTQ_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x71378e1Ba5403eb35Ad4e1Af2048c6E300000000",
+    "symbol": "LADY",
+    "name": "LADY",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/LADY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x9774dCcfB6EA1667eA499babE9dE388d00000000",
+    "symbol": "LATINA",
+    "name": "LATINA",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/LATINA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xa82Aa458b2c146e97733D0c05374aA0E00000000",
+    "symbol": "LAUNCH",
+    "name": "Hyperlauncher",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/LAUNCH_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xB99E5bE3B0A18C37940a7Ab0c204B32800000000",
+    "symbol": "LINK0",
+    "name": "LayerZero powered LINK deployed by HyBridge",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/LINK0_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xa043053570d42D6f553896820DFD42B600000000",
+    "symbol": "LIQD",
+    "name": "LiquidLaunch",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/LIQD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x8e821d72325ab1EfFd3193C3aC5F9c4B00000000",
+    "symbol": "LIQUID",
+    "name": "$LIQUID is the Hyperliquid GOD.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/LIQUID_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xC6d6Fb326749974a028425d9Db7681C400000000",
+    "symbol": "LORA",
+    "name": "Lora",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/LORA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0dd6980f71E51e6f218A9b7D53c837F600000000",
+    "symbol": "LQNA",
+    "name": "The Queen of Hyperliquid.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/LQNA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x3d1CF3DAF5FaCA4BcCf7853E11383fA400000000",
+    "symbol": "LTHREE",
+    "name": "Layer3",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/LTHREE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x9b91002773083d9292B8cb02DACb7E7900000000",
+    "symbol": "MAGA",
+    "name": "MAGA",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/MAGA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xe9CeD9225D2a69CCC8d6a5B224524B9900000000",
+    "symbol": "MANLET",
+    "name": "MANLET",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/MANLET_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xED660d18EF6a87bC3Dc1b3EEeb94fE2100000000",
+    "symbol": "MAXI",
+    "name": "ALL MY FRIENDS LOVE MAX FIEGE.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/MAXI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x03e1ad7D4d6D82b3da89ac8d35cC917B00000000",
+    "symbol": "MBAPPE",
+    "name": "MBENIVINI",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/MBAPPE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xcb820FB2715cad58356916847960a73C00000000",
+    "symbol": "MEOW",
+    "name": "MEOW",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/MEOW_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x555659A2A856D42399cDde096eB998E900000000",
+    "symbol": "META",
+    "name": "META",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/META_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xeDFb8D993EE8Cb935338601D8673dFCF00000000",
+    "symbol": "MMOVE",
+    "name": "MMOVE",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/MMOVE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x622cf551933F19F9136303dCab56488C00000000",
+    "symbol": "MON",
+    "name": "MON",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/MON_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x3413dA62384685cDa2528d4bA085a05500000000",
+    "symbol": "MONAD",
+    "name": "Monad",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/MONAD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xF5559ee90ac19c61eb6379Eb3B3DAdE800000000",
+    "symbol": "MSFT",
+    "name": "MSFT",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/MSFT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x6a53C88CfA761Cd324B0AB4CD50dC2d500000000",
+    "symbol": "NASDAQ",
+    "name": "Professional traders unite in DEX eco.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/NASDAQ_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xf716f4785831c07d7B7001FA34ab4Db900000000",
+    "symbol": "NBT",
+    "name": "NanoByte Token",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/NBT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0d04CAE66af89099270d2931709afb3200000000",
+    "symbol": "NEIRO",
+    "name": "NEIRO",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/NEIRO_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x5c621972AB84c077a1056D77F509a30f00000000",
+    "symbol": "NFT",
+    "name": "First NFT collection on HL",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/NFT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x2e73765C9718421cA426a2bB2d7243b000000000",
+    "symbol": "NIGGO",
+    "name": "Finding Niggo in the vast hyperliquid ocean",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/NIGGO_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x22bAfA9342b3aC5762056d944A2f6B2A00000000",
+    "symbol": "NMTD",
+    "name": "Token supporting Pascal Bridge",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/NMTD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x5901399DE6f487a6f7b11B1487811C8600000000",
+    "symbol": "NOCEX",
+    "name": "NO CEX",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/NOCEX_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x32f96a17E9da332a209C4cAf098834DC00000000",
+    "symbol": "NYAN",
+    "name": "GYAN BLUE",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/NYAN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xD7a5B9b760fD758d2E3f6f3Ecd2aE5BB00000000",
+    "symbol": "ORA",
+    "name": "ORA Coin",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ORA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x2d7B2c50be8a8f2d16C20cBAE448109f00000000",
+    "symbol": "OTTI",
+    "name": "Odd Otties: Cute otters will overtake hyperliquid",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/OTTI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x92588529bA00e2D2bEC07C12C804a58000000000",
+    "symbol": "PANDA",
+    "name": "PANDA",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PANDA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x1Ad748B576a84F6EB6541389BB53D16400000000",
+    "symbol": "PEAR",
+    "name": "PEAR",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PEAR_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x63142aF22Ec99122436a82C47B8EF2fa00000000",
+    "symbol": "PEG",
+    "name": "PEG",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PEG_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xf86Eb43Cc683110Ce33D7a86f674cfBD00000000",
+    "symbol": "PENIS",
+    "name": "Purr's Elite Network of Interactive Systems",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PENIS_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x79B6e1596ea0deB2e6912Ff8392C932500000000",
+    "symbol": "PEPE",
+    "name": "PEPE",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PEPE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x27e2E115B3067CB20F18A44b067aDe7300000000",
+    "symbol": "PERP",
+    "name": "Perpcoin",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PERP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x1A69662de430e900Be096c00eA28B81000000000",
+    "symbol": "PICKL",
+    "name": "PICKL",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PICKL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xB901E2dFb2DbE1902e03bE3c1e3e72ce00000000",
+    "symbol": "PIGEON",
+    "name": "It's just a pigeon",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PIGEON_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xd56F8732F1cAe4Fc2dB2E48863c25d8100000000",
+    "symbol": "PILL",
+    "name": "Take the Hyperliquid pill.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PILL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xE85f43E1F91e3c8cdF3ACBd7e0855B8e00000000",
+    "symbol": "PIP",
+    "name": "a tiny pip in a big hypurrrliquid puddle 🌊",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PIP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xBb03842E1f71ED27ed8Fa012B29Affd400000000",
+    "symbol": "POINTS",
+    "name": "POINTS",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/POINTS_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x592e638c27be0C84F7c2a4AAd919B85500000000",
+    "symbol": "PRFI",
+    "name": "PrimeFi",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PRFI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xEFA7e286b99eA49ce6a21D21BB41636f00000000",
+    "symbol": "PUMP",
+    "name": "PUMP",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PUMP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0BfF82ccE36b779c3F7d3d678E3A740D00000000",
+    "symbol": "PUP",
+    "name": "Pup Token",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PUP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xC1FB593aEFfbEB02f85e0308E9956A9000000000",
+    "symbol": "PURR",
+    "name": "PURR",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PURR_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xAEA9bF1dcd2A5De3cd70260adA52c4fa00000000",
+    "symbol": "PURRO",
+    "name": "Purro",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/PURRO_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xBF086597FdD837bFb58CF968533EdAF300000000",
+    "symbol": "QONE",
+    "name": "Quantum-resistant token",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/QONE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xD443B26d9c0663dC89413D4cbaB11B5b00000000",
+    "symbol": "QQQ",
+    "name": "QQQ",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/QQQ_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x68C563790c975869358031d0E42e49a100000000",
+    "symbol": "QUANT",
+    "name": "HypurrQuant",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/QUANT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0Ae968C613d445364De97769F1AFb16b00000000",
+    "symbol": "RAGE",
+    "name": "RAGE",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RAGE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xd0a824284314E8cEb8cf3C3B31DDF0bd00000000",
+    "symbol": "RANK",
+    "name": "!rank",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RANK_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xd7f58D3C744fbC0100f7D86f3e283d1100000000",
+    "symbol": "RAT",
+    "name": "Rat Race Combat: Skill, Gems, Crypto. 🐀💎",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RAT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x228F5C718414182956b11C3EA5380b3500000000",
+    "symbol": "REI",
+    "name": "REI",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/REI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x888B2490ddbB2A176Fcd0Da1E53D44c500000000",
+    "symbol": "RETARD",
+    "name": "Really Effective Trading And Research Device",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RETARD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x6d7473f5EfcB0989CcdDd3e123DdB1d700000000",
+    "symbol": "REX",
+    "name": "REX",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/REX_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x263DB50B9946A0701CcbA65B52928dAb00000000",
+    "symbol": "RICH",
+    "name": "Rich Chinese guy with cigarette",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RICH_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc20825D6E56b3bF1AA15D1f80471b16600000000",
+    "symbol": "RIP",
+    "name": "Rest in peace HL SPOT",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RIP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x51973EF5533887AfcAcE6b26dE5f19DD00000000",
+    "symbol": "RISE",
+    "name": "Phoenix",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RISE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x210BA34D337330d07443d1DC488bF81100000000",
+    "symbol": "RISK",
+    "name": "RISK",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RISK_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x0921E26B2409BdBB47989CE5692F595F00000000",
+    "symbol": "RUB",
+    "name": "Reverse Unit Bias",
+    "decimals": 10,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RUB_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x224950F99C3354Ed475df173324124BD00000000",
+    "symbol": "RUBT",
+    "name": "RUBT",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RUBT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x4978f3f49f30776d9D7397B873223c2d00000000",
+    "symbol": "RUG",
+    "name": "RUG",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RUG_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x6492582D90449B9F8913FCBf85104CCe00000000",
+    "symbol": "RZR",
+    "name": "Rezerve Money",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/RZR_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xE140201197CeD74F8884A698190Da7aA00000000",
+    "symbol": "SCHIZO",
+    "name": "SCHIZO",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SCHIZO_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x83A0bF54708a0236a49f7301677FFdc200000000",
+    "symbol": "SEDA",
+    "name": "SEDA",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SEDA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xd99348C20362c8513e2808AC24ADc77700000000",
+    "symbol": "SHEEP",
+    "name": "The blue sheep on HyperLiquiq  Don't Miss It",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SHEEP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x706aAe9A576b939Bc8EF1656f9fe9eD000000000",
+    "symbol": "SHOE",
+    "name": "Shoe Mario",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SHOE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x550Ff22831954938F2Be76028b15eB1800000000",
+    "symbol": "SHREK",
+    "name": "Swamp trades, ogre-sized gains!",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SHREK_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x50a9391B4a40cAfFBe8b16303B95A0C100000000",
+    "symbol": "SIX",
+    "name": "SIX",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SIX_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xf9DADBE873e83783630C7089320f361A00000000",
+    "symbol": "SLAY",
+    "name": "SatLayer",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SLAY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x354131C048026531B2e4BB07D318097700000000",
+    "symbol": "SLV",
+    "name": "SLV",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SLV_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xcF548188e24A0ce3dC3b281242bAAfd900000000",
+    "symbol": "SOLV",
+    "name": "Solv Protocol",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SOLV_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xa7D8163a3bEC1dA9F1F96845b3F9863600000000",
+    "symbol": "SOON",
+    "name": "SOON Token",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SOON_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xC6Aef97252f0081EB8246e24F24c5FE700000000",
+    "symbol": "SOVRN",
+    "name": "Sovrun",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SOVRN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xaCed5D1aD2c5Ce7b7c789aBFB7955B2700000000",
+    "symbol": "SPH",
+    "name": "SPH800",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SPH_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7Ad071597884285aD3BE27ef21A024F100000000",
+    "symbol": "SPY",
+    "name": "SPY",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SPY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xEC43194F64D555BdAef5afb5b6C6C68600000000",
+    "symbol": "STABLE",
+    "name": "Stable",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/STABLE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x9728448Fd10546A8527B21298A9b41E400000000",
+    "symbol": "STACK",
+    "name": "Just STACK.",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/STACK_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x68aA39b6a6d8ABe04Ba97d3953FEa81600000000",
+    "symbol": "STAR",
+    "name": "STAR",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/STAR_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7a176Eea76f7c1337134d143d2f4939E00000000",
+    "symbol": "STEEL",
+    "name": "Steel Panties Token",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/STEEL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc41D4a266072f72005BA7BC56374Fa8400000000",
+    "symbol": "STLOOP",
+    "name": "Staked LOOP",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/STLOOP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xfd2aC85551Ac85d3F04369E296eD8Cd300000000",
+    "symbol": "SUCKY",
+    "name": "SUCKY",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SUCKY_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x1684cB225AA305ea5Be44F2a79214e7E00000000",
+    "symbol": "SWAP",
+    "name": "HyperSwap",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SWAP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x21C7f844092376ba85Aa3875180e194B00000000",
+    "symbol": "SYLVI",
+    "name": "Sylvanian Families",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SYLVI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xFbA416CAD5D8944E954dEB6Bfb2A867200000000",
+    "symbol": "TATE",
+    "name": "TATE",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/TATE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x677482DB6e19Ad72108bb042B190709E00000000",
+    "symbol": "TEST",
+    "name": "TEST",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/TEST_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x3D4d3796a3D34c8693D087ad266950E500000000",
+    "symbol": "THBILL",
+    "name": "Theo Short Duration US Treasury Fund",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/THBILL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xAE3F9675b5825Ab20850Ce6229c4BdBd00000000",
+    "symbol": "TIME",
+    "name": "Timeswap",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/TIME_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xA167Acb332328FAA26eda9EC38770EEC00000000",
+    "symbol": "TJIF",
+    "name": "Thanks Jeff I'm Free",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/TJIF_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xcB6Bac63EdDb234edf8D694301fCDbd300000000",
+    "symbol": "TRADE",
+    "name": "Trade.fun",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/TRADE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x34FC4f2daC4e69240Efefd86729d662700000000",
+    "symbol": "TREND",
+    "name": "Trend Protocol",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/TREND_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x368Cb581f0D51e21Aa19996D38Ffdf6f00000000",
+    "symbol": "TRUMP",
+    "name": "TRUMP",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/TRUMP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc8A24412041cdc4A167e7d3568Fb6eBD00000000",
+    "symbol": "TSLA",
+    "name": "Tesla - Wagyu.xyz",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/TSLA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x8F254b963e8468305d409b33aA137C6700000000",
+    "symbol": "uBTC",
+    "name": "Unit Bitcoin",
+    "decimals": 10,
+    "logoUrl": "https://github.com/user-attachments/assets/67e8fba0-78f6-4a58-8f5a-dbef42007dbc",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x9cD8Fd4cAe61e63a10BA7615780Ee52000000000",
+    "symbol": "UDZ",
+    "name": "2z",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/2Z.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x593494b6Af79172FA983a0Cf1C88e0E000000000",
+    "symbol": "UENA",
+    "name": "Unit Ethena",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/UENA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xE1EdD30daAF5Caac3fe63569e24748da00000000",
+    "symbol": "UETH",
+    "name": "Unit Ethereum",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/ETH.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7650808198966e4285687D3dEb556cCC00000000",
+    "symbol": "uFART",
+    "name": "Unit Fartcoin",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/HyperSwap-Labs/hyperswap-token-list/refs/heads/main/assets/ufart.jpg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc99926509A189B40651055A15D3bE62100000000",
+    "symbol": "UMEGA",
+    "name": "Unit MegaETH",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/UMEGA_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xE839668425f85Cc7D6Ed2fb1Edee3E8800000000",
+    "symbol": "UMOG",
+    "name": "Unit Mog Coin (m)",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/UMOG_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x58DAE745C8C5FED4012F35EF39829c2d00000000",
+    "symbol": "UMON",
+    "name": "Unit Monad",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/UMON_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xAA60905298f022Ad8EfAB6d4348BC61b00000000",
+    "symbol": "UP",
+    "name": "UP",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/UP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xcA30BC8e4e2029E53D3A52867dF2a7d100000000",
+    "symbol": "UPHL",
+    "name": "Upheaval Token",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/UPHL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x544E60f98a36D7B22c0fb5824B84F79500000000",
+    "symbol": "uPUMP",
+    "name": "Unit Pump Fun",
+    "decimals": 6,
+    "logoUrl": "https://assets.coingecko.com/coins/images/67164/standard/pump.jpg?1751949376",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x2E6D84f2d7CA82e6581E03523e4389f700000000",
+    "symbol": "USDE",
+    "name": "USDe",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/USDE_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x54e00a5988577cb0B0c9Ab0Cb6Ef7f4b00000000",
+    "symbol": "USDH",
+    "name": "USDH",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/USDH_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xd289C79872A9eace15CC4CaDb030661F00000000",
+    "symbol": "USDHL",
+    "name": "Hyper USD",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/USDHL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x25faEdC3f054130DbB4E4203ACA6356700000000",
+    "symbol": "USDT0",
+    "name": "USDT0",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/USDT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xF448c3cAD413cDf0FEb1746d7B05796700000000",
+    "symbol": "USDXL",
+    "name": "Last USD",
+    "decimals": 7,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/USDXL_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x97697AB0DA91ab1C7dB063b52a93BDBb00000000",
+    "symbol": "USH",
+    "name": "USH",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/USH_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x49b67C39F5566535DE22B29B0E51e68500000000",
+    "symbol": "uSOL",
+    "name": "Unit Solana",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/SOL_USDC.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x2ff71B802A6788a052C7f1a58EC863Af00000000",
+    "symbol": "USPX",
+    "name": "Unit SPX6900",
+    "decimals": 8,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/28081.png",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc0fe8A28E4FbcFb7c6cb298C8ae0F20600000000",
+    "symbol": "USPYX",
+    "name": "Unit SP500 xStock",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/USPYX_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x44759EBad788666b5aB35f4e20Cea72200000000",
+    "symbol": "USR",
+    "name": "Resolv USR",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/USR_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x85b8124314AE77b78B4B6f20EcD9314900000000",
+    "symbol": "UVIRT",
+    "name": "Unit Virtual",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/UVIRT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x571aa6D5261FB8F28E21a9CDB2E1C64600000000",
+    "symbol": "UWLD",
+    "name": "Unit Worldcoin",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/UWLD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x2c54c60600e1d786b2dfC139a38A5A9900000000",
+    "symbol": "UXPL",
+    "name": "Unit Plasma",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperunit.xyz/93460be0c164f4cd618a.png",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x1C994Ad3381D31C86C8C2d74Ed89a36500000000",
+    "symbol": "UZEC",
+    "name": "Unit Zcash",
+    "decimals": 9,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/UZEC_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x288553D859333b90eDE88640B427959800000000",
+    "symbol": "VAULT",
+    "name": "Vault",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/VAULT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xB693D596CD02f5f38E532e647Bb43b6900000000",
+    "symbol": "VEGAS",
+    "name": "VEGAS",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/VEGAS_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7E640C7d4d529E332c89AC86075A185500000000",
+    "symbol": "VIZN",
+    "name": "VIZN",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/VIZN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xF9969f85C507BF85C1A516f0eCc8478F00000000",
+    "symbol": "VSN",
+    "name": "Vision",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/VSN_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xda37Ed48536836994807ABb93406269400000000",
+    "symbol": "WAR",
+    "name": "Hyperliquid vs FUD",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/WAR_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x2e348026257e41c936119BF69D9c313f00000000",
+    "symbol": "WASH",
+    "name": "Don't wash the cat 🙀🧽🚿",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/WASH_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x8C6028c318586B2e69CD1848a9CA643400000000",
+    "symbol": "WHYPI",
+    "name": "HYPI HRC-20",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/WHYPI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x675abb1741C0153BFB51C4298ac9E4B700000000",
+    "symbol": "WLFI",
+    "name": "World Liberty Financial",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/WLFI_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x08e0dbF94Cc66a239e00BaEFdD9ac2F600000000",
+    "symbol": "WMNT",
+    "name": "Mantle",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/WMNT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7f33d750065fE8ee53Ac8D8195808e4c00000000",
+    "symbol": "WOULD",
+    "name": "would",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/WOULD_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xc81b9a04884f4a8107f734c4D88F811A00000000",
+    "symbol": "WOW",
+    "name": "WOW",
+    "decimals": 5,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/WOW_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x507497Caf2a2216a5628a80C16Ae71D000000000",
+    "symbol": "WOWBIT",
+    "name": "WOWBIT",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/WOWBIT_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x1705EACF5d56Febbf4fFCD1668A6B55900000000",
+    "symbol": "WWB",
+    "name": "WOBWBIT",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/WWB_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xfd61eC89811bA3cF2Ae12D0Ed8Ef1AFd00000000",
+    "symbol": "XAUT0",
+    "name": "XAUT0",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/XAUT0_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x23Fc959643503F65a253FdfB4D34742f00000000",
+    "symbol": "XION",
+    "name": "XION",
+    "decimals": 6,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/XION_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0xbB2057659bD378D17E2E151BB04bdcaA00000000",
+    "symbol": "XMR1",
+    "name": "XMR - Wagyu.xyz",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/XMR1_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  },
+  {
+    "address": "0x7555eA01e1100621BcbF5F9ce3351a6900000000",
+    "symbol": "YAP",
+    "name": "Yield Acceleration Protocol",
+    "decimals": 8,
+    "logoUrl": "https://app.hyperliquid.xyz/coins/YAP_spot.svg",
+    "isNative": false,
+    "chainKey": "1337"
+  }
+]

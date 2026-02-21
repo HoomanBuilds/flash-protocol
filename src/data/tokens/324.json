@@ -1,0 +1,690 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "ETH",
+    "name": "ETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": true,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x4B9eb6c0b6ea15176BBF62841C6B2A8a398cb656",
+    "symbol": "DAI",
+    "name": "Dai Stablecoin",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x6b175474e89094c44da98b954eedeac495271d0f/549c4205dbb199f1b8b03af783f35e71.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4",
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4",
+    "symbol": "USDC.e",
+    "name": "Bridged USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xB5a58C1D3542A65F93A5a504765CD2Cd3155A418",
+    "symbol": "ATH",
+    "name": "Aethir Token",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xF3c9d58B76AC6Ee6811520021e9A9318c49E4CFa",
+    "symbol": "aZkssUSDe",
+    "name": "Aave ZkSync sUSDe",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xE977F9B2a5ccf0457870a67231F23BE4DaecfbDb",
+    "symbol": "aZksUSDC",
+    "name": "Aave ZkSync USDC",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xC48574bc5358c967d9447e7Df70230Fdb469e4E7",
+    "symbol": "aZksUSDT",
+    "name": "Aave ZkSync USDT",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xE818A67EE5c0531AFaa31Aa6e20bcAC36227A641",
+    "symbol": "aZksweETH",
+    "name": "Aave ZkSync weETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xb7b93bCf82519bB757Fd18b23A389245Dbd8ca64",
+    "symbol": "aZksWETH",
+    "name": "Aave ZkSync WETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x5722921bb6C37EaEb78b993765Aa5D79CC50052F",
+    "symbol": "aZkswrsETH",
+    "name": "Aave ZkSync wrsETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xd4e607633F3d984633E946aEA4eb71f92564c1c9",
+    "symbol": "aZkswstETH",
+    "name": "Aave ZkSync wstETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xd6cD2c0fC55936498726CacC497832052A9B2D1B",
+    "symbol": "aZksZK",
+    "name": "Aave ZkSync ZK",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x7400793aAd94C8CA801aa036357d10F5Fd0ce08f",
+    "symbol": "BNB",
+    "name": "Binance Coin",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/bsc_token/logo_url/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c/1177dec1b9b7f58a799c3f22d93b04e1.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x2039bb4116B4EFc145Ec4f0e2eA75012D6C0f181",
+    "symbol": "BUSD",
+    "name": "Binance USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x4fabb145d64652a948d72533023f6e7a623c7c53/a2442d82345bd7fcba54c5b380aeaf36.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x3A287a06c66f9E95a56327185cA2BDF5f031cEcD",
+    "symbol": "Cake",
+    "name": "PancakeSwap Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x3a287a06c66f9e95a56327185ca2bdf5f031cecd/9003539eb61139bd494b7412b785d482.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x75Af292c1c9a37b3EA2E6041168B4E48875b9ED5",
+    "symbol": "cbETH",
+    "name": "Coinbase Wrapped Staked ETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/arb_token/logo_url/0x1debd73e752beaf79865fd6446b0c970eae7732f/e5ec1d605518e827e08594b2aff84d7f.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xc2B13Bb90E33F1E191b8aA8F44Ce11534D5698E3",
+    "symbol": "COMBO",
+    "name": "Furucombo",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xc2b13bb90e33f1e191b8aa8f44ce11534d5698e3/30203e2d7d71ff9d10075b214127a06f.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x43cD37CC4B9EC54833c8aC362Dd55E58bFd62b86",
+    "symbol": "crvUSD",
+    "name": "Curve.Fi USD Stablecoin",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0xf939e0a03fb07f59a73314e73794be0e57ac1b4e/74af2588cde0b3c6e34e5efb271fb1f3.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xd0fB453E03f128A35d7409135981C754170378A5",
+    "symbol": "DINERO",
+    "name": "Dinero OFT",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xBbD1bA24d589C319C86519646817F2F153c9B716",
+    "symbol": "DVF",
+    "name": "DeversiFi Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xbbd1ba24d589c319c86519646817f2f153c9b716/f9b255bcd23f4fd182c1c1d462a28fb3.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x686b311F82b407f0be842652a98e5619F64cC25F",
+    "symbol": "ENA",
+    "name": "ENA",
+    "decimals": 18,
+    "logoUrl": "https://ethena.fi/shared/ecosystem/ENA.svg",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xb4C1544cb4163f4C2ECa1aE9Ce999F63892d912A",
+    "symbol": "FRAX",
+    "name": "Frax",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xb4c1544cb4163f4c2eca1ae9ce999f63892d912a/b51f74f3b0cd24c8d6e4e7297c20ac3d.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xc7Ab797019156b543B7a3fBF5A99ECDab9eb4440",
+    "symbol": "frxETH",
+    "name": "Frax Ether",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xEa77c590Bb36c43ef7139cE649cFBCFD6163170d",
+    "symbol": "frxUSD",
+    "name": "Frax USD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x5FC44E95eaa48F9eB84Be17bd3aC66B6A82Af709",
+    "symbol": "GRAI",
+    "name": "Gravita Debt Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x5fc44e95eaa48f9eb84be17bd3ac66b6a82af709/91700a6cc713e4086eb36696ecc0f9b4.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xed4040fD47629e7c8FBB7DA76bb50B3e7695F0f2",
+    "symbol": "HOLD",
+    "name": "Holdstation",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xed4040fd47629e7c8fbb7da76bb50b3e7695f0f2/98e281572409ba6d38fbb6a7baf76fda.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xbe9f8C0d6f0Fd7e46CDaCCA340747EA2f247991D",
+    "symbol": "IBEX",
+    "name": "Impermax",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xbe9f8c0d6f0fd7e46cdacca340747ea2f247991d/745f187404f358ca4be43eb19d5a4fb0.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x1382628e018010035999A1FF330447a0751aa84f",
+    "symbol": "iUSD",
+    "name": "iZUMi Bond USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x1382628e018010035999a1ff330447a0751aa84f/2d4db2979af0e4662d39888f57c4d9d2.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x16A9494e257703797D747540f01683952547EE5b",
+    "symbol": "iZi",
+    "name": "izumi Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x9ad37205d608b8b219e6a2573f922094cec5c200/7b759cd6fd6ff6c1059272152e61a922.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xa995ad25Ce5eB76972ab356168f5e1D9257E4d05",
+    "symbol": "KOI",
+    "name": "Koi",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xa995ad25ce5eb76972ab356168f5e1d9257e4d05/e03ec462cd756b366d37a0aa7ce43843.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xF6D9a093A1C69a152d87e269A7d909E9D76B1815",
+    "symbol": "LAUNCH",
+    "name": "Super Launcher",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xf6d9a093a1c69a152d87e269a7d909e9d76b1815/f4993be7525b6ef51034fc67f26abfa3.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x52869bae3E091e36b0915941577F2D47d8d8B534",
+    "symbol": "LINK",
+    "name": "Chainlink",
+    "decimals": 18,
+    "logoUrl": "https://storage.googleapis.com/zapper-fi-assets/tokens/zksync/0x52869bae3e091e36b0915941577f2d47d8d8b534.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x503234F203fC7Eb888EEC8513210612a43Cf6115",
+    "symbol": "LUSD",
+    "name": "LUSD Stablecoin",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/arb_token/logo_url/0x93b346b6bc2548da6a1e7d98e9a421b42541425b/2fee99025e9128162b4869bf7ffc6036.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x28a487240e4D45CfF4A2980D334CC933B7483842",
+    "symbol": "MATIC",
+    "name": "Matic Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x28a487240e4d45cff4a2980d334cc933b7483842/f6e604ba0324726a3d687c618aa4f163.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x787c09494Ec8Bcb24DcAf8659E7d5D69979eE508",
+    "symbol": "MAV",
+    "name": "Maverick Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x7448c7456a97769f6cd04f1e83a4a23ccdc46abd/d6e114954160b20c5081c0ab15da9223.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x0e97C7a0F8B2C9885C8ac9fC6136e829CbC21d42",
+    "symbol": "MUTE",
+    "name": "Mute.io",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x0e97c7a0f8b2c9885c8ac9fc6136e829cbc21d42/cd34c8329d8f0fed3ee3976937dc44db.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xC8Ac6191CDc9c7bF846AD6b52aaAA7a0757eE305",
+    "symbol": "MVX",
+    "name": "Metavault Trade",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xc8ac6191cdc9c7bf846ad6b52aaaa7a0757ee305/911bc607f15eda046d4946afc3c077f2.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x8483bf6d5E45e467f2979c5d51B76100AAB60294",
+    "symbol": "OKSE",
+    "name": "Okse",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xD0eA21ba66B67bE636De1EC4bd9696EB8C61e9AA",
+    "symbol": "OT",
+    "name": "OT",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xd0ea21ba66b67be636de1ec4bd9696eb8c61e9aa/32b8bba836c356e6f9f35cf4ce9e414b.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x42c1c56be243c250AB24D2ecdcC77F9cCAa59601",
+    "symbol": "PERP",
+    "name": "Perpetual",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x42c1c56be243c250ab24d2ecdcc77f9ccaa59601/45bdd0d6f76f08ff00481e2ee65ef293.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x8bA0aAe056de87AeFcBc973623D9D43470eaE248",
+    "symbol": "pxETH (Bridged)",
+    "name": "Pirex Ether OFT",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x04c154b66cb340f3ae24111cc767e0184ed00cc6/8d1795f4b6f4911bfcaed215e884dde7.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x32Fd44bB869620C0EF993754c8a00Be67C464806",
+    "symbol": "rETH",
+    "name": "Rocket Pool ETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/arb_token/logo_url/0xec70dcb4a1efa46b8f2d97c310c9c4790ba5ffa8/6c8aa3f550d300ce84e06f95c496af69.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x6bE2425C381eb034045b527780D2Bf4E21AB7236",
+    "symbol": "rsETH",
+    "name": "KelpDao Restaked ETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x6be2425c381eb034045b527780d2bf4e21ab7236/81ed19f4ad26dd3b689b7459472528c4.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xFD78FD3667DeF2F1097Ed221ec503AE477155394",
+    "symbol": "sfrxETH",
+    "name": "Staked Frax Ether",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x9F87fbb47C33Cd0614E43500b9511018116F79eE",
+    "symbol": "sfrxUSD",
+    "name": "Staked Frax USD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xdd9f72afED3631a6C85b5369D84875e6c42f1827",
+    "symbol": "SIS",
+    "name": "Symbiosis",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xdd9f72afed3631a6c85b5369d84875e6c42f1827/f2a59df196e9e3933fd33f76abbfeb19.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xE027D939f7dE6F521675907Cf086F59E4D75B876",
+    "symbol": "SLR",
+    "name": "SolarCoin on Mainnet",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xe027d939f7de6f521675907cf086f59e4d75b876/eb377f66d75b5275f07068c7ec571e64.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x74eD17608cc2B5f30a59d6aF07C9aD1B1aB3A5b1",
+    "symbol": "SolvBTC",
+    "name": "Solv BTC",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x74ed17608cc2b5f30a59d6af07c9ad1b1ab3a5b1/f2b98fef037f89d4c1e5f675a85da19c.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x47260090cE5e83454d5f05A0AbbB2C953835f777",
+    "symbol": "SPACE",
+    "name": "SPACE",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x47260090ce5e83454d5f05a0abbb2c953835f777/6c204dc01bc86fa723dcf1906a2cf917.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xAD17Da2f6Ac76746EF261E835C50b2651ce36DA8",
+    "symbol": "sUSDe",
+    "name": "sUSDe",
+    "decimals": 18,
+    "logoUrl": "https://ethena.fi/shared/ecosystem/sUSDe.svg",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x240f765Af2273B0CAb6cAff2880D6d8F8B285fa4",
+    "symbol": "SWORD",
+    "name": "eZKalibur Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x240f765af2273b0cab6caff2880d6d8f8b285fa4/e48a0f28338ad85cd84ad8a29adf7405.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x7F2FD959013eEC5144269ac6edD0015Cb10968Fc",
+    "symbol": "TAROT",
+    "name": "Tarot",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/op_token/logo_url/0x375488f097176507e39b9653b88fdc52cde736bf/279c43a0188f1a56de7921e454091a52.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x8E86e46278518EFc1C5CEd245cBA2C7e3ef11557",
+    "symbol": "USD+",
+    "name": "USD+",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x8e86e46278518efc1c5ced245cba2c7e3ef11557/58363c9095ed5998f48688b3c52c78c7.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xB8d7d88D042880aE87Bb61DE2dFFF8441768766D",
+    "symbol": "USDa",
+    "name": "USDa",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x39Fe7a0DACcE31Bd90418e3e659fb0b5f0B3Db0d",
+    "symbol": "USDe",
+    "name": "USDe",
+    "decimals": 18,
+    "logoUrl": "https://ethena.fi/shared/usde.svg",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x7715c206A14Ac93Cb1A6c0316A6E5f8aD7c9Dc31",
+    "symbol": "USDM",
+    "name": "Mountain Protocol USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x7715c206a14ac93cb1a6c0316a6e5f8ad7c9dc31/829bf4c2be7a21d0f15af2bfac645dd1.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xdb89D7b0Dccd0C0e5aC3571133A9aa1a037945cb",
+    "symbol": "USX",
+    "name": "dForce USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/matic_token/logo_url/0xcf66eb3d546f0415b368d98a95eaf56ded7aa752/09298f687c07bdcfab0137f654cd17e9.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x85D84c774CF8e9fF85342684b0E795Df72A24908",
+    "symbol": "VC(old)",
+    "name": "Velocore",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x85d84c774cf8e9ff85342684b0e795df72a24908/a82c2af76646d40308be938c9a001c7c.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x5756A28E2aAe01F600FC2C01358395F5C1f8ad3A",
+    "symbol": "VS",
+    "name": "veSync",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x5756a28e2aae01f600fc2c01358395f5c1f8ad3a/719a6c26699df3493cb013968da2db88.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xBBeB516fb02a01611cBBE0453Fe3c580D7281011",
+    "symbol": "WBTC",
+    "name": "Wrapped BTC",
+    "decimals": 8,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599/d3c52e7c7449afa8bd4fad1c93f50d93.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xc1Fa6E2E8667d9bE0Ca938a54c7E0285E9Df924a",
+    "symbol": "weETH",
+    "name": "Wrapped eETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee/6c02f6b3bcd264d433c3676100ad8da6.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91",
+    "symbol": "WETH",
+    "name": "Wrapped Ether",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x5aea5775959fbc2557cc8789bc1bf90a239d9a91/61844453e63cf81301f845d7864236f6.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xd4169E045bcF9a86cC00101225d9ED61D2F51af2",
+    "symbol": "wrsETH",
+    "name": "rsETHWrapper",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xd4169e045bcf9a86cc00101225d9ed61d2f51af2/4f38c2a07b420369c00e85c7a0d86774.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x703b52F2b28fEbcB60E1372858AF5b18849FE867",
+    "symbol": "wstETH",
+    "name": "txSync Bridged wstETH (zkSync)",
+    "decimals": 18,
+    "logoUrl": "https://storage.googleapis.com/zapper-fi-assets/tokens/zksync/0x703b52f2b28febcb60e1372858af5b18849fe867.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xA900cbE7739c96D2B153a273953620A701d5442b",
+    "symbol": "wUSDM",
+    "name": "Wrapped Mountain Protocol USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xa900cbe7739c96d2b153a273953620a701d5442b/88fd3c919a9cf5abbfe4db9670890fb3.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x2878295D69Aa3BDcf9004FCf362F0959992D801c",
+    "symbol": "xSolvBTC",
+    "name": "xSolvBTC",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xD78ABD81a3D57712a3af080dc4185b698Fe9ac5A",
+    "symbol": "XVS",
+    "name": "Venus XVS",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/bsc_token/logo_url/0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63/a21a9e370c4c173a880e39af1d243117.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xb727F8e11bc417c90D4DcaF82EdA06cf590533B5",
+    "symbol": "z0BUSD",
+    "name": "ZeroLend zK BUSD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x016341e6Da8da66b33Fd32189328c102f32Da7CC",
+    "symbol": "z0USDC",
+    "name": "z0USDC",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x9ca4806fa54984Bf5dA4E280b7AA8bB821D21505",
+    "symbol": "z0USDT",
+    "name": "ZeroLend zK USDT",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x7c65E6eC6fECeb333092e6FE69672a3475C591fB",
+    "symbol": "z0WBTC",
+    "name": "ZeroLend zK WBTC",
+    "decimals": 8,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x9002ecb8a06060e3b56669c6B8F18E1c3b119914",
+    "symbol": "z0WETH",
+    "name": "z0WETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x31C2c031fDc9d33e974f327Ab0d9883Eae06cA4A",
+    "symbol": "ZF",
+    "name": "zkSwap Finance",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x31c2c031fdc9d33e974f327ab0d9883eae06ca4a/4b48b91937a5badd7632fe1e65292af4.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x5d0d7BCa050e2E98Fd4A5e8d3bA823B49f39868d",
+    "symbol": "ZFI",
+    "name": "Zyfi Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x5d0d7bca050e2e98fd4a5e8d3ba823b49f39868d/00405210ee5a316eb88c28afd0edbf6b.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0x5A7d6b2F92C77FAD6CCaBd7EE0624E64907Eaf3E",
+    "symbol": "ZK",
+    "name": "zkSync",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0x5a7d6b2f92c77fad6ccabd7ee0624e64907eaf3e/c9f43a1c9fcec603e6a8a5e92a58a77a.png",
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xA51710195Cdc29c43d3BeeEb6B255cFd97B3Dd88",
+    "symbol": "ZKS",
+    "name": "Zks",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "324"
+  },
+  {
+    "address": "0xfC7E56298657B002b3e656400E746b7212912757",
+    "symbol": "zkUSD",
+    "name": "zkUSD Dollar",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/era_token/logo_url/0xfc7e56298657b002b3e656400e746b7212912757/392591c1cb425d1f31e827b3ea6462ae.png",
+    "isNative": false,
+    "chainKey": "324"
+  }
+]

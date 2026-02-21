@@ -1,0 +1,13 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "XRP",
+    "name": "XRP",
+    "decimals": 6,
+    "isNative": true,
+    "chainKey": "xrp",
+    "providerIds": {
+      "nearIntents": "nep141:xrp.omft.near"
+    }
+  }
+]

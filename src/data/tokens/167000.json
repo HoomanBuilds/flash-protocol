@@ -1,0 +1,56 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "ETH",
+    "name": "ETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": true,
+    "chainKey": "167000"
+  },
+  {
+    "address": "0x07d83526730c7438048D55A4fc0b850e2aaB6f0b",
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "167000"
+  },
+  {
+    "address": "0x2DEF195713CF4a606B49D07E520e22C17899a736",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "167000"
+  },
+  {
+    "address": "0x19e26B0638bf63aa9fa4d14c6baF8D52eBE86C5C",
+    "symbol": "USDC.e(Stargate)",
+    "name": "Bridged USDC (Stargate)",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/coin/logo_url/usdc/e87790bfe0b3f2ea855dc29069b38818.png",
+    "isNative": false,
+    "chainKey": "167000"
+  },
+  {
+    "address": "0x9c2dc7377717603eB92b2655c5f2E7997a4945BD",
+    "symbol": "USDT(Stargate)",
+    "name": "Tether USD",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/coin/logo_url/usdt/23af7472292cb41dc39b3f1146ead0fe.png",
+    "isNative": false,
+    "chainKey": "167000"
+  },
+  {
+    "address": "0xA51894664A773981C6C112C43ce576f315d5b1B6",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/mtr_token/logo_url/0x79a61d3a28f8c8537a3df63092927cfa1150fb3c/61844453e63cf81301f845d7864236f6.png",
+    "isNative": false,
+    "chainKey": "167000"
+  }
+]

@@ -8,13 +8,22 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { QuoteDisplay } from '@/components/QuoteDisplay'
-import { CHAINS } from '@/lib/chains'
-import { getTokensByChain, getUSDCAddress } from '@/lib/tokens'
+import { getUSDCAddress } from '@/lib/tokens'
 import { QuoteResponse } from '@/types/provider'
 import { useTransactionExecutor } from '@/hooks/useTransactionExecutor'
 import { useToast } from '@/components/ui/use-toast'
+import type { UnifiedChain, UnifiedToken } from '@/lib/chain-registry'
 
-const PAYER_CHAINS = CHAINS.filter(c => c.type === 'evm' && !c.isTestnet)
+// Chain type group labels for the dropdown
+const CHAIN_TYPE_LABELS: Record<string, string> = {
+  evm: 'EVM Networks',
+  solana: 'Solana',
+  bitcoin: 'Bitcoin',
+  cosmos: 'Cosmos',
+  near: 'NEAR',
+  tron: 'Tron',
+  sui: 'Sui',
+}
 const PRICE_REFRESH_INTERVAL = 30_000
 
 const STABLECOINS = new Set(['USDC', 'USDC.e', 'USDbC', 'USDT', 'fUSDT', 'DAI', 'BUSD'])
@@ -43,12 +52,22 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   // Custom Executor Hook
   const { execute, status: executorStatus, step: executorStep, error: executorError, txHash } = useTransactionExecutor()
 
-  const [fromChainId, setFromChainId] = useState(
-    connectedChain?.id && PAYER_CHAINS.find(c => c.chainId === connectedChain.id)
-      ? connectedChain.id
-      : 42161
+  // Dynamic chain/token state
+  const [dynamicChains, setDynamicChains] = useState<UnifiedChain[]>([])
+  const [dynamicTokens, setDynamicTokens] = useState<UnifiedToken[]>([])
+  const [chainsLoading, setChainsLoading] = useState(true)
+  const [tokensLoading, setTokensLoading] = useState(false)
+
+  const [fromChainKey, setFromChainKey] = useState<string>(
+    connectedChain?.id ? String(connectedChain.id) : '42161'
   )
   const [fromTokenAddress, setFromTokenAddress] = useState('0x0000000000000000000000000000000000000000')
+
+  // Derive numeric chainId for wagmi compatibility
+  const fromChainId = (() => {
+    const num = Number(fromChainKey)
+    return !isNaN(num) && Number.isInteger(num) ? num : 0
+  })()
 
   const toChainId = link.receive_mode === 'same_chain' ? fromChainId : (link.receive_chain_id || 1)
 
@@ -71,9 +90,80 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   const isFixedAmount = typeof link.amount === 'number' && link.amount > 0
   const displayAmountUSD = isFixedAmount ? link.amount! : parseFloat(manualAmount) || 0
 
-  const availableTokens = getTokensByChain(fromChainId)
-  const fromToken = availableTokens.find(t => t.address.toLowerCase() === fromTokenAddress.toLowerCase())
-  const destinationToken = link.receive_token || getUSDCAddress(toChainId)
+  const fromToken = dynamicTokens.find(t => t.address.toLowerCase() === fromTokenAddress.toLowerCase())
+
+  // Dynamic USDC address resolution for destination chain
+  const [resolvedUSDCAddress, setResolvedUSDCAddress] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    if (link.receive_token) return
+
+    async function resolveUSDC() {
+      try {
+        const res = await fetch(`/api/tokens?chainKey=${toChainId}`)
+        const data = await res.json()
+        if (data.success && data.tokens) {
+          const usdc = data.tokens.find((t: any) =>
+            t.symbol?.toUpperCase() === 'USDC'
+          )
+          if (usdc?.address) {
+            setResolvedUSDCAddress(usdc.address)
+            return
+          }
+        }
+      } catch (err) {
+        console.warn('Dynamic USDC resolution failed, using fallback:', err)
+      }
+      // Fallback to static map
+      setResolvedUSDCAddress(getUSDCAddress(toChainId))
+    }
+    resolveUSDC()
+  }, [toChainId, link.receive_token])
+
+  const destinationToken = link.receive_token || resolvedUSDCAddress || getUSDCAddress(toChainId)
+
+  // Fetch chains on mount
+  useEffect(() => {
+    async function loadChains() {
+      setChainsLoading(true)
+      try {
+        const res = await fetch('/api/chains')
+        const data = await res.json()
+        if (data.success && data.chains) {
+          setDynamicChains(data.chains)
+        }
+      } catch (err) {
+        console.error('Failed to load chains:', err)
+      } finally {
+        setChainsLoading(false)
+      }
+    }
+    loadChains()
+  }, [])
+
+  // Fetch tokens when chain changes
+  useEffect(() => {
+    if (!fromChainKey) return
+    async function loadTokens() {
+      setTokensLoading(true)
+      try {
+        const res = await fetch(`/api/tokens?chainKey=${encodeURIComponent(fromChainKey)}`)
+        const data = await res.json()
+        if (data.success && data.tokens) {
+          setDynamicTokens(data.tokens)
+          // Auto-select native token if available
+          const native = data.tokens.find((t: UnifiedToken) => t.isNative)
+          if (native) setFromTokenAddress(native.address)
+        }
+      } catch (err) {
+        console.error('Failed to load tokens:', err)
+        setDynamicTokens([])
+      } finally {
+        setTokensLoading(false)
+      }
+    }
+    loadTokens()
+  }, [fromChainKey])
 
   // Fetch Bundle
   const { data: balanceData } = useBalance({
@@ -159,8 +249,8 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   }, [fetchPrice, fromToken, displayAmountUSD])
 
   // Handle chain change — reset token to native
-  const handleChainChange = (newChainId: number) => {
-    setFromChainId(newChainId)
+  const handleChainChange = (newChainKey: string) => {
+    setFromChainKey(newChainKey)
     setFromTokenAddress('0x0000000000000000000000000000000000000000')
     setQuotes([])
     setSelectedQuote(null)
@@ -208,11 +298,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
         const best = data.bestQuote || data.routes[0]
         setSelectedQuote(best)
       } else {
-        // Check for specific provider errors
-        const providerErrors = data.providerStats?.errors || {}
-        const errorMsg = Object.values(providerErrors).find((e: any) => e.includes('Insufficient balance'))
-        
-        throw new Error(errorMsg || data.error || 'No routes found')
+        throw new Error(data.error || 'No routes found for this swap. Try a different token or chain.')
       }
     } catch (e) {
       console.error(e)
@@ -224,15 +310,14 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   }
 
   useEffect(() => {
-    const insufficientBalanceQuote = quotes.find(q => q.metadata?.insufficientBalance)
-    if (insufficientBalanceQuote) {
+    if (selectedQuote?.metadata?.insufficientBalance) {
         toast({
             variant: "destructive",
             title: "Insufficient Balance",
-            description: `You don't have enough balance for the ${insufficientBalanceQuote.provider} route.`
+            description: `You don't have enough balance for the ${selectedQuote.provider} route. Try a different token or add funds.`
         })
     }
-  }, [quotes])
+  }, [selectedQuote])
 
 
   const handleExecute = async () => {
@@ -411,13 +496,55 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
               <Label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Payment Network</Label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500" />
-                <select
-                  className="w-full pl-8 pr-4 py-4 bg-background border border-border text-foreground font-mono text-sm focus:border-foreground/50 transition-all outline-none appearance-none cursor-pointer hover:bg-muted/50"
-                  value={fromChainId}
-                  onChange={(e) => handleChainChange(Number(e.target.value))}
-                >
-                  {PAYER_CHAINS.map(c => <option key={c.chainId} value={c.chainId}>{c.name}</option>)}
-                </select>
+                {chainsLoading ? (
+                  <div className="w-full pl-8 pr-4 py-4 bg-background border border-border text-muted-foreground font-mono text-sm flex items-center gap-2">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Loading networks...</span>
+                  </div>
+                ) : (
+                  <select
+                    className="w-full pl-8 pr-4 py-4 bg-background border border-border text-foreground font-mono text-sm focus:border-foreground/50 transition-all outline-none appearance-none cursor-pointer hover:bg-muted/50"
+                    value={fromChainKey}
+                    onChange={(e) => handleChainChange(e.target.value)}
+                  >
+                    {/* Popular chains at the top */}
+                    {(() => {
+                      const popularIds = ['42161', '8453', '137', '10', '1']
+                      const popularChains = popularIds
+                        .map(id => dynamicChains.find(c => c.key === id || String(c.chainId) === id))
+                        .filter(Boolean) as UnifiedChain[]
+                      const remainingChains = dynamicChains.filter(c =>
+                        !popularIds.includes(c.key) && !popularIds.includes(String(c.chainId || ''))
+                      )
+
+                      return (
+                        <>
+                          {popularChains.length > 0 && (
+                            <optgroup label="⭐ Popular">
+                              {popularChains.map(c => (
+                                <option key={c.key} value={c.key}>{c.name}</option>
+                              ))}
+                            </optgroup>
+                          )}
+                          {Object.entries(
+                            remainingChains.reduce((groups, chain) => {
+                              const type = chain.type || 'evm'
+                              if (!groups[type]) groups[type] = []
+                              groups[type].push(chain)
+                              return groups
+                            }, {} as Record<string, UnifiedChain[]>)
+                          ).map(([type, chains]) => (
+                            <optgroup key={type} label={CHAIN_TYPE_LABELS[type] || type.toUpperCase()}>
+                              {chains.map(c => (
+                                <option key={c.key} value={c.key}>{c.name}</option>
+                              ))}
+                            </optgroup>
+                          ))}
+                        </>
+                      )
+                    })()}
+                  </select>
+                )}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
                   <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-50">
                     <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -430,13 +557,24 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
             <div className="space-y-3">
               <Label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Payment Asset</Label>
               <div className="relative">
-                <select
-                  className="w-full px-4 py-4 bg-background border border-border text-foreground font-mono text-sm focus:border-foreground/50 transition-all outline-none appearance-none cursor-pointer hover:bg-muted/50"
-                  value={fromTokenAddress}
-                  onChange={(e) => handleTokenChange(e.target.value)}
-                >
-                  {availableTokens.map(t => <option key={t.address} value={t.address}>{t.symbol}</option>)}
-                </select>
+                {tokensLoading ? (
+                  <div className="w-full px-4 py-4 bg-background border border-border text-muted-foreground font-mono text-sm flex items-center gap-2">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Loading tokens...</span>
+                  </div>
+                ) : (
+                  <select
+                    className="w-full px-4 py-4 bg-background border border-border text-foreground font-mono text-sm focus:border-foreground/50 transition-all outline-none appearance-none cursor-pointer hover:bg-muted/50"
+                    value={fromTokenAddress}
+                    onChange={(e) => handleTokenChange(e.target.value)}
+                  >
+                    {dynamicTokens.map(t => (
+                      <option key={t.address} value={t.address}>
+                        {t.symbol}{t.name && t.name !== t.symbol ? ` — ${t.name}` : ''}
+                      </option>
+                    ))}
+                  </select>
+                )}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
                   <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-50">
                     <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

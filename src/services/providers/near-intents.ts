@@ -7,42 +7,117 @@ if (process.env.NEAR_INTENTS_JWT) {
   OpenAPI.TOKEN = process.env.NEAR_INTENTS_JWT
 }
 
-// Chain prefix mapping for asset ID format
-const CHAIN_PREFIX_MAP: Record<number, string> = {
-  1: 'eth',
-  137: 'polygon', 
-  42161: 'arb',
-  10: 'op',
-  8453: 'base',
-  56: 'bsc',
-  43114: 'avax',
-  100: 'gnosis',
+// Hardcoded fallback — used when getTokens() fails to build maps
+const FALLBACK_PREFIX_MAP: Record<string, string> = {
+  '1': 'eth',
+  '137': 'polygon', 
+  '42161': 'arb',
+  '10': 'op',
+  '8453': 'base',
+  '56': 'bsc',
+  '43114': 'avax',
+  '100': 'gnosis',
 }
 
-// Native token asset IDs from https://1click.chaindefuser.com/v0/tokens
-const NATIVE_ASSET_IDS: Record<number, string> = {
-  1: 'nep141:eth.omft.near',
-  42161: 'nep141:arb.omft.near',
-  8453: 'nep141:base.omft.near',
-  10: 'nep245:v2_1.omni.hot.tg:10_11111111111111111111',
-  137: 'nep245:v2_1.omni.hot.tg:137_11111111111111111111',
-  56: 'nep245:v2_1.omni.hot.tg:56_11111111111111111111',
-  43114: 'nep245:v2_1.omni.hot.tg:43114_11111111111111111111',
-  100: 'nep141:gnosis.omft.near',
+const FALLBACK_NATIVE_IDS: Record<string, string> = {
+  '1': 'nep141:eth.omft.near',
+  '42161': 'nep141:arb.omft.near',
+  '8453': 'nep141:base.omft.near',
+  '10': 'nep245:v2_1.omni.hot.tg:10_11111111111111111111',
+  '137': 'nep245:v2_1.omni.hot.tg:137_11111111111111111111',
+  '56': 'nep245:v2_1.omni.hot.tg:56_11111111111111111111',
+  '43114': 'nep245:v2_1.omni.hot.tg:43114_11111111111111111111',
+  '100': 'nep141:gnosis.omft.near',
+}
+
+// Dynamic maps: built from getTokens() response at first use
+let dynamicPrefixMap: Record<string, string> | null = null
+let dynamicNativeAssetIds: Record<string, string> | null = null
+let nearMapsLoading: Promise<void> | null = null
+
+// Map NEAR blockchain name to our chain key
+const NEAR_BLOCKCHAIN_TO_KEY: Record<string, string> = {
+  ethereum: '1',
+  arbitrum: '42161',
+  base: '8453',
+  optimism: '10',
+  polygon: '137',
+  bsc: '56',
+  avalanche: '43114',
+  gnosis: '100',
+  near: 'near',
+  solana: 'solana',
+  bitcoin: 'bitcoin',
+  dogecoin: 'dogecoin',
+  aurora: '1313161554',
+  turbochain: 'turbochain',
+}
+
+async function ensureNearMaps(): Promise<void> {
+  if (dynamicPrefixMap) return
+  if (nearMapsLoading) { await nearMapsLoading; return }
+
+  nearMapsLoading = (async () => {
+    try {
+      const tokens = await OneClickService.getTokens()
+      if (!tokens || !Array.isArray(tokens)) throw new Error('No tokens returned')
+
+      dynamicPrefixMap = {}
+      dynamicNativeAssetIds = {}
+
+      for (const t of tokens) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const token = t as any
+        const blockchain = token.blockchain as string
+        if (!blockchain) continue
+
+        const chainKey = NEAR_BLOCKCHAIN_TO_KEY[blockchain] || blockchain
+
+        // Extract chain prefix from assetId
+        // Format: "nep141:eth-0xaddr.omft.near" → prefix = "eth"
+        // Format: "nep141:eth.omft.near" → prefix = "eth" (native)
+        const assetId = token.assetId as string
+        if (assetId && !dynamicPrefixMap[chainKey]) {
+          const match = assetId.match(/(?:nep141|nep245):([^-.]+)/)
+          if (match) {
+            dynamicPrefixMap[chainKey] = match[1]
+          }
+        }
+
+        // Identify native tokens (no contract address or null)
+        if (!token.contractAddress && assetId && !dynamicNativeAssetIds[chainKey]) {
+          dynamicNativeAssetIds[chainKey] = assetId
+        }
+      }
+
+      console.log(`NEAR Intents: Built maps for ${Object.keys(dynamicPrefixMap).length} chains from getTokens()`)
+    } catch (error) {
+      console.warn('NEAR Intents: Failed to build maps from getTokens(), using fallbacks:', error)
+      dynamicPrefixMap = { ...FALLBACK_PREFIX_MAP }
+      dynamicNativeAssetIds = { ...FALLBACK_NATIVE_IDS }
+    }
+  })()
+
+  await nearMapsLoading
+  nearMapsLoading = null
 }
 
 export class NearIntentsProvider implements IProvider {
   name = 'near-intents'
 
   /**
-   * Convert chainId + token address to NEAR Intents asset ID format
+   * Convert chainKey + token address to NEAR Intents asset ID format
    * ERC20 format: nep141:[chain]-[address].omft.near
    * Native format: nep141:[chain].omft.near (no contract address)
    */
-  private getAssetId(chainId: number, tokenAddress: string): string | null {
-    const chainPrefix = CHAIN_PREFIX_MAP[chainId]
+  private getAssetId(chainId: number | string, tokenAddress: string): string | null {
+    const chainKey = String(chainId)
+    const prefixMap = dynamicPrefixMap || FALLBACK_PREFIX_MAP
+    const nativeMap = dynamicNativeAssetIds || FALLBACK_NATIVE_IDS
+    
+    const chainPrefix = prefixMap[chainKey]
     if (!chainPrefix) {
-      console.log(`NEAR Intents: Unsupported chain ${chainId}`)
+      console.log(`NEAR Intents: Unsupported chain ${chainKey}`)
       return null
     }
 
@@ -50,9 +125,9 @@ export class NearIntentsProvider implements IProvider {
     
     // Native token (zero address) - use chain-level asset ID
     if (address === '0x0000000000000000000000000000000000000000') {
-      const nativeId = NATIVE_ASSET_IDS[chainId]
+      const nativeId = nativeMap[chainKey]
       if (!nativeId) {
-        console.log(`NEAR Intents: No native asset ID for chain ${chainId}`)
+        console.log(`NEAR Intents: No native asset ID for chain ${chainKey}`)
         return null
       }
       return nativeId
@@ -72,6 +147,8 @@ export class NearIntentsProvider implements IProvider {
         console.log('NEAR Intents: JWT not configured (NEAR_INTENTS_JWT)')
         return []
       }
+
+      await ensureNearMaps()
 
       // Fetch tokens if cache is empty or stale (1 hour)
       if (!this.tokenCache || Date.now() - this.tokenCacheTime > 3600000) {

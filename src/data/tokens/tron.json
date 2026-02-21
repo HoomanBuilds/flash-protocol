@@ -1,0 +1,24 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "TRX",
+    "name": "TRX",
+    "decimals": 6,
+    "isNative": true,
+    "chainKey": "tron",
+    "providerIds": {
+      "nearIntents": "nep141:tron.omft.near"
+    }
+  },
+  {
+    "address": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "tron",
+    "providerIds": {
+      "nearIntents": "nep141:tron-d28a265909efecdcee7c5028585214ea0b96f015.omft.near"
+    }
+  }
+]

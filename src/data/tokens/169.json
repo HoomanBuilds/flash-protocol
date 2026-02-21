@@ -1,0 +1,29 @@
+[
+  {
+    "address": "0xb73603C5d87fA094B7314C74ACE2e64D165016fb",
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+    "isNative": false,
+    "chainKey": "169"
+  },
+  {
+    "address": "0xA53E005Cecd3D7C89A4AE814617cC14828b6527E",
+    "symbol": "pufETH",
+    "name": "pufETH",
+    "decimals": 18,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/29325.png",
+    "isNative": false,
+    "chainKey": "169"
+  },
+  {
+    "address": "0x0Dc808adcE2099A9F62AA87D9670745AbA741746",
+    "symbol": "WETH",
+    "name": "Wrapped Ether",
+    "decimals": 18,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+    "isNative": false,
+    "chainKey": "169"
+  }
+]

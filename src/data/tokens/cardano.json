@@ -1,0 +1,13 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "ADA",
+    "name": "ADA",
+    "decimals": 6,
+    "isNative": true,
+    "chainKey": "cardano",
+    "providerIds": {
+      "nearIntents": "nep141:cardano.omft.near"
+    }
+  }
+]

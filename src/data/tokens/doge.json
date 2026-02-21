@@ -1,0 +1,13 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "DOGE",
+    "name": "DOGE",
+    "decimals": 8,
+    "isNative": true,
+    "chainKey": "doge",
+    "providerIds": {
+      "nearIntents": "nep141:doge.omft.near"
+    }
+  }
+]

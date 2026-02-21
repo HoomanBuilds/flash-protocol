@@ -1,0 +1,11 @@
+[
+  {
+    "address": "0xdef886c55a79830c47108eeb9c37e78a49684e41",
+    "symbol": "USDT",
+    "name": "Tether USD",
+    "decimals": 6,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
+    "isNative": false,
+    "chainKey": "5165"
+  }
+]

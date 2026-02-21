@@ -1,0 +1,24 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "XLM",
+    "name": "XLM",
+    "decimals": 7,
+    "isNative": true,
+    "chainKey": "stellar",
+    "providerIds": {
+      "nearIntents": "nep245:v2_1.omni.hot.tg:1100_111bzQBB5v7AhLyPMDwS8uJgQV24KaAPXtwyVWu2KXbbfQU6NXRCz"
+    }
+  },
+  {
+    "address": "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+    "symbol": "USDC",
+    "name": "USDC",
+    "decimals": 7,
+    "isNative": false,
+    "chainKey": "stellar",
+    "providerIds": {
+      "nearIntents": "nep245:v2_1.omni.hot.tg:1100_111bzQBB65GxAPAVoxqmMcgYo5oS3txhqs1Uh1cgahKQUeTUq1TJu"
+    }
+  }
+]

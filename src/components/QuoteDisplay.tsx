@@ -16,8 +16,8 @@ interface QuoteDisplayProps {
       toolName?: string
       toolLogoURI?: string
       action: {
-        fromToken: { symbol: string; chainId: number; decimals: number }
-        toToken: { symbol: string; chainId: number; decimals: number }
+        fromToken: { symbol: string; chainId: number | string; decimals: number }
+        toToken: { symbol: string; chainId: number | string; decimals: number }
         fromAmount?: string
         toAmount?: string
       }
@@ -68,20 +68,25 @@ export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoad
   const toAmount = safeFormatUnits(route.toAmount, toToken.decimals)
   const minAmount = route.toAmountMin ? safeFormatUnits(route.toAmountMin, toToken.decimals) : toAmount
 
-  const getChainName = (chainId: number) => {
-    const chains: Record<number, string> = {
-      1: 'Ethereum',
-      10: 'Optimism',
-      56: 'BSC',
-      137: 'Polygon',
-      42161: 'Arbitrum',
-      8453: 'Base',
-      43114: 'Avalanche',
-      324: 'zkSync',
-      534352: 'Scroll',
-      59144: 'Linea',
+  const getChainName = (chainId: number | string) => {
+    const chains: Record<string, string> = {
+      '1': 'Ethereum',
+      '10': 'Optimism',
+      '56': 'BSC',
+      '137': 'Polygon',
+      '42161': 'Arbitrum',
+      '8453': 'Base',
+      '43114': 'Avalanche',
+      '324': 'zkSync',
+      '534352': 'Scroll',
+      '59144': 'Linea',
+      'solana': 'Solana',
+      'bitcoin': 'Bitcoin',
+      'near': 'NEAR',
+      'tron': 'Tron',
+      'cosmos': 'Cosmos',
     }
-    return chains[chainId] || `Chain ${chainId}`
+    return chains[String(chainId)] || `Chain ${chainId}`
   }
 
   const formatAmount = (amount: string, decimals: number) => {

@@ -8,8 +8,9 @@ export class SymbiosisProvider implements IProvider {
 
   async getQuote(request: QuoteRequest): Promise<QuoteResponse[]> {
     try {
-      const fromChainId = request.fromChain
-      const toChainId = request.toChain
+      const fromChainId = typeof request.fromChain === 'number' ? request.fromChain : Number(request.fromChain)
+      const toChainId = typeof request.toChain === 'number' ? request.toChain : Number(request.toChain)
+      if (isNaN(fromChainId) || isNaN(toChainId)) return []
       
       const isFromSupported = SYMBIOSIS_CHAIN_IDS.includes(fromChainId)
       const isToSupported = SYMBIOSIS_CHAIN_IDS.includes(toChainId)
@@ -73,7 +74,7 @@ export class SymbiosisProvider implements IProvider {
       const bridgeFeeUSD = parseFloat(apiFeeUSD) > 0 ? apiFeeUSD : impliedFeeUSD
       const priceImpact = data.priceImpact?.toString()
 
-      const approvalAddress = SYMBIOSIS_GATEWAY_MAP[fromChainId]
+      const approvalAddress = SYMBIOSIS_GATEWAY_MAP[fromChainId as number]
 
       return [{
         provider: 'symbiosis',

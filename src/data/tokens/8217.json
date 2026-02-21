@@ -1,0 +1,56 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "KAIA",
+    "name": "KAIA",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/chain/logo_url/klay/4182ee077031d843a57e42746c30c072.png",
+    "isNative": true,
+    "chainKey": "8217"
+  },
+  {
+    "address": "0x6270B58BE569a7c0b8f47594F191631Ae5b2C86C",
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "8217"
+  },
+  {
+    "address": "0xE2053BCf56D2030d2470Fb454574237cF9ee3D4B",
+    "symbol": "USDC.e",
+    "name": "Bridged USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "8217"
+  },
+  {
+    "address": "0x9025095263d1E548dc890A7589A4C78038aC40ab",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "8217"
+  },
+  {
+    "address": "0x55Acee547DF909CF844e32DD66eE55a6F81dC71b",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": false,
+    "chainKey": "8217"
+  },
+  {
+    "address": "0x19Aac5f612f524B754CA7e7c41cbFa2E981A4432",
+    "symbol": "WKAIA",
+    "name": "Wrapped KAIA",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/chain/logo_url/klay/4182ee077031d843a57e42746c30c072.png",
+    "isNative": false,
+    "chainKey": "8217"
+  }
+]

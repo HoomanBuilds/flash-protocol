@@ -1,4 +1,4 @@
-export type ChainId = number
+export type ChainId = number | string
 
 export interface Token {
   address: string

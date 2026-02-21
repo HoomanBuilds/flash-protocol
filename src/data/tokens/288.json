@@ -1,0 +1,82 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "ETH",
+    "name": "ETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": true,
+    "chainKey": "288"
+  },
+  {
+    "address": "0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc",
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "288"
+  },
+  {
+    "address": "0x5DE1677344D3Cb0D7D465c10b72A8f60699C062d",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "288"
+  },
+  {
+    "address": "0xc67b9B1B0557aeAfA10AA1fFa1d7c87087a6149E",
+    "symbol": "BANA",
+    "name": "Banana",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "288"
+  },
+  {
+    "address": "0x7562F525106F5d54E891e005867Bf489B5988CD9",
+    "symbol": "Legacy Frax Dollar",
+    "name": "Frax",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/coin/logo_url/legacy_frax/e9ed792d23e1b9f0449b650a411006d5.png",
+    "isNative": false,
+    "chainKey": "288"
+  },
+  {
+    "address": "0x922D641a426DcFFaeF11680e5358F34d97d112E1",
+    "symbol": "MATIC(multichain)",
+    "name": "Matic",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/boba_token/logo_url/0x922d641a426dcffaef11680e5358f34d97d112e1/367bd099d7f8fc0c3e9c792730f411fc.png",
+    "isNative": false,
+    "chainKey": "288"
+  },
+  {
+    "address": "0xdc0486f8bf31DF57a952bcd3c1d3e166e3d9eC8b",
+    "symbol": "WBTC",
+    "name": "WBTC",
+    "decimals": 8,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+    "isNative": false,
+    "chainKey": "288"
+  },
+  {
+    "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000",
+    "symbol": "WETH",
+    "name": "Wrapped ETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/boba_token/logo_url/0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000/b1947b38a90e559eb950453965714be4.png",
+    "isNative": false,
+    "chainKey": "288"
+  },
+  {
+    "address": "0x7445Efc8A6F1279434133408BEdeb6Eb4d1537Ab",
+    "symbol": "ZENC",
+    "name": "Zencha Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/boba_token/logo_url/0x7445efc8a6f1279434133408bedeb6eb4d1537ab/2058a85914ed0642850a5b723df2ebcc.png",
+    "isNative": false,
+    "chainKey": "288"
+  }
+]

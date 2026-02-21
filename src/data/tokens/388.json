@@ -1,0 +1,11 @@
+[
+  {
+    "address": "0xaa5b845f8c9c047779bedf64829601d8b264076c",
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+    "isNative": false,
+    "chainKey": "388"
+  }
+]

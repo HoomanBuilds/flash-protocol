@@ -1,0 +1,491 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "XPL",
+    "name": "Plasma",
+    "decimals": 18,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/36645.png",
+    "isNative": true,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x0b9A412c94f07223752031f75a20DDe542D63d5C",
+    "symbol": "aPlaPT_sUSDE_15JAN2026",
+    "name": "Aave Plasma PT_sUSDE_15JAN2026",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x53349cBeD7A3F851f0722Bf3Fa8f1b93fA939BeF",
+    "symbol": "aPlaPT_sUSDE_9APR2026",
+    "name": "Aave Plasma PT_sUSDE_9APR2026",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xEa601A9FECF80bFC529F08A51bD8Cb0d72fc862A",
+    "symbol": "aPlaPT_USDe_15JAN2026",
+    "name": "Aave Plasma PT_USDe_15JAN2026",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x9326fA5a71C93D5De313c91C3b80D74d0c3a0F5A",
+    "symbol": "aPlaPT_USDe_9APR2026",
+    "name": "Aave Plasma PT_USDe_9APR2026",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xC1A318493fF07a68fE438Cee60a7AD0d0DBa300E",
+    "symbol": "aPlasUSDe",
+    "name": "Aave Plasma sUSDe",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xD4eE376C40EdC83832aAaFc18fC0272660F5e90b",
+    "symbol": "aPlasyrupUSDT",
+    "name": "Aave Plasma syrupUSDT",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x7519403E12111ff6b710877Fcd821D0c12CAF43A",
+    "symbol": "aPlaUSDe",
+    "name": "Aave Plasma USDe",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x5D72a9d9A9510Cd8cBdBA12aC62593A58930a948",
+    "symbol": "aPlaUSDT0",
+    "name": "Aave Plasma USDT0",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xAf1a7a488c8348b41d5860C04162af7d3D38A996",
+    "symbol": "aPlaweETH",
+    "name": "Aave Plasma weETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xf1aB7f60128924d69f6d7dE25A20eF70bBd43d07",
+    "symbol": "aPlaWETH",
+    "name": "Aave Plasma WETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x41c7aCCC0fB97470bFB48014bad52E0d99447E79",
+    "symbol": "aPlawrsETH",
+    "name": "Aave Plasma wrsETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x5aA4bc74811D672DA5308019dA4779f673e60B47",
+    "symbol": "aPlaWXPL",
+    "name": "Aave Plasma WXPL",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x5c43D6C075C7CF95fb188FB2977eeD3E3F2a92c2",
+    "symbol": "aPlaXAUt0",
+    "name": "Aave Plasma XAUt0",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x22625eEDd92c81a219A83e1dc48f88d54786B017",
+    "symbol": "BAL",
+    "name": "Balancer",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xe09B197f8c517ba8EA9440C31a8dDCD049CF7ccC",
+    "symbol": "BOLD",
+    "name": "BOLD Stablecoin",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x58538e6A46E07434d7E7375Bc268D3cb839C0133",
+    "symbol": "ENA",
+    "name": "ENA",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0x58538e6a46e07434d7e7375bc268d3cb839c0133/20d567bc301b43d0d2131731f7ac4736.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xca632FA58397391C750c13F935DAA61AbBe0BaA6",
+    "symbol": "EUL",
+    "name": "Euler",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/project/logo_url/euler2/672f19349da6dd7cdf30621720681753.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x61E030A56D33e8260FdD81f03B162A79Fe3449Cd",
+    "symbol": "FLUID",
+    "name": "Fluid",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0x61e030a56d33e8260fdd81f03b162a79fe3449cd/1b43af3eab35d04816d2d4e289b5050d.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x43eDD7f3831b08FE70B7555ddD373C8bF65a9050",
+    "symbol": "frxETH",
+    "name": "Frax Ether",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0x43edd7f3831b08fe70b7555ddd373c8bf65a9050/74628d212cf16e6183a7242b4ce71b92.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x80Eede496655FB9047dd39d9f418d5483ED600df",
+    "symbol": "frxUSD",
+    "name": "Frax USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0x80eede496655fb9047dd39d9f418d5483ed600df/7610ebe75cb08ff21ee6dfb7e1592e25.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xb77E872A68C62CfC0dFb02C067Ecc3DA23B4bbf3",
+    "symbol": "GHO",
+    "name": "Gho Token",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x76a443768A5e3B8d1AED0105FC250877841Deb40",
+    "symbol": "LINK",
+    "name": "ChainLink Token",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xAbB48792A3161E81B47cA084c0b7A22a50324A44",
+    "symbol": "LITH",
+    "name": "Lithos",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x7230a9D42D622E18FDf7207041EcA18465F9F1bE",
+    "symbol": "msETH",
+    "name": "Metronome Synth ETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x29AD7fE4516909b9e498B5a65339e54791293234",
+    "symbol": "msUSD",
+    "name": "Metronome Synth USD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x02FCC4989B4C9D435b7ceD3fE1Ba4CF77BBb5Dd8",
+    "symbol": "PT-sUSDE-15JAN2026",
+    "name": "PT Ethena sUSDE 15JAN2026",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xab509448ad489e2E1341e25CC500f2596464Cc82",
+    "symbol": "PT-sUSDE-9APR2026",
+    "name": "PT Ethena sUSDE 9APR2026",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x93B544c330F60A2aa05ceD87aEEffB8D38FD8c9a",
+    "symbol": "PT-USDe-15JAN2026",
+    "name": "PT Ethena USDe 15JAN2026",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x54Dc267be2839303ff1e323584A16e86CeC4Aa44",
+    "symbol": "PT-USDe-9APR2026",
+    "name": "PT Ethena USDe 9APR2026",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xC61a178d9742775f3B741fE60F12659D853c66A1",
+    "symbol": "rETH",
+    "name": "Rocket Pool ETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x9eCaf80c1303CCA8791aFBc0AD405c8a35e8d9f1",
+    "symbol": "rsETH",
+    "name": "KelpDao Restaked ETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/hemi_token/logo_url/0xc3eacf0612346366db554c991d7858716db09f58/9b29efed86aff5a64f238d6d30032f40.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x09D4214C03D01F49544C0448DBE3A27f768F2b34",
+    "symbol": "rUSD",
+    "name": "Reservoir Stablecoin",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0x09d4214c03d01f49544c0448dbe3a27f768f2b34/759a2ac7d08479d0e0b3f288f4bb84a5.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x3Ec3849C33291a9eF4c5dB86De593EB4A37fDe45",
+    "symbol": "sfrxETH",
+    "name": "Staked Frax Ether",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/katana_token/logo_url/0x3ec3849c33291a9ef4c5db86de593eb4a37fde45/b0802881acff20fd906a2e189a4ea882.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x5Bff88cA1442c2496f7E475E9e7786383Bc070c0",
+    "symbol": "sfrxUSD",
+    "name": "Staked Frax USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0x5bff88ca1442c2496f7e475e9e7786383bc070c0/afe8a7ab1731c4322c252e0e38d034f5.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x0B2b2B2076d95dda7817e785989fE353fe955ef9",
+    "symbol": "sUSDai",
+    "name": "Staked USDai",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/arb_token/logo_url/0x0b2b2b2076d95dda7817e785989fe353fe955ef9/dd517f60e7c4125b10dd1271580d199b.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
+    "symbol": "sUSDe",
+    "name": "Staked USDe",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2/613e3c4b4b079a18bf8d7170d5b038bf.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xC4374775489CB9C56003BF2C9b12495fC64F0771",
+    "symbol": "syrupUSDT",
+    "name": "Syrup USDT",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x356b8d89c1e1239cbbb9de4815c39a1474d5ba7d/7071fa8d94bc1c23139bb45af26f5af9.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xfDD22Ce6D1F66bc0Ec89b20BF16CcB6670F55A5a",
+    "symbol": "thBILL",
+    "name": "thBILL",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0xfdd22ce6d1f66bc0ec89b20bf16ccb6670f55a5a/d9886cb653b05059a0813753fc786a60.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x92A01Ab7317Ac318b39b00EB6704ba56F0245D7a",
+    "symbol": "trillions",
+    "name": "trillions",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0x92a01ab7317ac318b39b00eb6704ba56f0245d7a/899ec6cd814324942dd6d363abb1883a.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x0A1a1A107E45b7Ced86833863f482BC5f4ed82EF",
+    "symbol": "USDai",
+    "name": "USDai",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/bsc_token/logo_url/0xec740a172006d5fc4635c5c862454566fb014444/70347e2741a6e8fabea9b7c73319912a.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+    "symbol": "USDe",
+    "name": "USDe",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x4c9edd5852cd905f086c759e8383e09bff1e68b3/1228d6e73f70f37ec1f6fe02a3bbe6ff.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
+    "symbol": "USDT0",
+    "name": "USD₮0",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/ink_token/logo_url/0x0200c29006150606b650577bbe7b6248f58470c1/8bba37fddc2774e06a94b8952e3e3ad7.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xb1b385542B6E80F77B94393Ba8342c3Af699f15c",
+    "symbol": "USR",
+    "name": "Resolv USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0xb1b385542b6e80f77b94393ba8342c3af699f15c/e0bbff0ab0930ec54cc8e2e18ca4fd00.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xA31C7dDAD8F1D66D037C4EE76F8fb725f927Bc25",
+    "symbol": "waPlasUSDe",
+    "name": "Wrapped Aave Plasma sUSDe",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xC63F1a8c0cD4493E18f6f3371182BE01Ce0BeF02",
+    "symbol": "waPlaUSDe",
+    "name": "Wrapped Aave Plasma USDe",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xE0126F0c4451B2B917064A93040fd4770D6774b5",
+    "symbol": "waPlaUSDT0",
+    "name": "Wrapped Aave Plasma USDT0",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x893dF8f4bBFEbC313Fc52a53E2e23487ACb28181",
+    "symbol": "waPlaweETH",
+    "name": "Wrapped Aave Plasma weETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xa047fdFb3420A27a5f926735b475fE5a1E968786",
+    "symbol": "waPlaWETH",
+    "name": "Wrapped Aave Plasma WETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xA3D68b74bF0528fdD07263c60d6488749044914b",
+    "symbol": "weETH",
+    "name": "Wrapped eETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0xa3d68b74bf0528fdd07263c60d6488749044914b/44da129be16d522a3255d2c066f2049a.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x9895D81bB462A195b4922ED7De0e3ACD007c32CB",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xe561FE05C39075312Aa9Bc6af79DdaE981461359",
+    "symbol": "wrsETH",
+    "name": "rsETHWrapper",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/blast_token/logo_url/0xe7903b1f75c534dd8159b313d92cdcfbc62cb3cd/570bd8c5a7c151124d71d35ccbfaaefb.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x4809010926aec940b550D34a46A52739f996D75D",
+    "symbol": "wsrUSD",
+    "name": "Wrapped Savings rUSD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plasma_token/logo_url/0x4809010926aec940b550d34a46a52739f996d75d/04697174bc689b0a572e36458104f38b.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x481e638105407Be40c2f2E2e006DE272d05930d0",
+    "symbol": "wstETH",
+    "name": "Wrapped liquid staked Ether 2.0",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x2a52B289bA68bBd02676640aA9F605700c9e5699",
+    "symbol": "wstUSR",
+    "name": "Wrapped Staked USR",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x6100E367285b01F48D07953803A2d8dCA5D19873",
+    "symbol": "WXPL",
+    "name": "Wrapped Plasma",
+    "decimals": 18,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/36645.png",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0x1B64B9025EEbb9A6239575dF9Ea4b9Ac46D4d193",
+    "symbol": "XAUT0",
+    "name": "Tether Gold Tokens",
+    "decimals": 6,
+    "logoUrl": "https://coin-images.coingecko.com/coins/images/66560/large/XAUt0_Token_Icon_Gold.png?1749747942",
+    "isNative": false,
+    "chainKey": "9745"
+  },
+  {
+    "address": "0xF07781182B47e728B040f9e35321260e359fF9f7",
+    "symbol": "YUSD",
+    "name": "YUSD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "9745"
+  }
+]

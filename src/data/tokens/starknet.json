@@ -1,0 +1,13 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "STRK",
+    "name": "STRK",
+    "decimals": 18,
+    "isNative": true,
+    "chainKey": "starknet",
+    "providerIds": {
+      "nearIntents": "nep141:starknet.omft.near"
+    }
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "SUI",
+    "name": "SUI",
+    "decimals": 9,
+    "isNative": true,
+    "chainKey": "sui",
+    "providerIds": {
+      "nearIntents": "nep141:sui.omft.near"
+    }
+  },
+  {
+    "address": "0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC",
+    "symbol": "USDC",
+    "name": "USDC",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "sui",
+    "providerIds": {
+      "nearIntents": "nep141:sui-c1b81ecaf27933252d31a963bc5e9458f13c18ce.omft.near"
+    }
+  }
+]

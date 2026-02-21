@@ -1,0 +1,13 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "LTC",
+    "name": "LTC",
+    "decimals": 8,
+    "isNative": true,
+    "chainKey": "ltc",
+    "providerIds": {
+      "nearIntents": "nep141:ltc.omft.near"
+    }
+  }
+]

@@ -54,20 +54,28 @@ async function withTimeout<T>(
   }
 }
 
-// Calculate score for ranking 
-function calculateQuoteScore(quote: QuoteResponse): number {
-  const outputAmount = BigInt(quote.toAmount || '0')
-  const gasCost = parseFloat(quote.estimatedGas || '0')
+/**
+ * Calculate a secondary score for tie-breaking when output amounts are equal.
+ * Factors in: total fees (USD), gas cost, speed, and provider reliability.
+ * Higher score = better route.
+ */
+function calculateTieBreakerScore(quote: QuoteResponse): number {
+  const totalFeeUSD = parseFloat(quote.fees?.totalFeeUSD || '0')
+  const gasCostUSD = parseFloat(quote.estimatedGas || '0')
   const duration = quote.estimatedDuration || 600
   const reliability = PROVIDER_RELIABILITY[quote.provider] || 50
 
-  // Convert to a score out of 100
-  const outputScore = 60 
-  const gasScore = Math.max(0, 15 - gasCost) 
-  const speedScore = Math.max(0, 10 - (duration / 60)) 
-  const reliabilityScore = (reliability / 100) * 15
+  // Fee score: 0-30 points, lower fees = higher score
+  const totalCost = totalFeeUSD + gasCostUSD
+  const feeScore = Math.max(0, 30 * (1 - Math.min(totalCost, 30) / 30))
 
-  return outputScore + gasScore + speedScore + reliabilityScore
+  // Speed score: 0-10 points, faster = higher score
+  const speedScore = Math.max(0, 10 * (1 - Math.min(duration, 1800) / 1800))
+
+  // Reliability score: 0-10 points
+  const reliabilityScore = (reliability / 100) * 10
+
+  return feeScore + speedScore + reliabilityScore
 }
 
 function rankQuotes(quotes: QuoteResponse[]): QuoteResponse[] {
@@ -75,29 +83,13 @@ function rankQuotes(quotes: QuoteResponse[]): QuoteResponse[] {
     const amountA = BigInt(a.toAmount || '0')
     const amountB = BigInt(b.toAmount || '0')
 
-    // Primary: Output amount 
+    // Primary: Output amount (higher = better)
     if (amountA !== amountB) {
       return amountA > amountB ? -1 : 1
     }
 
-    // Tie-breaker 1: Gas cost 
-    const gasA = parseFloat(a.estimatedGas || '0')
-    const gasB = parseFloat(b.estimatedGas || '0')
-    if (gasA !== gasB) {
-      return gasA - gasB
-    }
-
-    // Tie-breaker 2: Speed 
-    const durationA = a.estimatedDuration || 600
-    const durationB = b.estimatedDuration || 600
-    if (durationA !== durationB) {
-      return durationA - durationB
-    }
-
-    // Tie-breaker 3: Provider reliability
-    const reliabilityA = PROVIDER_RELIABILITY[a.provider] || 50
-    const reliabilityB = PROVIDER_RELIABILITY[b.provider] || 50
-    return reliabilityB - reliabilityA
+    // Equal output: use fee-aware tie-breaker score (higher = better)
+    return calculateTieBreakerScore(b) - calculateTieBreakerScore(a)
   })
 }
 

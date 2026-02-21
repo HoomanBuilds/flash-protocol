@@ -1,0 +1,11 @@
+[
+  {
+    "address": "0x4200000000000000000000000000000000000006",
+    "symbol": "WBTC",
+    "name": "Wrapped BTC",
+    "decimals": 18,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png",
+    "isNative": false,
+    "chainKey": "223"
+  }
+]

@@ -20,10 +20,14 @@ export class LifiProvider implements IProvider {
         options.fee = 0.005 // 0.5% platform fee
         options.referrer = referrer
       }
+      
+      const fromChainNum = typeof request.fromChain === 'number' ? request.fromChain : Number(request.fromChain)
+      const toChainNum = typeof request.toChain === 'number' ? request.toChain : Number(request.toChain)
+      if (isNaN(fromChainNum) || isNaN(toChainNum)) return []
 
       const routesResponse = await getRoutes({
-        fromChainId: request.fromChain,
-        toChainId: request.toChain,
+        fromChainId: fromChainNum,
+        toChainId: toChainNum,
         fromTokenAddress: request.fromToken,
         toTokenAddress: request.toToken,
         fromAmount: request.fromAmount,

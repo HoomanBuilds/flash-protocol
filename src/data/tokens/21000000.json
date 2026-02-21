@@ -1,0 +1,82 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "BTCN",
+    "name": "Bitcorn",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/corn_token/logo_url/corn/fe230e468272b84aba78d08bb4140456.png",
+    "isNative": true,
+    "chainKey": "21000000"
+  },
+  {
+    "address": "0x44f49ff0da2498bCb1D3Dc7C0f999578F67FD8C6",
+    "symbol": "CORN",
+    "name": "Corn",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/corn_token/logo_url/0x44f49ff0da2498bcb1d3dc7c0f999578f67fd8c6/2ac7405fee5fdeee5964ba0bcf2216f4.png",
+    "isNative": false,
+    "chainKey": "21000000"
+  },
+  {
+    "address": "0xF3B47B6BaaD4BCa7A0014e1D9b0DaB3c5F66DaFd",
+    "symbol": "EUL",
+    "name": "Euler",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "21000000"
+  },
+  {
+    "address": "0xecAc9C5F704e954931349Da37F60E39f515c11c1",
+    "symbol": "LBTC",
+    "name": "Lombard Staked Bitcoin",
+    "decimals": 8,
+    "logoUrl": "https://static.debank.com/image/corn_token/logo_url/0xecac9c5f704e954931349da37f60e39f515c11c1/fb1b1e3acbf982e46618edc9e4fa09b7.png",
+    "isNative": false,
+    "chainKey": "21000000"
+  },
+  {
+    "address": "0x93919784C523f39CACaa98Ee0a9d96c3F32b593e",
+    "symbol": "uniBTC",
+    "name": "uniBTC",
+    "decimals": 8,
+    "logoUrl": "https://static.debank.com/image/op_token/logo_url/0x93919784c523f39cacaa98ee0a9d96c3f32b593e/3adc425af3410e7c7cedb1ce4f777eda.png",
+    "isNative": false,
+    "chainKey": "21000000"
+  },
+  {
+    "address": "0xff12470a969Dd362EB6595FFB44C82c959Fe9ACc",
+    "symbol": "USDa",
+    "name": "USDa",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/mnt_token/logo_url/0x075df695b8e7f4361fa7f8c1426c63f11b06e326/6aca648e5ac1bcc962281245c478576c.png",
+    "isNative": false,
+    "chainKey": "21000000"
+  },
+  {
+    "address": "0xDF0B24095e15044538866576754F3C964e902Ee6",
+    "symbol": "USDCe",
+    "name": "Bridged USDC (Corn)",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "21000000"
+  },
+  {
+    "address": "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
+    "symbol": "USDTO",
+    "name": "USD₮0",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/ink_token/logo_url/0x0200c29006150606b650577bbe7b6248f58470c1/8bba37fddc2774e06a94b8952e3e3ad7.png",
+    "isNative": false,
+    "chainKey": "21000000"
+  },
+  {
+    "address": "0xda5dDd7270381A7C2717aD10D1c0ecB19e3CDFb2",
+    "symbol": "WBTCN",
+    "name": "Wrapped BTCN",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/corn_token/logo_url/corn/fe230e468272b84aba78d08bb4140456.png",
+    "isNative": false,
+    "chainKey": "21000000"
+  }
+]

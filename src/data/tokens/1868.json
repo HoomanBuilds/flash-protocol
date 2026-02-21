@@ -1,0 +1,232 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "ETH",
+    "name": "ETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": true,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0xbA9986D2381edf1DA03B0B9c1f8b00dc4AacC369",
+    "symbol": "USDC.e",
+    "name": "Bridged USDC (Soneium)",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x3A337a6adA9d885b6Ad95ec48F9b75f197b5AE35",
+    "symbol": "USDT",
+    "name": "Bridged USDT (Soneium)",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0xb2C9E934A55B58D20496A5019F8722a96d8A44d8",
+    "symbol": "aSoneUSDCe",
+    "name": "Aave Soneium USDCe",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0xBAB0366ADdA6d2845c6BB5db4339A824350d24F7",
+    "symbol": "aSoneUSDT",
+    "name": "Aave Soneium USDT",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x1bD45Cc20CE61BE344A64218E6Ade01E72b08f39",
+    "symbol": "aSoneWETH",
+    "name": "Aave Soneium WETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x2CAE934a1e84F693fbb78CA5ED3B0A6893259441",
+    "symbol": "ASTR",
+    "name": "Astar Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/chain/logo_url/aze/6def6ac081a37e94ed0106da2cefeaf4.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x32D8F819C8080ae44375F8d383Ffd39FC642f3Ec",
+    "symbol": "LINK",
+    "name": "ChainLink Token",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/soneium_token/logo_url/0x32d8f819c8080ae44375f8d383ffd39fc642f3ec/69425617db0ef93a7c21c4f9b81c7ca5.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x2fc9a87b1ef46dCDdF4801C36d752E0d5F243E4b",
+    "symbol": "nrETH",
+    "name": "Neemo ReStaked Ether",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/soneium_token/logo_url/0x2fc9a87b1ef46dcddf4801c36d752e0d5f243e4b/fe282321e0d63db2fd54e93bab447658.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0xc67476893C166c537afd9bc6bc87b3f228b44337",
+    "symbol": "nsASTR",
+    "name": "Neemo Staked Astar",
+    "decimals": 18,
+    "logoUrl": "https://img.sonex.so/nsASTR-logo.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x1217BfE6c773EEC6cc4A38b5Dc45B92292B6E189",
+    "symbol": "OpenUSDT",
+    "name": "Super USDT",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/celo_token/logo_url/0x1217bfe6c773eec6cc4a38b5dc45b92292b6e189/57033d27afe3975bf4d498799a8bc396.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x6c460b2c6D6719562D5dA43E5152B375e79B9A8B",
+    "symbol": "pufETH",
+    "name": "pufETH",
+    "decimals": 18,
+    "logoUrl": "https://img.sonex.so/pufETH-logo.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+    "symbol": "SolvBTC",
+    "name": "Solv BTC",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/bob_token/logo_url/0x59889b7021243db5b1e065385f918316cd90d46c/31a6cb7216c2b772a41a8913cc36f2c0.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+    "symbol": "SolvBTC.BBN",
+    "name": "SolvBTC.BBN",
+    "decimals": 18,
+    "logoUrl": "https://img.sonex.so/solvBTCBBN-logo.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0xAffEb8576b927050f5a3B6fbA43F360D2883A118",
+    "symbol": "SolvBTC.JUP",
+    "name": "SolvBTC Jupiter",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/soneium_token/logo_url/0xaffeb8576b927050f5a3b6fba43f360d2883a118/9130cd4a0debb4b27cf40fe78c977975.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x0Ce031AEd457C870D74914eCAA7971dd3176cDAF",
+    "symbol": "stETH",
+    "name": "Liquid staked Ether 2.0",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0/7e931af8cb34b6f5671ca2eb1b847849.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x80137510979822322193FC997d400D5A6C747bf7",
+    "symbol": "STONE",
+    "name": "StakeStone Ether",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/b2_token/logo_url/0x7537c1f80c9e157ed7afd93a494be3e1f04f1462/670162c2c0d81b3d1790e60c78e136e1.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x102d758f688a4C1C5a80b116bD945d4455460282",
+    "symbol": "USD₮0",
+    "name": "Stargate USDT0 (Bridged)",
+    "decimals": 6,
+    "logoUrl": "https://arbiscan.io/token/images/usdt0_64.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x3f99231dD03a9F0E7e3421c92B7b90fbe012985a",
+    "symbol": "USDSC",
+    "name": "Startale USD",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0xb1b385542B6E80F77B94393Ba8342c3Af699f15c",
+    "symbol": "USR",
+    "name": "Resolv USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/soneium_token/logo_url/0xb1b385542b6e80f77b94393ba8342c3af699f15c/62496c6bb09bb80d39bc6dd793d19dff.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x60336f9296C79dA4294A19153eC87F8E52158e5F",
+    "symbol": "vASTR",
+    "name": "Bifrost Voucher ASTR",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/soneium_token/logo_url/0x60336f9296c79da4294a19153ec87f8e52158e5f/7cf0592a55d7b2b692fc4b64b20c43fe.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",
+    "symbol": "WBTC",
+    "name": "WBTC",
+    "decimals": 8,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x4200000000000000000000000000000000000006",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/61844453e63cf81301f845d7864236f6.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0x3b0DC2daC9498A024003609031D973B1171dE09E",
+    "symbol": "wstASTR",
+    "name": "Warpped stASTR",
+    "decimals": 18,
+    "logoUrl": "https://img.sonex.so/wstASTR-logo.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0xaA9BD8c957D803466FA92504BDd728cC140f8941",
+    "symbol": "wstETH",
+    "name": "Wrapped liquid staked Ether 2.0",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0/d0405a0d11669d4e75286d8dd808e19b.png",
+    "isNative": false,
+    "chainKey": "1868"
+  },
+  {
+    "address": "0xea1e08A176528e2d7250a6F7001F18EDF0CaeCF0",
+    "symbol": "xnASTR",
+    "name": "Algem xnASTR",
+    "decimals": 18,
+    "logoUrl": "https://img.sonex.so/xnASTR-logo.png",
+    "isNative": false,
+    "chainKey": "1868"
+  }
+]

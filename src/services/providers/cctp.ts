@@ -34,14 +34,18 @@ const IRIS_API = 'https://iris-api.circle.com'
 export class CCTPProvider implements IProvider {
   name = 'cctp'
 
-  private isUSDC(chainId: number, tokenAddress: string): boolean {
-    const usdcAddress = USDC_ADDRESSES[chainId]
+  private isUSDC(chainId: number | string, tokenAddress: string): boolean {
+    const numId = typeof chainId === 'number' ? chainId : Number(chainId)
+    if (isNaN(numId)) return false
+    const usdcAddress = USDC_ADDRESSES[numId]
     if (!usdcAddress) return false
     return tokenAddress.toLowerCase() === usdcAddress.toLowerCase()
   }
 
-  private isSupportedChain(chainId: number): boolean {
-    return chainId in CHAIN_TO_BRIDGE_KIT
+  private isSupportedChain(chainId: number | string): boolean {
+    const numId = typeof chainId === 'number' ? chainId : Number(chainId)
+    if (isNaN(numId)) return false
+    return numId in CHAIN_TO_BRIDGE_KIT
   }
 
   async getQuote(request: QuoteRequest): Promise<QuoteResponse[]> {
@@ -71,8 +75,12 @@ export class CCTPProvider implements IProvider {
         return []
       }
 
-      const sourceChain = CHAIN_TO_BRIDGE_KIT[request.fromChain]
-      const destChain = CHAIN_TO_BRIDGE_KIT[request.toChain]
+      const fromNum = typeof request.fromChain === 'number' ? request.fromChain : Number(request.fromChain)
+      const toNum = typeof request.toChain === 'number' ? request.toChain : Number(request.toChain)
+      if (isNaN(fromNum) || isNaN(toNum)) return []
+
+      const sourceChain = CHAIN_TO_BRIDGE_KIT[fromNum]
+      const destChain = CHAIN_TO_BRIDGE_KIT[toNum]
 
       
       const domainIds: Record<number, number> = {
@@ -86,8 +94,8 @@ export class CCTPProvider implements IProvider {
         146: 14,   // Sonic
       }
 
-      const sourceDomain = domainIds[request.fromChain]
-      const destDomain = domainIds[request.toChain]
+      const sourceDomain = domainIds[fromNum]
+      const destDomain = domainIds[toNum]
 
       let feePercentage = 0
       try {

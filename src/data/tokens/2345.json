@@ -1,0 +1,11 @@
+[
+  {
+    "address": "0xbC10000000000000000000000000000000000000",
+    "symbol": "WGBTC",
+    "name": "Wrapped Goat BTC",
+    "decimals": 18,
+    "logoUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+    "isNative": false,
+    "chainKey": "2345"
+  }
+]

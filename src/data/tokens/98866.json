@@ -1,0 +1,136 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "PLUME",
+    "name": "Plume",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plume_token/logo_url/plume/20ecb01558edaac59ad4cd20b9ccc51d.png",
+    "isNative": true,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0x222365EF19F7947e5484218551B56bb3965Aa7aF",
+    "symbol": "USDC",
+    "name": "USDC",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/plume_token/logo_url/0x222365ef19f7947e5484218551b56bb3965aa7af/3e7bcf5b76aa779cf9647b081d1fe0e5.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0xda6087E69C51E7D31b6DBAD276a3c44703DFdCAd",
+    "symbol": "USDT",
+    "name": "Bridged USDT (Stargate)",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0x593cCcA4c4bf58b7526a4C164cEEf4003C6388db",
+    "symbol": "nALPHA",
+    "name": "Nest Alpha Vault",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/plume_token/logo_url/0x593ccca4c4bf58b7526a4c164ceef4003c6388db/b58f49c8c5cb3e8e7230b72aad4f7675.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0x11113Ff3a60C2450F4b22515cB760417259eE94B",
+    "symbol": "nBASIS",
+    "name": "Nest Basis",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/plume_token/logo_url/0x11113ff3a60c2450f4b22515cb760417259ee94b/ecc976959976f41678cb8e2f9a87341f.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0xA5f78B2A0Ab85429d2DfbF8B60abc70F4CeC066c",
+    "symbol": "nCREDIT",
+    "name": "Nest Credit Vault",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/plume_token/logo_url/0xa5f78b2a0ab85429d2dfbf8b60abc70f4cec066c/daf05a73301b84111b483403afefec56.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0xbfC5770631641719cd1Cf809D8325B146aED19De",
+    "symbol": "nINSTO",
+    "name": "Nest Institutional Vault",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/plume_token/logo_url/0xbfc5770631641719cd1cf809d8325b146aed19de/1b0d65567cb34e52b09c61a9ce93867c.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0xE72Fe64840F4EF80E3Ec73a1c749491b5c938CB9",
+    "symbol": "nTBILL",
+    "name": "Nest Treasuries Vault",
+    "decimals": 6,
+    "logoUrl": "https://static.debank.com/image/plume_token/logo_url/0xe72fe64840f4ef80e3ec73a1c749491b5c938cb9/f29882eff12cb9657798c98e25cebc9d.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0x29bF22381A5811deC89dC7b46A5Ce57aD02c0240",
+    "symbol": "nWISDOM",
+    "name": "Nest WisdomTree Vault",
+    "decimals": 6,
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0x39d1F90eF89C52dDA276194E9a832b484ee45574",
+    "symbol": "pETH",
+    "name": "Plume ETH",
+    "decimals": 18,
+    "logoUrl": "https://assets.plume.org/images/logos/pETH/pETH-token.svg",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0xdddD73F5Df1F0DC31373357beAC77545dC5A6f3F",
+    "symbol": "pUSD",
+    "name": "Plume USD",
+    "decimals": 6,
+    "logoUrl": "https://assets.plume.org/images/logos/pUSD/pUSD-token.svg",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0x78adD880A697070c1e765Ac44D65323a0DcCE913",
+    "symbol": "USDCe",
+    "name": "Bridged USDC (Stargate)",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0xca59cA09E5602fAe8B629DeE83FfA819741f14be",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0xEa237441c92CAe6FC17Caaf9a7acB3f953be4bd1",
+    "symbol": "WPLU",
+    "name": "Wrapped Plume",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plume_token/logo_url/plume/20ecb01558edaac59ad4cd20b9ccc51d.png",
+    "isNative": false,
+    "chainKey": "98866"
+  },
+  {
+    "address": "0xA0C4F78A29ead4ABf6b7f5B3F0d05C0f3EAb8DDf",
+    "symbol": "XAUM",
+    "name": "Matrixdock Gold",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/plume_token/logo_url/0xa0c4f78a29ead4abf6b7f5b3f0d05c0f3eab8ddf/0023efed137a1dacf2ebd39985089833.png",
+    "isNative": false,
+    "chainKey": "98866"
+  }
+]

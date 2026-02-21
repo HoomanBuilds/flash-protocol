@@ -1,0 +1,47 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "SOPH",
+    "name": "Sophon",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/sophon_token/logo_url/sophon/b81ad042ee3060050e01af4ce4ff9217.png",
+    "isNative": true,
+    "chainKey": "50104"
+  },
+  {
+    "address": "0x9Aa0F72392B5784Ad86c6f3E899bCc053D00Db4F",
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "50104"
+  },
+  {
+    "address": "0x6386dA73545ae4E2B2E0393688fA8B65Bb9a7169",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "50104"
+  },
+  {
+    "address": "0xF1f9E08a0818594FDe4713AE0Db1E46672Ca960E",
+    "symbol": "WBTC",
+    "name": "WBTC",
+    "decimals": 8,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+    "isNative": false,
+    "chainKey": "50104"
+  },
+  {
+    "address": "0x2b1A859dE6A55c553520D7780Bc5805712B128F9",
+    "symbol": "WSOPH",
+    "name": "Wrapped Sophon",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/sophon_token/logo_url/0x2b1a859de6a55c553520d7780bc5805712b128f9/b81ad042ee3060050e01af4ce4ff9217.png",
+    "isNative": false,
+    "chainKey": "50104"
+  }
+]

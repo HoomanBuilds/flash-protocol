@@ -1,0 +1,346 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "ETH",
+    "name": "ETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": true,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x2DCa96907fde857dd3D816880A0df407eeB2D2F2",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xdE6a4F28Acfe431DD1CfA2D9c7A3d8301624a841",
+    "symbol": "bbqAUSD",
+    "name": "Steakhouse High Yield AUSD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x1445A01a57D7B7663CfD7B4EE0a8Ec03B379aabD",
+    "symbol": "bbqUSDC",
+    "name": "Steakhouse High Yield USDC",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xB0F70C0bD6FD87dbEb7C10dC692a2a6106817072",
+    "symbol": "BTCK",
+    "name": "Bitcoin on Katana",
+    "decimals": 8,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x876aac7648D79f87245E73316eB2D100e75F3Df1",
+    "symbol": "bvUSD",
+    "name": "BitVault USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/katana_token/logo_url/0x876aac7648d79f87245e73316eb2d100e75f3df1/040097a7279054ef43395827f98ed7a4.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x116D4d0932082FB564509EFf6E1708d5ac2c5EA4",
+    "symbol": "CSCOREUSDC",
+    "name": "Clearstar Core USDC",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x9aF031182fCe8BF0b296145f2e1f1Df5C3feCDE7",
+    "symbol": "CSVBUSDC",
+    "name": "Clearstar USDC Reactor",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x4105eFe00C840E7d635B723B154aBaE7490E0042",
+    "symbol": "CSVBUSDT",
+    "name": "Clearstar USDT Reactor",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x4fd2FDDC8973077B95D614980Fd298B120f3148B",
+    "symbol": "d3-dusd",
+    "name": "d3nity dUSD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xcA52d08737E6Af8763a2bF6034B3B03868f24DDA",
+    "symbol": "dUSD",
+    "name": "dTRINITY USD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x43eDD7f3831b08FE70B7555ddD373C8bF65a9050",
+    "symbol": "frxETH",
+    "name": "Frax Ether",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/katana_token/logo_url/0x43edd7f3831b08fe70b7555ddd373c8bf65a9050/74628d212cf16e6183a7242b4ce71b92.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x80Eede496655FB9047dd39d9f418d5483ED600df",
+    "symbol": "frxUSD",
+    "name": "Frax USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/katana_token/logo_url/0x80eede496655fb9047dd39d9f418d5483ed600df/7610ebe75cb08ff21ee6dfb7e1592e25.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x9540441C503D763094921dbE4f13268E6d1d3B56",
+    "symbol": "gtAUSD",
+    "name": "Gauntlet AUSD Vault",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x5BD1D75d45EdB622d0ea50946F2f741CE8dC5b75",
+    "symbol": "gtbtck",
+    "name": "Gauntlet BTCK Core",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xE4248e2105508FcBad3fe95691551d1AF14015f7",
+    "symbol": "gtUSDC",
+    "name": "Gauntlet USDC Vault",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x1ecDC3F2B5E90bfB55fF45a7476FF98A8957388E",
+    "symbol": "gtUSDT",
+    "name": "Gauntlet USDT Vault",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xf243523996ADbb273F0B237B53f30017C4364bBC",
+    "symbol": "gtWBTC",
+    "name": "Gauntlet WBTC Vault",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xC5e7AB07030305fc925175b25B93b285d40dCdFf",
+    "symbol": "gtWETH",
+    "name": "Gauntlet WETH Vault",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xEF77F8C53af95f3348CeE0FB2a02eE02aB9Cdca5",
+    "symbol": "hypervbUSDCd",
+    "name": "Hyperithm vbUSDC Degen",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xecAc9C5F704e954931349Da37F60E39f515c11c1",
+    "symbol": "LBTC",
+    "name": "Lombard Staked Bitcoin",
+    "decimals": 8,
+    "logoUrl": "https://static.debank.com/image/katana_token/logo_url/0xecac9c5f704e954931349da37f60e39f515c11c1/828eaa83d93589304935350dfaee90dc.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xdc97cF490b2D367F34E5AF8a5f90d2b8FCBA8ce1",
+    "symbol": "Re7AUSD",
+    "name": "Re7 AUSD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xd80e3811D84Ee7196a187dB3f7bC0B17930730CF",
+    "symbol": "Re7frxUSD",
+    "name": "Re7 frxUSD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x6680D2993fAadC9204Bd614a53e0c7a3f20c8ca5",
+    "symbol": "Re7uSOL",
+    "name": "Re7 uSOL",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x09D4214C03D01F49544C0448DBE3A27f768F2b34",
+    "symbol": "rUSD",
+    "name": "Reservoir Stablecoin",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/katana_token/logo_url/0x09d4214c03d01f49544c0448dbe3a27f768f2b34/759a2ac7d08479d0e0b3f288f4bb84a5.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x3Ec3849C33291a9eF4c5dB86De593EB4A37fDe45",
+    "symbol": "sfrxETH",
+    "name": "Staked Frax Ether",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/katana_token/logo_url/0x3ec3849c33291a9ef4c5db86de593eb4a37fde45/b0802881acff20fd906a2e189a4ea882.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x5Bff88cA1442c2496f7E475E9e7786383Bc070c0",
+    "symbol": "sfrxUSD",
+    "name": "Staked Frax USD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/katana_token/logo_url/0x5bff88ca1442c2496f7e475e9e7786383bc070c0/afe8a7ab1731c4322c252e0e38d034f5.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x82c4C641CCc38719ae1f0FBd16A64808d838fDfD",
+    "symbol": "steakAUSD",
+    "name": "Steakhouse Prime AUSD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x61D4F9D3797BA4dA152238c53a6f93Fb665C3c1d",
+    "symbol": "steakUSDC",
+    "name": "Steakhouse Prime USDC",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x203A662b0BD271A6ed5a60EdFbd04bFce608FD36",
+    "symbol": "USDCe",
+    "name": "Vault Bridge USDC",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55",
+    "symbol": "uSOL",
+    "name": "Solana (Universal)",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/base_token/logo_url/0x9b8df6e244526ab5f6e6400d331db28c8fdddb55/21997472f6a40a1bcb0a856fea379b38.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x2615a94df961278DcbC41Fb0a54fEc5f10a693aE",
+    "symbol": "uXRP",
+    "name": "XRP (Universal)",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/world_token/logo_url/0x2615a94df961278dcbc41fb0a54fec5f10a693ae/33060c349aaec14e8ca665fba57b9c4c.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x62D6A123E8D19d06d68cf0d2294F9A3A0362c6b3",
+    "symbol": "vbUSDS",
+    "name": "Vault Bridge USDS",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0xdc035d45d973e3ec169d2276ddab16f1e407384f/78fbc2e73e33fa80fcecfaafa2074887.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x0913DA6Da4b42f538B445599b46Bb4622342Cf52",
+    "symbol": "WBTC",
+    "name": "WBTC",
+    "decimals": 8,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xEE7D8BCFb72bC1880D0Cf19822eB0A2e6577aB62",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/eth_token/logo_url/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/61844453e63cf81301f845d7864236f6.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x4809010926aec940b550D34a46A52739f996D75D",
+    "symbol": "wsrUSD",
+    "name": "Wrapped Savings rUSD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/katana_token/logo_url/0x4809010926aec940b550d34a46a52739f996d75d/04697174bc689b0a572e36458104f38b.png",
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xCE2b8e464Fc7b5E58710C24b7e5EBFB6027f29D7",
+    "symbol": "ymvOG-vbUSDC",
+    "name": "Yearn OG USDC",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0x8ED68f91AfbE5871dCE31ae007a936ebE8511d47",
+    "symbol": "ymvOG-vbUSDT",
+    "name": "Yearn OG USDT",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xFaDe0C546f44e33C134c4036207B314AC643dc2E",
+    "symbol": "yOG-ETH",
+    "name": "Yearn OG ETH",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xe107cCdeb8e20E499545C813f98Cc90619b29859",
+    "symbol": "yOG-WBTC",
+    "name": "Yearn OG WBTC",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  },
+  {
+    "address": "0xca2671Dcd031a72359f456C212F62A9bDa737cD7",
+    "symbol": "YUSD",
+    "name": "YUSD",
+    "decimals": 18,
+    "isNative": false,
+    "chainKey": "747474"
+  }
+]

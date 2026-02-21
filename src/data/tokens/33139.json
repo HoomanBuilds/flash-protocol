@@ -1,0 +1,65 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "APE",
+    "name": "APE",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/ape_token/logo_url/ape/2357165eac1453c46f526704b51a801b.png",
+    "isNative": true,
+    "chainKey": "33139"
+  },
+  {
+    "address": "0x674843C06FF83502ddb4D37c2E09C01cdA38cbc8",
+    "symbol": "USDT",
+    "name": "USDT",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+    "isNative": false,
+    "chainKey": "33139"
+  },
+  {
+    "address": "0xcF800F4948D16F23333508191B1B1591daF70438",
+    "symbol": "APEETH",
+    "name": "Ape ETH",
+    "decimals": 18,
+    "logoUrl": "https://assets.coingecko.com/coins/images/279/standard/ethereum.png?1696501628",
+    "isNative": false,
+    "chainKey": "33139"
+  },
+  {
+    "address": "0xA2235d059F80e176D931Ef76b6C51953Eb3fBEf4",
+    "symbol": "APEUSD",
+    "name": "APEUSD",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/ape_token/logo_url/0xa2235d059f80e176d931ef76b6c51953eb3fbef4/40654fa96aad2dd085f5bef5ab5fab37.png",
+    "isNative": false,
+    "chainKey": "33139"
+  },
+  {
+    "address": "0xF1815bd50389c46847f0Bda824eC8da914045D14",
+    "symbol": "USDCe",
+    "name": "USDCe",
+    "decimals": 6,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    "isNative": false,
+    "chainKey": "33139"
+  },
+  {
+    "address": "0x48b62137EdfA95a428D35C09E44256a739F6B557",
+    "symbol": "WAPE",
+    "name": "WAPE",
+    "decimals": 18,
+    "logoUrl": "https://static.debank.com/image/ape_token/logo_url/ape/2357165eac1453c46f526704b51a801b.png",
+    "isNative": false,
+    "chainKey": "33139"
+  },
+  {
+    "address": "0xf4D9235269a96aaDaFc9aDAe454a0618eBE37949",
+    "symbol": "WETH",
+    "name": "WETH",
+    "decimals": 18,
+    "logoUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "isNative": false,
+    "chainKey": "33139"
+  }
+]

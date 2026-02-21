@@ -1,16 +1,24 @@
 import { RangoClient } from 'rango-sdk-basic'
 import { IProvider, QuoteRequest, QuoteResponse as UnifiedQuoteResponse, StatusRequest, StatusResponse, TransactionStatus } from '@/types/provider'
 
-// Map generic ChainID to Rango Blockchain Name
-const CHAIN_MAP: Record<number, string> = {
-  1: 'ETH',
-  137: 'POLYGON',
-  42161: 'ARBITRUM',
-  10: 'OPTIMISM',
-  8453: 'BASE',
-  56: 'BSC',
-  43114: 'AVAX_CCHAIN',
+// Hardcoded fallback — used when meta() fails
+const FALLBACK_CHAIN_MAP: Record<string, string> = {
+  '1': 'ETH',
+  '137': 'POLYGON',
+  '42161': 'ARBITRUM',
+  '10': 'OPTIMISM',
+  '8453': 'BASE',
+  '56': 'BSC',
+  '43114': 'AVAX_CCHAIN',
+  'solana': 'SOLANA',
+  'bitcoin': 'BTC',
+  'tron': 'TRON',
+  'cosmos': 'COSMOS',
 }
+
+// Dynamic chain map: populated from meta() at first use
+let dynamicChainMap: Record<string, string> | null = null
+let chainMapLoading: Promise<void> | null = null
 
 export class RangoProvider implements IProvider {
   name = 'rango'
@@ -23,6 +31,49 @@ export class RangoProvider implements IProvider {
     this.client = new RangoClient(apiKey || 'no-api-key')
   }
 
+  /**
+   * Build CHAIN_MAP dynamically from meta().blockchains
+   * Maps by both chainId (for EVM) and lowercase name (for non-EVM)
+   */
+  private async ensureChainMap(): Promise<void> {
+    if (dynamicChainMap) return
+    if (chainMapLoading) { await chainMapLoading; return }
+
+    chainMapLoading = (async () => {
+      try {
+        const meta = await this.client.meta()
+        if (meta?.blockchains) {
+          dynamicChainMap = {}
+          for (const bc of meta.blockchains) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const b = bc as any
+            // Map by numeric chainId (for EVM queries)
+            if (b.chainId) {
+              dynamicChainMap[String(b.chainId)] = b.name
+            }
+            // Map by lowercase name (for non-EVM queries)
+            dynamicChainMap[b.name.toLowerCase()] = b.name
+          }
+          console.log(`Rango: Loaded ${Object.keys(dynamicChainMap).length} chain mappings from meta()`)
+        }
+      } catch (error) {
+        console.warn('Rango: meta() failed, using fallback chain map:', error)
+        dynamicChainMap = { ...FALLBACK_CHAIN_MAP }
+      }
+    })()
+
+    await chainMapLoading
+    chainMapLoading = null
+  }
+
+  /**
+   * Resolve a ChainId (number or string) to Rango blockchain name
+   */
+  private resolveChain(chainId: number | string): string | null {
+    const map = dynamicChainMap || FALLBACK_CHAIN_MAP
+    return map[String(chainId)] || null
+  }
+
   async getQuote(request: QuoteRequest): Promise<UnifiedQuoteResponse[]> {
     try {
       // Skip if no API key configured
@@ -31,8 +82,10 @@ export class RangoProvider implements IProvider {
         return []
       }
 
-      const fromChain = CHAIN_MAP[request.fromChain]
-      const toChain = CHAIN_MAP[request.toChain]
+      await this.ensureChainMap()
+
+      const fromChain = this.resolveChain(request.fromChain)
+      const toChain = this.resolveChain(request.toChain)
 
       if (!fromChain || !toChain) return []
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -29,13 +29,42 @@ import {
 } from '@/components/ui/form'
 import { LinkPreview } from '@/components/dashboard/LinkPreview'
 import { createPaymentLinkSchema, type CreatePaymentLinkInput } from '@/lib/validations/payment-link'
-import { CHAINS } from '@/lib/chains'
-
-const SUPPORTED_CHAINS = CHAINS.filter(c => c.type === 'evm' && !c.isTestnet)
+import type { UnifiedChain } from '@/lib/chain-registry'
 
 export default function CreateLinkPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [dynamicChains, setDynamicChains] = useState<UnifiedChain[]>([])
+  const [chainsLoading, setChainsLoading] = useState(true)
+
+  // Fetch only chains that have USDC available
+  useEffect(() => {
+    async function loadChains() {
+      setChainsLoading(true)
+      try {
+        // Only fetch chains that have USDC 
+        const res = await fetch('/api/chains?hasUSDC=true')
+        const data = await res.json()
+        if (data.success && data.chains && data.chains.length > 0) {
+          const sorted = data.chains.sort((a: UnifiedChain, b: UnifiedChain) => a.name.localeCompare(b.name))
+          setDynamicChains(sorted)
+        } else {
+          // Fallback
+          const fallbackRes = await fetch('/api/chains')
+          const fallbackData = await fallbackRes.json()
+          if (fallbackData.success && fallbackData.chains) {
+            const sorted = fallbackData.chains.sort((a: UnifiedChain, b: UnifiedChain) => a.name.localeCompare(b.name))
+            setDynamicChains(sorted)
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load chains:', err)
+      } finally {
+        setChainsLoading(false)
+      }
+    }
+    loadChains()
+  }, [])
 
   const form = useForm<CreatePaymentLinkInput>({
     resolver: zodResolver(createPaymentLinkSchema),
@@ -185,24 +214,71 @@ export default function CreateLinkPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-xs tracking-widest uppercase text-muted-foreground">Destination Chain</FormLabel>
+
+                        {/* Popular chain quick-select tabs */}
+                        <div className="space-y-2">
+                          <p className="text-xs text-muted-foreground">Popular chains</p>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              { id: 42161, name: 'Arbitrum', icon: '' },
+                              { id: 8453, name: 'Base', icon: '' },
+                              { id: 137, name: 'Polygon', icon: '' },
+                              { id: 10, name: 'Optimism', icon: '' },
+                              { id: 1, name: 'Ethereum', icon: '' },
+                            ].map((chain) => (
+                              <button
+                                key={chain.id}
+                                type="button"
+                                onClick={() => field.onChange(chain.id)}
+                                className={`
+                                  px-3 py-1.5 text-xs font-mono border transition-all
+                                  ${field.value === chain.id
+                                    ? 'bg-foreground text-background border-foreground'
+                                    : 'bg-background text-foreground border-border hover:border-foreground/50'
+                                  }
+                                `}
+                              >
+                                {chain.icon} {chain.name}
+                              </button>
+                            ))}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground/70 italic">
+                            💡 We recommend Arbitrum for lowest fees and near-instant settlement.
+                          </p>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="flex items-center gap-3 py-1">
+                          <div className="flex-1 h-px bg-border" />
+                          <span className="text-[10px] text-muted-foreground tracking-widest uppercase">or select from all</span>
+                          <div className="flex-1 h-px bg-border" />
+                        </div>
+
+                        {/* Full dropdown */}
                         <Select
                           onValueChange={(val) => field.onChange(parseInt(val))}
-                          defaultValue={field.value?.toString()}
+                          value={field.value?.toString() || ''}
                         >
                           <FormControl>
                             <SelectTrigger className="border-border">
-                              <SelectValue placeholder="Select a chain" />
+                              <SelectValue placeholder="Browse all chains..." />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent position="popper" className="max-h-60 overflow-y-auto">
-                            {SUPPORTED_CHAINS.map(chain => (
-                              <SelectItem key={chain.chainId} value={chain.chainId.toString()}>
-                                {chain.name}
-                              </SelectItem>
-                            ))}
+                            {chainsLoading ? (
+                              <SelectItem value="loading" disabled>Loading chains...</SelectItem>
+                            ) : dynamicChains.length === 0 ? (
+                              <SelectItem value="none" disabled>No chains available</SelectItem>
+                            ) : (
+                              dynamicChains.map(chain => (
+                                <SelectItem key={chain.key} value={chain.chainId?.toString() || chain.key}>
+                                  {chain.name}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
-                        <FormDescription className="text-xs">Funds will be bridged here automatically.</FormDescription>
+                        <FormDescription className="text-xs">USDC on this chain is where you'll receive funds.</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}

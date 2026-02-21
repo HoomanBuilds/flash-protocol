@@ -1,0 +1,38 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "FTM",
+    "name": "Fantom",
+    "decimals": 18,
+    "isNative": true,
+    "chainKey": "250"
+  },
+  {
+    "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "decimals": 6,
+    "chainKey": "250"
+  },
+  {
+    "address": "0x049d68029688eAbF473097a2fC38ef61633A3C7A",
+    "symbol": "fUSDT",
+    "name": "Frapped USDT",
+    "decimals": 6,
+    "chainKey": "250"
+  },
+  {
+    "address": "0x74b23882a30290451A17c44f4F05243b6b58C76d",
+    "symbol": "WETH",
+    "name": "Wrapped Ether",
+    "decimals": 18,
+    "chainKey": "250"
+  },
+  {
+    "address": "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",
+    "symbol": "WFTM",
+    "name": "Wrapped FTM",
+    "decimals": 18,
+    "chainKey": "250"
+  }
+]

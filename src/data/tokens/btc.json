@@ -1,0 +1,13 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "BTC",
+    "name": "BTC",
+    "decimals": 8,
+    "isNative": true,
+    "chainKey": "btc",
+    "providerIds": {
+      "nearIntents": "nep141:btc.omft.near"
+    }
+  }
+]
