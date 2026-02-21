@@ -103,32 +103,32 @@ async function fetchRangoChains(): Promise<ProviderChainEntry[]> {
 /**
  * Rubic: GET /api/info/chains returns all supported chains
  */
-async function fetchRubicChains(): Promise<ProviderChainEntry[]> {
-  try {
-    const res = await fetch(
-      'https://api-v2.rubic.exchange/api/info/chains?includeTestnets=false'
-    )
-    if (!res.ok) return []
+// async function fetchRubicChains(): Promise<ProviderChainEntry[]> {
+//   try {
+//     const res = await fetch(
+//       'https://api-v2.rubic.exchange/api/info/chains?includeTestnets=false'
+//     )
+//     if (!res.ok) return []
 
-    const chains: { id: number; name: string; type?: string; providers?: unknown }[] = await res.json()
+//     const chains: { id: number; name: string; type?: string; providers?: unknown }[] = await res.json()
 
-    return chains.map((c) => {
-      const key = c.id ? String(c.id) : c.name.toLowerCase()
-      return {
-        key,
-        chainId: c.id || null,
-        name: c.name,
-        type: normalizeChainType(c.type || 'EVM'),
-        symbol: c.name,
-        logoUrl: undefined,
-        providerId: c.name, // Rubic uses string blockchain name
-      }
-    })
-  } catch (error) {
-    console.warn('ChainTokenService: Rubic chains fetch failed:', error)
-    return []
-  }
-}
+//     return chains.map((c) => {
+//       const key = c.id ? String(c.id) : c.name.toLowerCase()
+//       return {
+//         key,
+//         chainId: c.id || null,
+//         name: c.name,
+//         type: normalizeChainType(c.type || 'EVM'),
+//         symbol: c.name,
+//         logoUrl: undefined,
+//         providerId: c.name, // Rubic uses string blockchain name
+//       }
+//     })
+//   } catch (error) {
+//     console.warn('ChainTokenService: Rubic chains fetch failed:', error)
+//     return []
+//   }
+// }
 
 /**
  * Symbiosis: Extract chains from SYMBIOSIS_CONFIG (already loaded)
@@ -251,7 +251,7 @@ function getCCTPChains(): ProviderChainEntry[] {
 function mergeAllChains(
   lifi: ProviderChainEntry[],
   rango: ProviderChainEntry[],
-  rubic: ProviderChainEntry[],
+  // rubic: ProviderChainEntry[],
   symbiosis: ProviderChainEntry[],
   near: ProviderChainEntry[],
   cctp: ProviderChainEntry[]
@@ -294,7 +294,7 @@ function mergeAllChains(
 
   upsert(lifi, 'lifi', 'lifi')
   upsert(rango, 'rango', 'rango')
-  upsert(rubic, 'rubic', 'rubic')
+  // upsert(rubic, 'rubic', 'rubic')
   upsert(symbiosis, 'symbiosis', 'symbiosis')
   upsert(near, 'nearIntents', 'nearIntents')
   upsert(cctp, 'cctp', 'cctp')
@@ -649,11 +649,11 @@ export const ChainTokenService = {
     console.log('ChainTokenService: Fetching chains from all providers...')
 
     // Fetch from all providers in parallel with graceful failure
-    const [lifiResult, rangoResult, rubicResult, symbiosisResult, nearResult, cctpResult] =
+    const [lifiResult, rangoResult, symbiosisResult, nearResult, cctpResult] =
       await Promise.allSettled([
         fetchLifiChains(),
         fetchRangoChains(),
-        fetchRubicChains(),
+        // fetchRubicChains(),
         Promise.resolve(getSymbiosisChains()),
         fetchNearChains(),
         Promise.resolve(getCCTPChains()),
@@ -661,17 +661,17 @@ export const ChainTokenService = {
 
     const lifi = lifiResult.status === 'fulfilled' ? lifiResult.value : []
     const rango = rangoResult.status === 'fulfilled' ? rangoResult.value : []
-    const rubic = rubicResult.status === 'fulfilled' ? rubicResult.value : []
+    // const rubic = rubicResult.status === 'fulfilled' ? rubicResult.value : []
     const symbiosis = symbiosisResult.status === 'fulfilled' ? symbiosisResult.value : []
     const near = nearResult.status === 'fulfilled' ? nearResult.value : []
     const cctp = cctpResult.status === 'fulfilled' ? cctpResult.value : []
 
     console.log(
-      `ChainTokenService: Fetched chains — LiFi: ${lifi.length}, Rango: ${rango.length}, Rubic: ${rubic.length}, Symbiosis: ${symbiosis.length}, NEAR: ${near.length}, CCTP: ${cctp.length}`
+      `ChainTokenService: Fetched chains — LiFi: ${lifi.length}, Rango: ${rango.length}, Symbiosis: ${symbiosis.length}, NEAR: ${near.length}, CCTP: ${cctp.length}`
     )
 
     // Merge and enrich
-    const merged = mergeAllChains(lifi, rango, rubic, symbiosis, near, cctp)
+    const merged = mergeAllChains(lifi, rango, symbiosis, near, cctp)
     const enriched = enrichWithStaticData(merged)
 
     console.log(`ChainTokenService: Total unified chains: ${enriched.length}`)
