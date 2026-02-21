@@ -489,9 +489,14 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
             </div>
           )}
 
-          {/* Controls Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-muted/30 p-6 border border-border">
-            {/* Network Selection */}
+          <div className="space-y-4">
+            <p className="text-[11px] text-yellow-500 text-center md:text-left font-mono">
+               We recommend Arbitrum for lowest fees, near-instant settlement, and greater route compatibility.
+            </p>
+          </div>  
+            {/* Controls Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-muted/30 p-6 border border-border">
+              {/* Network Selection */}
             <div className="space-y-3">
               <Label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Payment Network</Label>
               <div className="relative">

@@ -242,8 +242,8 @@ export default function CreateLinkPage() {
                               </button>
                             ))}
                           </div>
-                          <p className="text-[11px] text-muted-foreground/70 italic">
-                            💡 We recommend Arbitrum for lowest fees and near-instant settlement.
+                          <p className="text-[11px] text-yellow-500">
+                            We recommend Arbitrum for lowest fees, near-instant settlement, and greater route compatibility.
                           </p>
                         </div>
 
