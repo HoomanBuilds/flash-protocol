@@ -459,7 +459,7 @@ function LinksPageContent() {
       <Dialog open={!!qrLink} onOpenChange={(open) => !open && setQrLink(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-mono">[ QR_CODE ]</DialogTitle>
+            <DialogTitle className="font-mono">QR_CODE</DialogTitle>
             <DialogDescription>
               Scan to pay {qrLink?.title}
             </DialogDescription>

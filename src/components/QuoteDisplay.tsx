@@ -110,7 +110,7 @@ export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoad
     <div className="w-full mt-6 space-y-4 font-mono text-sm">
       {/* Route Header */}
       <div className="flex justify-between items-center pb-4 border-b border-border text-muted-foreground">
-        <span className="text-xs uppercase tracking-widest">[ ROUTE_DETAILS ]</span>
+        <span className="text-xs uppercase tracking-widest">ROUTE_DETAILS</span>
         <div className="flex items-center gap-2 px-2 py-1 border border-border text-xs font-bold">
           {route.provider.toUpperCase()}
         </div>
@@ -192,7 +192,7 @@ export function QuoteDisplay({ route, fromTokenInfo, toTokenInfo, onSwap, isLoad
             <span>{loadingStep || 'Processing...'}</span>
           </div>
         ) : (
-          <span>[ CONFIRM_TRANSACTION ]</span>
+          <span>CONFIRM_TRANSACTION</span>
         )}
       </Button>
     </div>

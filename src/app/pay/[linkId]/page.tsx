@@ -149,7 +149,7 @@ export default function PayPage({
                   onClick={openConnectModal}
                   className="text-xs bg-foreground text-background px-4 py-2 hover:bg-foreground/90 transition-colors uppercase tracking-wider font-bold"
                 >
-                  [ CONNECT_WALLET ]
+                  CONNECT_WALLET
                 </button>
               )
             }
@@ -199,7 +199,7 @@ export default function PayPage({
                     disabled={!mounted}
                     className="bg-foreground text-background font-bold py-3 px-8 text-sm uppercase tracking-wider transition-all hover:bg-foreground/90"
                   >
-                    [ INITIALIZE_CONNECTION ]
+                    INITIALIZE_CONNECTION
                   </button>
                 )}
               </ConnectButton.Custom>
@@ -213,7 +213,7 @@ export default function PayPage({
               onClick={handleCancel}
               className="w-full text-center text-xs text-muted-foreground hover:text-red-500 transition-colors uppercase tracking-widest py-4 border border-transparent hover:border-red-200"
             >
-              [ CANCEL_PAYMENT ]
+              CANCEL_PAYMENT
             </button>
           )}
         </div>

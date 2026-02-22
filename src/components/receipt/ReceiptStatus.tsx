@@ -145,7 +145,7 @@ export function ReceiptStatus({ transactionId, initialData }: ReceiptStatusProps
                     disabled={pdfLoading}
                 >
                     {pdfLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                    {pdfLoading ? 'GENERATING_PDF...' : '[ DOWNLOAD_OFFICIAL_RECEIPT ]'}
+                    {pdfLoading ? 'GENERATING_PDF...' : 'DOWNLOAD_OFFICIAL_RECEIPT'}
                 </Button>
               )}
             </PDFDownloadLink>

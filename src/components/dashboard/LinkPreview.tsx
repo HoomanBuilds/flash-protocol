@@ -18,7 +18,7 @@ export function LinkPreview({ title, description, amount, currency = 'USD' }: Li
     <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-muted/30 border border-border relative overflow-hidden">
       <div className="w-full max-w-md relative">
         <div className="mb-4 text-center">
-          <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">[ LIVE_PREVIEW ]</span>
+          <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">LIVE_PREVIEW</span>
         </div>
 
         <div className="w-full relative overflow-hidden border border-border bg-background p-6">

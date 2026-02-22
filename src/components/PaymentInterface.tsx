@@ -601,7 +601,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
                 <span>Processing Route...</span>
               </div>
             ) : (
-              <span>[ REVIEW_PAYMENT ]</span>
+              <span>REVIEW_PAYMENT</span>
             )}
           </Button>
 
@@ -616,7 +616,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pt-4">
               <div className="flex items-center gap-4 mb-6">
                 <div className="h-px flex-1 bg-border" />
-                <span className="text-xs text-muted-foreground font-mono uppercase tracking-widest">[ ROUTE_OPTIMIZED ]</span>
+                <span className="text-xs text-muted-foreground font-mono uppercase tracking-widest">ROUTE_OPTIMIZED</span>
                 <div className="h-px flex-1 bg-border" />
               </div>
 

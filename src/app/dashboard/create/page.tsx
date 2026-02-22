@@ -122,7 +122,7 @@ export default function CreateLinkPage() {
         <div className="space-y-6">
           <div className="border border-border bg-background p-6">
             <div className="mb-6 pb-6 border-b border-border">
-              <h3 className="text-sm font-bold tracking-widest uppercase">[ CONFIGURATION ]</h3>
+              <h3 className="text-sm font-bold tracking-widest uppercase">CONFIGURATION</h3>
               <p className="text-xs text-muted-foreground mt-1">Customize your payment link settings.</p>
             </div>
 
