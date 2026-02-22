@@ -15,8 +15,11 @@ export async function GET(request: Request) {
   }
 
   try {
+    const numericId = parseInt(chainId)
+    const parsedChainId: number | string = !isNaN(numericId) ? numericId : chainId
+
     const result = await getTokenPrice(
-      parseInt(chainId),
+      parsedChainId,
       tokenAddress,
       symbol
     )

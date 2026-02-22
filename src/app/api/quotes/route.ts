@@ -3,8 +3,8 @@ import { QuoteAggregator } from '@/services/quote-aggregator'
 import { z } from 'zod'
 
 const quoteSchema = z.object({
-  fromChainId: z.number(),
-  toChainId: z.number(),
+  fromChainId: z.union([z.number(), z.string()]),
+  toChainId: z.union([z.number(), z.string()]),
   fromTokenAddress: z.string(),
   toTokenAddress: z.string(),
   fromAmount: z.string(),

@@ -187,7 +187,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
 
     try {
       const params = new URLSearchParams({
-        chainId: fromChainId.toString(),
+        chainId: fromChainKey,
         tokenAddress: fromTokenAddress,
         symbol: fromToken.symbol,
       })
@@ -227,13 +227,13 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     } finally {
       setPriceLoading(false)
     }
-  }, [fromChainId, fromTokenAddress, fromToken, displayAmountUSD, link.receive_token_symbol])
+  }, [fromChainKey, fromTokenAddress, fromToken, displayAmountUSD, link.receive_token_symbol])
 
   // Fetch price on chain/token change
   useEffect(() => {
     if (!fromToken) return
     fetchPrice()
-  }, [fromChainId, fromTokenAddress, fromToken?.symbol, displayAmountUSD])
+  }, [fromChainKey, fromTokenAddress, fromToken?.symbol, displayAmountUSD])
 
   // Auto-refresh price every 30s
   useEffect(() => {
@@ -281,7 +281,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fromChainId,
+          fromChainId: fromChainKey,
           fromTokenAddress,
           toChainId,
           toTokenAddress: destinationToken,
