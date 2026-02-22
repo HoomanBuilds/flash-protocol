@@ -24,6 +24,7 @@ export type Database = {
           last_login_at: string | null
           api_key_hash: string | null
           api_key_prefix: string | null
+          api_key_name: string | null
           api_enabled: boolean
           api_created_at: string | null
           api_last_used_at: string | null
@@ -43,6 +44,7 @@ export type Database = {
           last_login_at?: string | null
           api_key_hash?: string | null
           api_key_prefix?: string | null
+          api_key_name?: string | null
           api_enabled?: boolean
           api_created_at?: string | null
           api_last_used_at?: string | null
@@ -62,6 +64,7 @@ export type Database = {
           last_login_at?: string | null
           api_key_hash?: string | null
           api_key_prefix?: string | null
+          api_key_name?: string | null
           api_enabled?: boolean
           api_created_at?: string | null
           api_last_used_at?: string | null

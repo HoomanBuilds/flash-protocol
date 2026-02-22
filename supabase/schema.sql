@@ -44,6 +44,7 @@ create table if not exists merchants (
     -- API Integration columns (Phase 4B)
     api_key_hash varchar(255) unique,
     api_key_prefix varchar(20),
+    api_key_name varchar(100),
     api_enabled boolean default false,
     api_created_at timestamp with time zone,
     api_last_used_at timestamp with time zone,
