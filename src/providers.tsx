@@ -1,57 +1,76 @@
 'use client'
 
-import { RainbowKitProvider, RainbowKitAuthenticationProvider, AuthenticationStatus, lightTheme } from '@rainbow-me/rainbowkit'
+import { DynamicContextProvider } from '@dynamic-labs/sdk-react-core'
+import { EthereumWalletConnectors } from '@dynamic-labs/ethereum'
+import { SolanaWalletConnectors } from '@dynamic-labs/solana'
+import { BitcoinWalletConnectors } from '@dynamic-labs/bitcoin'
+import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-import { WagmiProvider } from 'wagmi'
-import { config } from '@/config/wagmi'
-import { authenticationAdapter } from '@/lib/auth-adapter'
-import { useEffect } from 'react'
-import { useUserStore } from '@/store/user'
-import '@rainbow-me/rainbowkit/styles.css'
+import { WagmiProvider, createConfig, http } from 'wagmi'
+import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains'
 
 const queryClient = new QueryClient()
 
-const monoTheme = lightTheme({
-  accentColor: '#000000',
-  accentColorForeground: '#ffffff',
-  borderRadius: 'none',
-  fontStack: 'system',
-  overlayBlur: 'small',
+const alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_KEY
+
+const getTransport = (chainId: number) => {
+  if (!alchemyKey) return http()
+  const alchemyUrls: Record<number, string> = {
+    1: `https://eth-mainnet.g.alchemy.com/v2/${alchemyKey}`,
+    137: `https://polygon-mainnet.g.alchemy.com/v2/${alchemyKey}`,
+    10: `https://opt-mainnet.g.alchemy.com/v2/${alchemyKey}`,
+    42161: `https://arb-mainnet.g.alchemy.com/v2/${alchemyKey}`,
+    8453: `https://base-mainnet.g.alchemy.com/v2/${alchemyKey}`,
+  }
+  return alchemyUrls[chainId] ? http(alchemyUrls[chainId]) : http()
+}
+
+const evmChains = [mainnet, polygon, optimism, arbitrum, base] as const
+
+const wagmiConfig = createConfig({
+  chains: evmChains,
+  transports: {
+    [mainnet.id]: getTransport(mainnet.id),
+    [polygon.id]: getTransport(polygon.id),
+    [optimism.id]: getTransport(optimism.id),
+    [arbitrum.id]: getTransport(arbitrum.id),
+    [base.id]: getTransport(base.id),
+  },
+  multiInjectedProviderDiscovery: false,
 })
 
-// Override specific tokens for full monochrome
-monoTheme.colors.connectButtonBackground = '#ffffff'
-monoTheme.colors.connectButtonInnerBackground = '#f5f5f5'
-monoTheme.colors.connectButtonText = '#000000'
-monoTheme.colors.modalBackground = '#ffffff'
-monoTheme.colors.modalBorder = '#e5e5e5'
-monoTheme.fonts.body = "'Geist Mono', monospace"
+const dynamicEnvId = process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading, fetchUser } = useUserStore()
-
-  useEffect(() => {
-    fetchUser()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) 
-
-  const status: AuthenticationStatus = isLoading 
-    ? 'loading' 
-    : isAuthenticated ? 'authenticated' : 'unauthenticated'
+  // During build/SSG, Dynamic env ID may not be available — render without it
+  if (!dynamicEnvId) {
+    return (
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      </WagmiProvider>
+    )
+  }
 
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitAuthenticationProvider 
-          adapter={authenticationAdapter} 
-          status={status}
-        >
-          <RainbowKitProvider theme={monoTheme}>
+    <DynamicContextProvider
+      settings={{
+        environmentId: dynamicEnvId,
+        walletConnectors: [
+          EthereumWalletConnectors,
+          SolanaWalletConnectors,
+          BitcoinWalletConnectors,
+        ],
+      }}
+    >
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <DynamicWagmiConnector>
             {children}
-          </RainbowKitProvider>
-        </RainbowKitAuthenticationProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+          </DynamicWagmiConnector>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </DynamicContextProvider>
   )
 }

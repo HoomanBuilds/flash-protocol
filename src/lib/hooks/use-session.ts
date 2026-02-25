@@ -1,19 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
 
+/**
+ * Hook that provides the connected wallet address from Dynamic.xyz
+ * Replaces the old session cookie-based approach.
+ */
 export function useSession() {
-  const [sessionToken, setSessionToken] = useState<string | null>(null)
+  const { primaryWallet } = useDynamicContext()
 
-  useEffect(() => {
-    // Basic cookie parser
-    const getCookie = (name: string) => {
-      const value = `; ${document.cookie}`
-      const parts = value.split(`; ${name}=`)
-      if (parts.length === 2) return parts.pop()?.split(';').shift()
-    }
-    
-    const token = getCookie('session_id')
-    if (token) setSessionToken(token)
-  }, [])
-
-  return { sessionToken }
+  return {
+    sessionToken: primaryWallet?.address || null,
+    walletAddress: primaryWallet?.address || null,
+    isConnected: !!primaryWallet,
+  }
 }

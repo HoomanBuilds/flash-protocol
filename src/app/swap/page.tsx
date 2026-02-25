@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useAccount, useSendTransaction, useSwitchChain } from 'wagmi'
+import { useSendTransaction, useSwitchChain, useAccount as useWagmiAccount } from 'wagmi'
 import { formatUnits, parseUnits } from 'viem'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { QuoteDisplay } from '@/components/QuoteDisplay'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
 
 import { CHAINS } from '@/lib/chains'
 import { getTokensByChain } from '@/lib/tokens'
@@ -62,7 +62,10 @@ interface QuoteData {
 }
 
 export default function SwapPage() {
-  const { address, isConnected, chain: connectedChain } = useAccount()
+  const { primaryWallet } = useDynamicContext()
+  const address = primaryWallet?.address as `0x${string}` | undefined
+  const isConnected = !!primaryWallet
+  const { chain: connectedChain } = useWagmiAccount()
   const { switchChain } = useSwitchChain()
   
   // Chain selection state
@@ -268,7 +271,7 @@ export default function SwapPage() {
       <h1 className="text-3xl font-bold mb-8 text-slate-900">Cross-Chain Swap Aggregator</h1>
       
       <div className="mb-8">
-        <ConnectButton />
+        <DynamicWidget />
       </div>
 
       <Card className="w-full max-w-md mb-6 bg-white border-slate-200 shadow-xl">

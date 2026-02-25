@@ -2,9 +2,8 @@
 
 import { Zap, Globe2, ShieldCheck, Percent, Wallet, Layers, ArrowRight, Activity, Terminal } from 'lucide-react'
 import Link from 'next/link'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
 import { motion } from 'framer-motion'
-import { useAccount } from 'wagmi'
 import { toast } from '@/components/ui/use-toast'
 import DottedMap from '@/components/ui/dotted-map'
 
@@ -96,7 +95,8 @@ const itemVariants = {
 }
 
 export default function Home() {
-  const { isConnected } = useAccount()
+  const { primaryWallet } = useDynamicContext()
+  const isConnected = !!primaryWallet
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-foreground selection:text-background text-base">
@@ -136,7 +136,7 @@ export default function Home() {
                   </Link>
                 ) : (
                   <div className="[&_button]:!h-12 [&_button]:!rounded-none [&_button]:!font-mono">
-                    <ConnectButton label="CONNECT WALLET" showBalance={false} />
+                    <DynamicWidget />
                   </div>
                 )}
                 <Link href="/docs" className="h-12 px-8 border border-border flex items-center justify-center hover:bg-muted/50 transition-colors font-mono text-sm">
