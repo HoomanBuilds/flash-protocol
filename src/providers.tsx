@@ -8,6 +8,7 @@ import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains'
+import { useState, useEffect, type ReactNode } from 'react'
 
 const queryClient = new QueryClient()
 
@@ -37,12 +38,25 @@ const wagmiConfig = createConfig({
     [base.id]: getTransport(base.id),
   },
   multiInjectedProviderDiscovery: false,
+  ssr: true, // Enable SSR support for wagmi
 })
 
 const dynamicEnvId = process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  // During build/SSG, Dynamic env ID may not be available — render without it
+/**
+ * DynamicWagmiConnector calls getClient() which is null during SSR.
+ * Wrap it so it only renders after hydration.
+ */
+function ClientOnlyWagmiConnector({ children }: { children: ReactNode }) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
+  if (!mounted) return <>{children}</>
+  return <DynamicWagmiConnector>{children}</DynamicWagmiConnector>
+}
+
+export function Providers({ children }: { children: ReactNode }) {
+  // If Dynamic env ID is missing, render minimal providers (build-time / misconfigured)
   if (!dynamicEnvId) {
     return (
       <WagmiProvider config={wagmiConfig}>
@@ -66,9 +80,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <DynamicWagmiConnector>
+          <ClientOnlyWagmiConnector>
             {children}
-          </DynamicWagmiConnector>
+          </ClientOnlyWagmiConnector>
         </QueryClientProvider>
       </WagmiProvider>
     </DynamicContextProvider>
