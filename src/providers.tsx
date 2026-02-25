@@ -1,6 +1,6 @@
 'use client'
 
-import { DynamicContextProvider } from '@dynamic-labs/sdk-react-core'
+import { DynamicContextProvider, useDynamicContext } from '@dynamic-labs/sdk-react-core'
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum'
 import { SolanaWalletConnectors } from '@dynamic-labs/solana'
 import { BitcoinWalletConnectors } from '@dynamic-labs/bitcoin'
@@ -8,7 +8,7 @@ import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains'
-import { type ReactNode, Component, type ErrorInfo } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 
 const queryClient = new QueryClient()
 
@@ -43,59 +43,33 @@ const wagmiConfig = createConfig({
 const dynamicEnvId = process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID
 
 /**
- * Error boundary that catches Dynamic SDK's "getClient still null" error
- * and retries rendering after a short delay. This handles the race condition
- * where DynamicContextProvider hasn't set up its internal client yet
- * when child components try to access it.
+ * Defers rendering the Wagmi connector until the Dynamic SDK has fully loaded.
+ * This prevents the "Tried to getClient when it was still null" error in Next.js 15
+ * where Turbopack evaluates chunks and triggers wagmi client creation before Dynamic 
+ * has finished its async initialization.
  */
-class DynamicClientErrorBoundary extends Component<
-  { children: ReactNode },
-  { hasError: boolean; retryCount: number }
-> {
-  constructor(props: { children: ReactNode }) {
-    super(props)
-    this.state = { hasError: false, retryCount: 0 }
+function WagmiConnectorWrapper({ children }: { children: ReactNode }) {
+  const { sdkHasLoaded } = useDynamicContext()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Do not mount Wagmi connector or children until Dynamic SDK is completely ready
+  if (!mounted || !sdkHasLoaded) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    )
   }
 
-  static getDerivedStateFromError(error: Error) {
-    if (error.message?.includes('getClient when it was still null')) {
-      return { hasError: true }
-    }
-    throw error // Re-throw non-Dynamic errors
-  }
-
-  componentDidCatch(error: Error, info: ErrorInfo) {
-    console.warn('[DynamicClientErrorBoundary] Caught initialization error, retrying...', error.message, info)
-  }
-
-  componentDidUpdate() {
-    if (this.state.hasError && this.state.retryCount < 5) {
-      setTimeout(() => {
-        this.setState(prev => ({
-          hasError: false,
-          retryCount: prev.retryCount + 1,
-        }))
-      }, 200 * (this.state.retryCount + 1))
-    }
-  }
-
-  render() {
-    if (this.state.hasError) {
-      if (this.state.retryCount >= 5) {
-        return (
-          <div className="flex items-center justify-center min-h-screen">
-            <p className="text-muted-foreground">Failed to initialize. Please refresh the page.</p>
-          </div>
-        )
-      }
-      return (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-pulse text-muted-foreground">Loading...</div>
-        </div>
-      )
-    }
-    return this.props.children
-  }
+  return (
+    <DynamicWagmiConnector>
+      {children}
+    </DynamicWagmiConnector>
+  )
 }
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -122,11 +96,9 @@ export function Providers({ children }: { children: ReactNode }) {
     >
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <DynamicClientErrorBoundary>
-            <DynamicWagmiConnector>
-              {children}
-            </DynamicWagmiConnector>
-          </DynamicClientErrorBoundary>
+          <WagmiConnectorWrapper>
+            {children}
+          </WagmiConnectorWrapper>
         </QueryClientProvider>
       </WagmiProvider>
     </DynamicContextProvider>
