@@ -17,6 +17,11 @@ const FALLBACK_PREFIX_MAP: Record<string, string> = {
   '56': 'bsc',
   '43114': 'avax',
   '100': 'gnosis',
+  'solana': 'sol',
+  'bitcoin': 'btc',
+  'near': 'near',
+  'dogecoin': 'doge',
+  '1313161554': 'aurora',
 }
 
 const FALLBACK_NATIVE_IDS: Record<string, string> = {
@@ -28,6 +33,8 @@ const FALLBACK_NATIVE_IDS: Record<string, string> = {
   '56': 'nep245:v2_1.omni.hot.tg:56_11111111111111111111',
   '43114': 'nep245:v2_1.omni.hot.tg:43114_11111111111111111111',
   '100': 'nep141:gnosis.omft.near',
+  'solana': 'nep141:sol.omft.near',
+  'near': 'wrap.near',
 }
 
 // Dynamic maps: built from getTokens() response at first use
@@ -123,8 +130,14 @@ export class NearIntentsProvider implements IProvider {
 
     const address = tokenAddress.toLowerCase()
     
-    // Native token (zero address) - use chain-level asset ID
-    if (address === '0x0000000000000000000000000000000000000000') {
+    // Native token detection 
+    const isNative = 
+      address === '0x0000000000000000000000000000000000000000' || // EVM native
+      address === '11111111111111111111111111111111' || // Solana native (system program)
+      address === 'so11111111111111111111111111111111111111112' || // Wrapped SOL
+      address === '' || !address // Empty = native
+    
+    if (isNative) {
       const nativeId = nativeMap[chainKey]
       if (!nativeId) {
         console.log(`NEAR Intents: No native asset ID for chain ${chainKey}`)
@@ -256,6 +269,11 @@ export class NearIntentsProvider implements IProvider {
           deadline: quote.deadline,
           amountOutFormatted: quote.amountOutFormatted,
           amountOutUsd: quote.amountOutUsd,
+          chainType: String(request.fromChain) === 'solana' ? 'solana' as const
+                   : String(request.fromChain) === 'bitcoin' ? 'bitcoin' as const
+                   : 'evm' as const,
+          isDepositTrade: true,
+          amountToSend: request.fromAmount,
         },
         fees: {
             totalFeeUSD: spread.toFixed(4),

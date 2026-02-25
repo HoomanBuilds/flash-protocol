@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useAccount, useSwitchChain, useBalance } from 'wagmi'
+import { useBalance, useSwitchChain, useAccount as useWagmiAccount } from 'wagmi'
 import { parseUnits } from 'viem'
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -45,7 +46,10 @@ interface PaymentInterfaceProps {
 }
 
 export default function PaymentInterface({ link, onSuccess }: PaymentInterfaceProps) {
-  const { address, isConnected, chain: connectedChain } = useAccount()
+  const { primaryWallet } = useDynamicContext()
+  const address = primaryWallet?.address as `0x${string}` | undefined
+  const isConnected = !!primaryWallet
+  const { chain: connectedChain } = useWagmiAccount()
   const { switchChain } = useSwitchChain()
   const { toast } = useToast()
   
@@ -62,6 +66,10 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     connectedChain?.id ? String(connectedChain.id) : '42161'
   )
   const [fromTokenAddress, setFromTokenAddress] = useState('0x0000000000000000000000000000000000000000')
+
+  // Derive chain type from dynamic chains
+  const selectedChain = dynamicChains.find(c => String(c.chainId) === fromChainKey || c.key === fromChainKey)
+  const chainType = selectedChain?.type || 'evm'
 
   // Derive numeric chainId for wagmi compatibility
   const fromChainId = (() => {
@@ -165,13 +173,13 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     loadTokens()
   }, [fromChainKey])
 
-  // Fetch Bundle
+  // Balance — only use wagmi balance for EVM chains
   const { data: balanceData } = useBalance({
     address: address,
     chainId: fromChainId,
     token: fromTokenAddress === '0x0000000000000000000000000000000000000000' ? undefined : fromTokenAddress as `0x${string}`,
     query: {
-      enabled: !!address && !!fromChainId,
+      enabled: !!address && !!fromChainId && chainType === 'evm',
       refetchInterval: 10000
     }
   })
@@ -326,7 +334,8 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     setError('')
 
     try {
-      if (Number(connectedChain?.id) !== fromChainId) {
+      // Only switch chain for EVM chains
+      if (chainType === 'evm' && Number(connectedChain?.id) !== fromChainId) {
         await switchChain({ chainId: fromChainId })
       }
 

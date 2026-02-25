@@ -243,6 +243,29 @@ function getCCTPChains(): ProviderChainEntry[] {
   ]
 }
 
+/**
+ * Map known provider-specific chain IDs to canonical keys.
+ * This prevents duplicates when e.g. LiFi uses '1151111081099710' for Solana
+ * but NEAR Intents uses 'solana'.
+ */
+const CHAIN_KEY_ALIASES: Record<string, string> = {
+  '1151111081099710': 'solana',
+  '3652501241': 'bitcoin',
+  'solana': 'solana',
+  'bitcoin': 'bitcoin',
+  'near': 'near',
+  'tron': 'tron',
+  'sui': 'sui',
+  'cosmos': 'cosmos',
+  'osmosis': 'osmosis',
+  'dogecoin': 'dogecoin',
+  'turbochain': 'turbochain',
+}
+
+function normalizeChainKey(key: string): string {
+  return CHAIN_KEY_ALIASES[key] || key
+}
+
 // ========== MERGING ==========
 
 /**
@@ -264,10 +287,11 @@ function mergeAllChains(
     providerIdKey: keyof UnifiedChain['providerIds']
   ) {
     for (const entry of entries) {
-      let chain = chainMap.get(entry.key)
+      const normalizedKey = normalizeChainKey(entry.key)
+      let chain = chainMap.get(normalizedKey)
       if (!chain) {
         chain = {
-          key: entry.key,
+          key: normalizedKey,
           chainId: entry.chainId,
           name: entry.name,
           type: entry.type,
@@ -276,7 +300,7 @@ function mergeAllChains(
           providers: emptyProviderSupport(),
           providerIds: {},
         }
-        chainMap.set(entry.key, chain)
+        chainMap.set(normalizedKey, chain)
       }
 
       // Mark provider support
