@@ -82,6 +82,7 @@ create table if not exists payment_links (
     receive_chain_id integer,
     recipient_address varchar,
     title text,
+    description text,
     customization jsonb default '{}'::jsonb,
     receive_mode varchar default 'specific_chain' check (receive_mode in ('same_chain', 'specific_chain')),
     status payment_link_status default 'active',
@@ -169,7 +170,7 @@ create index if not exists idx_tx_created_at on transactions(created_at desc);
 create table if not exists quotes (
     id uuid primary key default uuid_generate_v4(),
     payment_link_id uuid references payment_links(id),
-    session_id varchar,
+    wallet_address varchar,
     from_chain_id integer,
     from_token varchar,
     from_amount decimal,
@@ -210,26 +211,7 @@ create table if not exists customers (
 alter table customers enable row level security;
 create policy "Customers viewable by everyone" on customers for select using (true);
 
--- Sessions Table (for SIWE authentication - MVP only)
-create table if not exists sessions (
-    id uuid primary key default uuid_generate_v4(),
-    wallet_address varchar not null,
-    nonce varchar not null,
-    signature text,
-    message text,
-    expires_at timestamp with time zone not null,
-    created_at timestamp with time zone default now()
-);
-
--- RLS for Sessions
-alter table sessions enable row level security;
-create policy "Sessions viewable by owner" on sessions for select using (wallet_address = auth.jwt()->>'sub'); 
-create policy "Anyone can create session" on sessions for insert with check (true);
-
--- Indexes for Sessions
-create index if not exists idx_session_wallet on sessions(wallet_address);
-create index if not exists idx_session_expires on sessions(expires_at);
-create index if not exists idx_session_nonce on sessions(nonce);
+-- (Sessions table removed — SIWE authentication no longer used)
 
 -- Failure Logs Table
 create table if not exists failure_logs (

@@ -82,8 +82,10 @@ export type Database = {
           receive_chain_id: number | null
           recipient_address: string | null
           title: string | null
+          description: string | null
           customization: Json | null
           status: 'active' | 'paused' | 'archived' | 'expired'
+          receive_mode: 'same_chain' | 'specific_chain'
           max_uses: number | null
           current_uses: number
           expires_at: string | null
@@ -104,8 +106,10 @@ export type Database = {
           receive_chain_id?: number | null
           recipient_address?: string | null
           title?: string | null
+          description?: string | null
           customization?: Json | null
           status?: 'active' | 'paused' | 'archived' | 'expired'
+          receive_mode?: 'same_chain' | 'specific_chain'
           max_uses?: number | null
           current_uses?: number
           expires_at?: string | null
@@ -126,8 +130,10 @@ export type Database = {
           receive_chain_id?: number | null
           recipient_address?: string | null
           title?: string | null
+          description?: string | null
           customization?: Json | null
           status?: 'active' | 'paused' | 'archived' | 'expired'
+          receive_mode?: 'same_chain' | 'specific_chain'
           max_uses?: number | null
           current_uses?: number
           expires_at?: string | null
@@ -154,7 +160,7 @@ export type Database = {
           to_amount: number | null
           actual_output: number | null
           status: 'initiated' | 'quote_generated' | 'pending_signature' | 'submitted' | 'processing' | 'swapping' | 'bridging' | 'settling' | 'completed' | 'failed' | 'expired'
-          provider: 'lifi' | 'rango' | 'near_intents' | 'rubic' | 'symbiosis' | null
+          provider: 'lifi' | 'rango' | 'near-intents' | 'rubic' | 'symbiosis' | 'cctp' | null
           route_details: Json | null
           source_tx_hash: string | null
           bridge_tx_hash: string | null
@@ -188,7 +194,7 @@ export type Database = {
           to_amount?: number | null
           actual_output?: number | null
           status?: 'initiated' | 'quote_generated' | 'pending_signature' | 'submitted' | 'processing' | 'swapping' | 'bridging' | 'settling' | 'completed' | 'failed' | 'expired'
-          provider?: 'lifi' | 'rango' | 'near_intents' | 'rubic' | 'symbiosis' | null
+          provider?: 'lifi' | 'rango' | 'near-intents' | 'rubic' | 'symbiosis' | 'cctp' | null
           route_details?: Json | null
           source_tx_hash?: string | null
           bridge_tx_hash?: string | null
@@ -222,7 +228,7 @@ export type Database = {
           to_amount?: number | null
           actual_output?: number | null
           status?: 'initiated' | 'quote_generated' | 'pending_signature' | 'submitted' | 'processing' | 'swapping' | 'bridging' | 'settling' | 'completed' | 'failed' | 'expired'
-          provider?: 'lifi' | 'rango' | 'near_intents' | 'rubic' | 'symbiosis' | null
+          provider?: 'lifi' | 'rango' | 'near-intents' | 'rubic' | 'symbiosis' | 'cctp' | null
           route_details?: Json | null
           source_tx_hash?: string | null
           bridge_tx_hash?: string | null
@@ -255,7 +261,7 @@ export type Database = {
           error_message: string | null
           ip_address: string | null
           user_agent: string | null
-          duration_ms: number | null
+          execution_time_ms: number | null
           created_at: string
         }
         Insert: {
@@ -269,7 +275,7 @@ export type Database = {
           error_message?: string | null
           ip_address?: string | null
           user_agent?: string | null
-          duration_ms?: number | null
+          execution_time_ms?: number | null
           created_at?: string
         }
         Update: {
@@ -283,7 +289,7 @@ export type Database = {
           error_message?: string | null
           ip_address?: string | null
           user_agent?: string | null
-          duration_ms?: number | null
+          execution_time_ms?: number | null
           created_at?: string
         }
       }
@@ -291,7 +297,7 @@ export type Database = {
         Row: {
           id: string
           payment_link_id: string | null
-          session_id: string | null
+          wallet_address: string | null
           from_chain_id: number | null
           from_token: string | null
           from_amount: number | null
@@ -312,7 +318,7 @@ export type Database = {
         Insert: {
           id: string
           payment_link_id?: string | null
-          session_id?: string | null
+          wallet_address?: string | null
           from_chain_id?: number | null
           from_token?: string | null
           from_amount?: number | null
@@ -333,7 +339,7 @@ export type Database = {
         Update: {
           id: string
           payment_link_id?: string | null
-          session_id?: string | null
+          wallet_address?: string | null
           from_chain_id?: number | null
           from_token?: string | null
           from_amount?: number | null
@@ -387,35 +393,7 @@ export type Database = {
           created_at?: string
         }
       }
-      sessions: {
-        Row: {
-          id: string
-          wallet_address: string
-          nonce: string
-          signature: string | null
-          message: string | null
-          expires_at: string
-          created_at: string
-        }
-        Insert: {
-          id: string
-          wallet_address: string
-          nonce: string
-          signature?: string | null
-          message?: string | null
-          expires_at: string
-          created_at?: string
-        }
-        Update: {
-          id: string
-          wallet_address?: string
-          nonce?: string
-          signature?: string | null
-          message?: string | null
-          expires_at?: string
-          created_at?: string
-        }
-      }
+
       failure_logs: {
         Row: {
           id: string
@@ -526,7 +504,7 @@ export type Database = {
     Enums: {
       payment_link_status: 'active' | 'paused' | 'archived' | 'expired'
       transaction_status: 'initiated' | 'quote_generated' | 'pending_signature' | 'submitted' | 'processing' | 'swapping' | 'bridging' | 'settling' | 'completed' | 'failed' | 'expired'
-      provider_type: 'lifi' | 'rango' | 'near_intents' | 'rubic' | 'symbiosis'
+      provider_type: 'lifi' | 'rango' | 'near-intents' | 'rubic' | 'symbiosis' | 'cctp'
       refund_status: 'not_needed' | 'pending' | 'processing' | 'completed' | 'failed'
     }
   }
