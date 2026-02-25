@@ -38,6 +38,7 @@ const wagmiConfig = createConfig({
     [base.id]: getTransport(base.id),
   },
   multiInjectedProviderDiscovery: false,
+  ssr: true,
 })
 
 const dynamicEnvId = process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID
