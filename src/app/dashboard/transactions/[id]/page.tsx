@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
 import { 
   ArrowLeft, 
   Loader2, 
@@ -44,6 +45,7 @@ export default function TransactionDetailsPage({ params }: { params: Promise<{ i
   const resolvedParams = use(params)
   const [transaction, setTransaction] = useState<TransactionDetails | null>(null)
   const [loading, setLoading] = useState(true)
+  const { primaryWallet } = useDynamicContext()
 
   useEffect(() => {
     fetchTransactionDetails()
@@ -51,7 +53,8 @@ export default function TransactionDetailsPage({ params }: { params: Promise<{ i
 
   async function fetchTransactionDetails() {
     try {
-      const res = await fetch(`/api/v1/transactions/${resolvedParams.id}`)
+      const headers: Record<string, string> = primaryWallet?.address ? { 'x-wallet-address': primaryWallet.address } : {}
+      const res = await fetch(`/api/transactions/${resolvedParams.id}`, { headers })
       if (res.ok) {
         const data = await res.json()
         setTransaction(data)
