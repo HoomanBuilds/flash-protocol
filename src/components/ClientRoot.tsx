@@ -1,19 +1,24 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-import type { ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
+import { Providers } from '@/providers'
+import { LayoutShell } from '@/components/LayoutShell'
 
-// Load entire provider tree + layout shell with SSR disabled.
-const Providers = dynamic(
-  () => import('@/providers').then((mod) => mod.Providers),
-  { ssr: false }
-)
-const LayoutShell = dynamic(
-  () => import('@/components/LayoutShell').then((mod) => mod.LayoutShell),
-  { ssr: false }
-)
-
+/**
+ * ClientRoot guards the entire provider + layout tree behind a client-side mount check.
+ * 
+ */
 export function ClientRoot({ children }: { children: ReactNode }) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
+
   return (
     <Providers>
       <LayoutShell>
