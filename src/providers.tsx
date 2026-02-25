@@ -8,7 +8,7 @@ import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains'
-import { useState, useEffect, type ReactNode } from 'react'
+import { type ReactNode, Component, type ErrorInfo } from 'react'
 
 const queryClient = new QueryClient()
 
@@ -38,25 +38,67 @@ const wagmiConfig = createConfig({
     [base.id]: getTransport(base.id),
   },
   multiInjectedProviderDiscovery: false,
-  ssr: true, // Enable SSR support for wagmi
 })
 
 const dynamicEnvId = process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID
 
 /**
- * DynamicWagmiConnector calls getClient() which is null during SSR.
- * Wrap it so it only renders after hydration.
+ * Error boundary that catches Dynamic SDK's "getClient still null" error
+ * and retries rendering after a short delay. This handles the race condition
+ * where DynamicContextProvider hasn't set up its internal client yet
+ * when child components try to access it.
  */
-function ClientOnlyWagmiConnector({ children }: { children: ReactNode }) {
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => { setMounted(true) }, [])
+class DynamicClientErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean; retryCount: number }
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props)
+    this.state = { hasError: false, retryCount: 0 }
+  }
 
-  if (!mounted) return <>{children}</>
-  return <DynamicWagmiConnector>{children}</DynamicWagmiConnector>
+  static getDerivedStateFromError(error: Error) {
+    if (error.message?.includes('getClient when it was still null')) {
+      return { hasError: true }
+    }
+    throw error // Re-throw non-Dynamic errors
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn('[DynamicClientErrorBoundary] Caught initialization error, retrying...', error.message, info)
+  }
+
+  componentDidUpdate() {
+    if (this.state.hasError && this.state.retryCount < 5) {
+      setTimeout(() => {
+        this.setState(prev => ({
+          hasError: false,
+          retryCount: prev.retryCount + 1,
+        }))
+      }, 200 * (this.state.retryCount + 1))
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      if (this.state.retryCount >= 5) {
+        return (
+          <div className="flex items-center justify-center min-h-screen">
+            <p className="text-muted-foreground">Failed to initialize. Please refresh the page.</p>
+          </div>
+        )
+      }
+      return (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-pulse text-muted-foreground">Loading...</div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
 }
 
 export function Providers({ children }: { children: ReactNode }) {
-  // If Dynamic env ID is missing, render minimal providers (build-time / misconfigured)
   if (!dynamicEnvId) {
     return (
       <WagmiProvider config={wagmiConfig}>
@@ -80,9 +122,11 @@ export function Providers({ children }: { children: ReactNode }) {
     >
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <ClientOnlyWagmiConnector>
-            {children}
-          </ClientOnlyWagmiConnector>
+          <DynamicClientErrorBoundary>
+            <DynamicWagmiConnector>
+              {children}
+            </DynamicWagmiConnector>
+          </DynamicClientErrorBoundary>
         </QueryClientProvider>
       </WagmiProvider>
     </DynamicContextProvider>

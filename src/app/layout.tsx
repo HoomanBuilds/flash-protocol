@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Providers } from "@/providers";
-import { LayoutShell } from "@/components/LayoutShell";
+import { ClientRoot } from "@/components/ClientRoot";
 import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
@@ -14,8 +13,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: "PAYMENT GATEWAY",
@@ -32,12 +29,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          <LayoutShell>
-            {children}
-            <Toaster />
-          </LayoutShell>
-        </Providers>
+        <ClientRoot>
+          {children}
+          <Toaster />
+        </ClientRoot>
       </body>
     </html>
   );
