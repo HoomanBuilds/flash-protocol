@@ -1,36 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { createServerClient } from '@/lib/supabase'
-import { SessionService } from '@/services/internal/session'
 import { UserService } from '@/services/internal/user'
 import { createPaymentLinkSchema } from '@/lib/validations/payment-link'
 
+
+function getWalletAddress(req: NextRequest): string | null {
+  return req.headers.get('x-wallet-address') || null
+}
+
 export async function POST(req: NextRequest) {
   try {
-    // 1. Auth Check
-    const cookieStore = await cookies()
-    const sessionId = cookieStore.get('session_id')?.value
-    if (!sessionId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const walletAddress = getWalletAddress(req)
+    if (!walletAddress) return NextResponse.json({ error: 'Wallet not connected' }, { status: 401 })
 
-    const isValid = await SessionService.verifySession(sessionId)
-    if (!isValid) return NextResponse.json({ error: 'Invalid session' }, { status: 401 })
+    const merchant = await UserService.upsertUser(walletAddress)
+    if (!merchant) return NextResponse.json({ error: 'Failed to create merchant profile' }, { status: 500 })
 
-    const supabase = createServerClient()
-    
-    // Get wallet from session
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: session } = await (supabase.from('sessions') as any)
-      .select('wallet_address')
-      .eq('id', sessionId)
-      .single()
-      
-    if (!session?.wallet_address) return NextResponse.json({ error: 'Session user not found' }, { status: 401 })
-
-    // Get Merchant ID from wallet
-    const merchant = await UserService.findUserByWallet(session.wallet_address)
-    if (!merchant) return NextResponse.json({ error: 'Merchant profile not found' }, { status: 404 })
-
-    // 2. Input Validation
     const body = await req.json()
     const validation = createPaymentLinkSchema.safeParse(body)
 
@@ -39,8 +24,8 @@ export async function POST(req: NextRequest) {
     }
 
     const data = validation.data
+    const supabase = createServerClient()
 
-    // 3. Database Insert
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: link, error } = await (supabase.from('payment_links') as any)
       .insert({
@@ -54,7 +39,7 @@ export async function POST(req: NextRequest) {
         receive_chain_id: data.receive_chain_id,
         recipient_address: data.recipient_address,
         receive_mode: data.receive_mode,
-        customization: data.config, // Map config -> customization
+        customization: data.config,
         max_uses: data.max_uses,
         expires_at: data.expires_at,
         status: 'active'
@@ -75,32 +60,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    // 1. Auth Check
-    const cookieStore = await cookies()
-    const sessionId = cookieStore.get('session_id')?.value
-    if (!sessionId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const walletAddress = getWalletAddress(req)
+    if (!walletAddress) return NextResponse.json({ error: 'Wallet not connected' }, { status: 401 })
 
-    const isValid = await SessionService.verifySession(sessionId)
-    if (!isValid) return NextResponse.json({ error: 'Invalid session' }, { status: 401 })
+    const merchant = await UserService.findUserByWallet(walletAddress)
+    if (!merchant) return NextResponse.json({ error: 'Merchant not found' }, { status: 404 })
 
     const supabase = createServerClient()
 
-    // Get wallet from session
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: session } = await (supabase.from('sessions') as any)
-        .select('wallet_address')
-        .eq('id', sessionId)
-        .single()
-
-    if (!session?.wallet_address) return NextResponse.json({ error: 'Session user not found' }, { status: 401 })
-
-    // Get Merchant
-    const merchant = await UserService.findUserByWallet(session.wallet_address)
-    if (!merchant) return NextResponse.json({ error: 'Merchant not found' }, { status: 404 })
-
-    // 2. Fetch Links
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: links, error } = await (supabase.from('payment_links') as any)
       .select('*')
