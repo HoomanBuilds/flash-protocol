@@ -293,6 +293,82 @@ export type Database = {
           created_at?: string
         }
       }
+      cached_chains: {
+        Row: {
+          key: string
+          chain_id: number | null
+          name: string
+          type: string
+          symbol: string
+          logo_url: string | null
+          has_usdc: boolean
+          providers: Json
+          provider_ids: Json
+          updated_at: string
+        }
+        Insert: {
+          key: string
+          chain_id?: number | null
+          name: string
+          type: string
+          symbol: string
+          logo_url?: string | null
+          has_usdc?: boolean
+          providers: Json
+          provider_ids: Json
+          updated_at?: string
+        }
+        Update: {
+          key?: string
+          chain_id?: number | null
+          name?: string
+          type?: string
+          symbol?: string
+          logo_url?: string | null
+          has_usdc?: boolean
+          providers?: Json
+          provider_ids?: Json
+          updated_at?: string
+        }
+      }
+      cached_tokens: {
+        Row: {
+          id: string
+          chain_key: string
+          address: string
+          symbol: string
+          name: string
+          decimals: number
+          logo_url: string | null
+          is_native: boolean
+          provider_ids: Json | null
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          chain_key: string
+          address: string
+          symbol: string
+          name: string
+          decimals?: number
+          logo_url?: string | null
+          is_native?: boolean
+          provider_ids?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          chain_key?: string
+          address?: string
+          symbol?: string
+          name?: string
+          decimals?: number
+          logo_url?: string | null
+          is_native?: boolean
+          provider_ids?: Json | null
+          updated_at?: string
+        }
+      }
       quotes: {
         Row: {
           id: string

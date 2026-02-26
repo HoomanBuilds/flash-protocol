@@ -43,7 +43,9 @@ export async function PATCH(
     }
 
     const tx = data as TransactionRecord
-    const depositAddress = (tx.route_details as any)?.metadata?.depositAddress
+    const metadata = (tx.route_details as any)?.metadata
+    const depositAddress = metadata?.depositAddress
+    const bridge = (tx.route_details as any)?.routes?.[0]?.tool || tx.provider
 
     // 2. Now trigger Inngest polling with the actual tx hash
     await inngest.send({
@@ -53,7 +55,7 @@ export async function PATCH(
         txHash,
         fromChainId: tx.from_chain_id,
         toChainId: tx.to_chain_id,
-        bridge: tx.provider,
+        bridge: bridge,
         provider: tx.provider,
         requestId: requestId || tx.route_details?.requestId,
         depositAddress, // depositAddress for Near Intents

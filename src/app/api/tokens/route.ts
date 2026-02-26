@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
+import { createServerClient } from '@/lib/supabase'
 import { ChainTokenService } from '@/services/chain-token-service'
 
 /**
  * GET /api/tokens?chainKey=42161
  * 
- * Returns all tokens for a specific chain
+ * Reads from Supabase cache. Falls back to live fetch if cache is empty.
  */
 export async function GET(request: Request) {
   try {
@@ -18,13 +19,50 @@ export async function GET(request: Request) {
       )
     }
 
-    const tokens = await ChainTokenService.getTokens(chainKey)
+    const supabase = createServerClient()
+
+    // Read from cache
+    const { data, error } = await supabase
+      .from('cached_tokens' as any)
+      .select('*')
+      .eq('chain_key', chainKey)
+      .order('is_native', { ascending: false })
+      .order('symbol')
+
+    const tokens = data as any[] | null
+
+    // If cache has data, return it
+    if (!error && tokens && tokens.length > 0) {
+      const mapped = tokens.map((t: any) => ({
+        address: t.address,
+        symbol: t.symbol,
+        name: t.name,
+        decimals: t.decimals,
+        logoUrl: t.logo_url,
+        isNative: t.is_native,
+        chainKey: t.chain_key,
+        providerIds: t.provider_ids,
+      }))
+
+      return NextResponse.json({
+        success: true,
+        tokens: mapped,
+        chainKey,
+        total: mapped.length,
+        cached: true,
+      })
+    }
+
+    // Fallback: live fetch
+    console.log(`Token cache empty for ${chainKey}, falling back to live fetch...`)
+    const liveTokens = await ChainTokenService.getTokens(chainKey)
 
     return NextResponse.json({
       success: true,
-      tokens,
+      tokens: liveTokens,
       chainKey,
-      total: tokens.length,
+      total: liveTokens.length,
+      cached: false,
     })
   } catch (error) {
     console.error('API Tokens Error:', error)

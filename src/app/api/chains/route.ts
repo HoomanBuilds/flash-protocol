@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server'
+import { createServerClient } from '@/lib/supabase'
 import { ChainTokenService } from '@/services/chain-token-service'
-import { getUSDCAddress } from '@/lib/tokens'
 
 /**
- * GET /api/chains?type=all|evm|solana|bitcoin|cosmos|near|tron|sui&hasUSDC=true
- * 
- * Returns all supported chains across all providers
- * When hasUSDC=true, only returns chains that have USDC available
+ * GET /api/chains?type=all|evm|solana|bitcoin&hasUSDC=true
+ * Reads from Supabase cache. Falls back to live fetch if cache is empty.
  */
 export async function GET(request: Request) {
   try {
@@ -14,39 +12,66 @@ export async function GET(request: Request) {
     const type = searchParams.get('type') || 'all'
     const hasUSDC = searchParams.get('hasUSDC') === 'true'
 
-    const chains = await ChainTokenService.getChains()
+    const supabase = createServerClient()
+
+    // Build query
+    let query = supabase.from('cached_chains' as any).select('*')
+
+    if (type !== 'all') {
+      query = query.eq('type', type)
+    }
+
+    if (hasUSDC) {
+      query = query.eq('has_usdc', true)
+    }
+
+    const { data, error } = await query.order('name')
+    const chains = data as any[] | null
+
+    // If cache has data, return it
+    if (!error && chains && chains.length > 0) {
+      // Map DB rows back to UnifiedChain shape
+      const mapped = chains.map((c: any) => ({
+        key: c.key,
+        chainId: c.chain_id,
+        name: c.name,
+        type: c.type,
+        symbol: c.symbol,
+        logoUrl: c.logo_url,
+        providers: c.providers,
+        providerIds: c.provider_ids,
+      }))
+
+      return NextResponse.json({
+        success: true,
+        chains: mapped,
+        total: mapped.length,
+        cached: true,
+      })
+    }
+
+    // Fallback: live fetch (first request before cron runs)
+    console.log('Cache empty, falling back to live chain fetch...')
+    const liveChains = await ChainTokenService.getChains()
 
     let filtered = type === 'all'
-      ? chains
-      : chains.filter((c) => c.type === type)
+      ? liveChains
+      : liveChains.filter((c) => c.type === type)
 
-    // Filter to only chains that have USDC
+    // For hasUSDC on fallback, just use static map (no token fetching to avoid OOM)
     if (hasUSDC) {
-      const chainsWithUSDC = await Promise.all(
-        filtered.map(async (chain) => {
-          // Quick check: static USDC map (instant)
-          const chainId = chain.chainId || chain.key
-          if (getUSDCAddress(chainId)) return chain
-
-          // Dynamic check: fetch tokens from providers and look for USDC
-          try {
-            const tokens = await ChainTokenService.getTokens(chain.key)
-            const usdc = tokens.find(t => t.symbol?.toUpperCase() === 'USDC')
-            if (usdc) return chain
-          } catch {
-            // If dynamic check fails, skip this chain
-          }
-
-          return null
-        })
-      )
-      filtered = chainsWithUSDC.filter(Boolean) as typeof filtered
+      const { getUSDCAddress } = await import('@/lib/tokens')
+      filtered = filtered.filter(chain => {
+        const chainId = chain.chainId || chain.key
+        return !!getUSDCAddress(chainId)
+      })
     }
 
     return NextResponse.json({
       success: true,
       chains: filtered,
       total: filtered.length,
+      cached: false,
     })
   } catch (error) {
     console.error('API Chains Error:', error)

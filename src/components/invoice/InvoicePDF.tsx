@@ -215,7 +215,7 @@ export const InvoicePDF = ({ transaction, merchant, paymentLink }: InvoicePDFPro
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Transaction Hash: {transaction.tx_hash || transaction.dest_tx_hash || 'Pending'}</Text>
+          <Text style={styles.footerText}>Transaction Hash: {transaction.source_tx_hash || transaction.dest_tx_hash || 'Pending'}</Text>
           <Text style={styles.footerText}>Powered by Payment Gateway</Text>
         </View>
 
