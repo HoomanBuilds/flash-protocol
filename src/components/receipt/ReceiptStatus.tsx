@@ -70,9 +70,18 @@ export function ReceiptStatus({ transactionId, initialData }: ReceiptStatusProps
   const isCompleted = data.status === 'completed'
   const isFailed = data.status === 'failed'
   const chain = CHAINS.find(c => c.chainId === data.from_chain_id)
-  const explorerUrl = chain?.explorerUrl 
-    ? `${chain.explorerUrl}/tx/${data.tx_hash}`
-    : '#'
+  const destChain = CHAINS.find(c => c.chainId === data.to_chain_id)
+  
+  let explorerUrl = '#'
+  if (data.dest_tx_hash) {
+    if (data.dest_tx_hash.startsWith('http')) {
+      explorerUrl = data.dest_tx_hash
+    } else if (destChain?.explorerUrl) {
+      explorerUrl = `${destChain.explorerUrl}/tx/${data.dest_tx_hash}`
+    }
+  } else if (data.source_tx_hash && chain?.explorerUrl) {
+    explorerUrl = `${chain.explorerUrl}/tx/${data.source_tx_hash}`
+  }
 
   return (
 

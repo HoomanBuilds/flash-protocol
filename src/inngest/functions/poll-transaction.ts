@@ -22,12 +22,30 @@ export const pollTransactionStatus = inngest.createFunction(
   { id: 'poll-transaction-status' },
   { event: 'transaction/poll' },
   async ({ event, step }) => {
-    const { transactionId, txHash, fromChainId, toChainId, bridge, provider: providerName, requestId, depositAddress } = event.data
+    const { transactionId, txHash, fromChainId, toChainId, bridge, provider: providerName, requestId, depositAddress, attempt = 1 } = event.data
 
     // Skip if no txHash yet
     if (!txHash) {
       console.log(`[Poll] Transaction ${transactionId} has no txHash yet, skipping.`)
       return { success: false, reason: 'no_tx_hash' }
+    }
+
+    // Stop polling after 2880 attempts (~24 hours at 30s intervals)
+    if (attempt > 2880) {
+      console.log(`[Poll] Transaction ${transactionId} reached max retries. Marking as failed.`)
+      
+      const supabase = createServerClient()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase.from('transactions') as any)
+        .update({ 
+          status: 'failed',
+          updated_at: new Date().toISOString(),
+          error_message: 'Polling timeout: max retries reached',
+          failure_stage: 'bridge'
+        })
+        .eq('id', transactionId)
+
+      return { success: false, reason: 'max_retries_reached' }
     }
 
     // Select the correct provider
@@ -54,13 +72,28 @@ export const pollTransactionStatus = inngest.createFunction(
     // 3. Update Database
     await step.run('update-db', async () => {
       const supabase = createServerClient()
+      
+      const updateData: any = {
+        status: finalStatus,
+        updated_at: new Date().toISOString(),
+      }
+
+      if (statusResult?.txLink) {
+        updateData.dest_tx_hash = statusResult.txLink
+      }
+
+      if (finalStatus === 'completed') {
+        updateData.completed_at = new Date().toISOString()
+      }
+
+      if (finalStatus === 'failed' && statusResult?.subStatus) {
+        updateData.error_message = statusResult.subStatus
+        updateData.failure_stage = 'bridge'
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (supabase.from('transactions') as any)
-        .update({ 
-          status: finalStatus,
-          tx_hash: txHash,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updateData)
         .eq('id', transactionId)
     })
 
@@ -112,7 +145,17 @@ export const pollTransactionStatus = inngest.createFunction(
       await step.sleep('wait-before-retry', '30s')
       await inngest.send({
         name: 'transaction/poll',
-        data: { transactionId, txHash, fromChainId, toChainId, bridge, provider: providerName, requestId },
+        data: { 
+          transactionId, 
+          txHash, 
+          fromChainId, 
+          toChainId, 
+          bridge, 
+          provider: providerName, 
+          requestId, 
+          depositAddress,
+          attempt: attempt + 1
+        },
       })
     }
 

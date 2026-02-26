@@ -31,7 +31,8 @@ interface Transaction {
   amount: number
   currency?: string
   customer_wallet: string
-  tx_hash?: string
+  source_tx_hash?: string
+  dest_tx_hash?: string
   created_at: string
   from_chain_id?: number
   to_chain_id?: number
@@ -69,7 +70,8 @@ export default function TransactionsPage() {
   const filteredTransactions = transactions.filter(tx => {
     const matchesSearch = 
       tx.customer_wallet?.toLowerCase().includes(search.toLowerCase()) ||
-      tx.tx_hash?.toLowerCase().includes(search.toLowerCase()) ||
+      tx.source_tx_hash?.toLowerCase().includes(search.toLowerCase()) ||
+      tx.dest_tx_hash?.toLowerCase().includes(search.toLowerCase()) ||
       tx.id.toLowerCase().includes(search.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || tx.status === statusFilter

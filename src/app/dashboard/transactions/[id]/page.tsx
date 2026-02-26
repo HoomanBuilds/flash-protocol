@@ -27,7 +27,8 @@ interface TransactionDetails {
   amount: number
   currency: string
   customer_wallet: string
-  tx_hash: string
+  source_tx_hash?: string
+  dest_tx_hash?: string
   from_chain_id: number
   to_chain_id: number
   from_token: string
@@ -210,12 +211,12 @@ export default function TransactionDetailsPage({ params }: { params: Promise<{ i
             </div>
 
             <div>
-              <div className="text-muted-foreground mb-1">Transaction Hash</div>
+              <div className="text-muted-foreground mb-1">Transaction Hash (Source)</div>
               <div className="font-mono flex items-center gap-2 break-all">
-                <span className="truncate">{transaction.tx_hash || 'Pending...'}</span>
-                {transaction.tx_hash && (
+                <span className="truncate">{transaction.source_tx_hash || 'Pending...'}</span>
+                {transaction.source_tx_hash && (
                   <Link 
-                    href={getExplorerLink(transaction.tx_hash, transaction.from_chain_id)} 
+                    href={getExplorerLink(transaction.source_tx_hash, transaction.from_chain_id)} 
                     target="_blank"
                   >
                     <ExternalLink className="h-4 w-4 text-primary hover:underline" />
@@ -223,6 +224,30 @@ export default function TransactionDetailsPage({ params }: { params: Promise<{ i
                 )}
               </div>
             </div>
+
+            {transaction.dest_tx_hash && (
+              <div className="mt-4">
+                <div className="text-muted-foreground mb-1">Transaction Hash (Destination)</div>
+                <div className="font-mono flex items-center gap-2 break-all">
+                  <span className="truncate">{transaction.dest_tx_hash}</span>
+                  {transaction.dest_tx_hash.startsWith('http') ? (
+                    <Link 
+                      href={transaction.dest_tx_hash} 
+                      target="_blank"
+                    >
+                      <ExternalLink className="h-4 w-4 text-primary hover:underline" />
+                    </Link>
+                  ) : (
+                    <Link 
+                      href={getExplorerLink(transaction.dest_tx_hash, transaction.to_chain_id)} 
+                      target="_blank"
+                    >
+                      <ExternalLink className="h-4 w-4 text-primary hover:underline" />
+                    </Link>
+                  )}
+                </div>
+              </div>
+            )}
 
             <Separator />
             

@@ -25,14 +25,14 @@ export default function DocsRedirectsPage() {
         </p>
         <ul className="list-disc pl-6 space-y-2 mb-6 text-sm">
             <li><code>payment_id</code>: The ID of the Payment Link (e.g., <code>pl_...</code>).</li>
-            <li><code>tx_hash</code>: The blockchain transaction hash of the payment.</li>
+            <li><code>source_tx_hash</code>: The blockchain transaction hash of the original payment.</li>
             <li><code>status</code>: The status of the payment (always <code>completed</code> for success redirects).</li>
         </ul>
 
         <DocCodeBlock 
             title="Example Redirect URL"
             language="text"
-            code={`https://myapp.com/success?payment_id=pl_123&tx_hash=0xabc...&status=completed`}
+            code={`https://myapp.com/success?payment_id=pl_123&source_tx_hash=0xabc...&status=completed`}
         />
       </DocSection>
 

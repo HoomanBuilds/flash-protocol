@@ -344,10 +344,13 @@ export class NearIntentsProvider implements IProvider {
         finalStatus = 'FAILED'
       }
 
+      const destHashes = response.swapDetails?.destinationChainTxHashes || []
+      const txLink = destHashes.length > 0 ? destHashes[0].explorerUrl : undefined
+
       return {
         status: finalStatus,
         subStatus: response.status,
-        txLink: undefined 
+        txLink
       }
     } catch (error) {
       console.error('NearIntentsProvider status check error:', error)

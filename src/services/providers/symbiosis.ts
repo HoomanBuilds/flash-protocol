@@ -190,7 +190,7 @@ export class SymbiosisProvider implements IProvider {
 
   async getStatus(request: StatusRequest): Promise<StatusResponse> {
     try {
-      const response = await fetch(`${SYMBIOSIS_API_BASE}/tx/${request.txHash}`)
+      const response = await fetch(`${SYMBIOSIS_API_BASE}/tx/${request.fromChainId}/${request.txHash}`)
       
       if (!response.ok) return { status: 'NOT_FOUND' }
 
