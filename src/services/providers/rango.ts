@@ -186,7 +186,12 @@ export class RangoProvider implements IProvider {
       estimatedGas: quote.route.feeUsd?.toString() || '0',
       estimatedDuration: estimatedTime,
       transactionRequest: null, 
-      metadata: { rangoParams },
+      metadata: {
+        rangoParams,
+        chainType: rangoParams.from.blockchain === 'SOLANA' ? 'solana' as const
+                 : rangoParams.from.blockchain === 'BTC' ? 'bitcoin' as const
+                 : 'evm' as const,
+      },
       routes: [{
         type: 'bridge',
         tool: quote.route.swapper.title, 

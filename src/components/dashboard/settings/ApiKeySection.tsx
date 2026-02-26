@@ -23,6 +23,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 interface KeyMetadata {
   name: string | null
@@ -55,6 +56,8 @@ function maskPrefix(prefix: string): string {
 
 export default function ApiKeySection({ merchantId: _merchantId }: { merchantId: string }) {
   const { toast } = useToast()
+  const { address } = useAppKitAccount()
+  const walletHeaders: Record<string, string> = address ? { 'x-wallet-address': address } : {}
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
   const [keyMetadata, setKeyMetadata] = useState<KeyMetadata | null>(null)
@@ -72,7 +75,7 @@ export default function ApiKeySection({ merchantId: _merchantId }: { merchantId:
     setLoading(true)
     try {
       const response = await fetch('/api/v1/auth/api-keys', {
-        credentials: 'include',
+        headers: walletHeaders,
       })
       const data = await response.json()
 
@@ -110,8 +113,7 @@ export default function ApiKeySection({ merchantId: _merchantId }: { merchantId:
     try {
       const response = await fetch('/api/v1/auth/api-keys', {
         method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...walletHeaders },
         body: JSON.stringify({ name: keyName.trim() }),
       })
 
@@ -147,7 +149,7 @@ export default function ApiKeySection({ merchantId: _merchantId }: { merchantId:
     try {
       const response = await fetch('/api/v1/auth/api-keys', {
         method: 'DELETE',
-        credentials: 'include',
+        headers: walletHeaders,
       })
 
       if (!response.ok) throw new Error('Failed to revoke')

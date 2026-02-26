@@ -74,7 +74,13 @@ export interface QuoteResponse {
     slippage?: string 
   }
   toolsUsed?: string[] 
-  metadata?: Record<string, unknown>  
+  metadata?: {
+    chainType?: 'evm' | 'solana' | 'bitcoin'
+    isDepositTrade?: boolean
+    depositAddress?: string
+    amountToSend?: string
+    [key: string]: unknown
+  }  
 }
 
 export interface StatusRequest {

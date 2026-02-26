@@ -29,8 +29,8 @@ export async function PATCH(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (supabase.from('transactions') as any)
       .update({ 
-        tx_hash: txHash,
-        status: 'pending',
+        source_tx_hash: txHash,
+        status: 'submitted',
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
@@ -60,7 +60,7 @@ export async function PATCH(
       }
     })
 
-    return NextResponse.json({ success: true, transactionId: id, status: 'pending' })
+    return NextResponse.json({ success: true, transactionId: id, status: 'submitted' })
   } catch (error) {
     console.error('Update Tx Hash Error:', error)
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })

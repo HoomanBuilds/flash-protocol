@@ -51,15 +51,20 @@ async function fetchLifiChains(): Promise<ProviderChainEntry[]> {
     const chains = await getChains({
       chainTypes: [LifiChainType.EVM, LifiChainType.SVM, LifiChainType.UTXO],
     })
-    return chains.map((c) => ({
-      key: String(c.id),
-      chainId: typeof c.id === 'number' ? c.id : null,
-      name: c.name,
-      type: normalizeChainType(c.chainType || 'EVM'),
-      symbol: c.nativeToken?.symbol || 'ETH',
-      logoUrl: c.logoURI,
-      providerId: c.id,
-    }))
+    return chains.map((c) => {
+      const chainType = normalizeChainType(c.chainType || 'EVM')
+      
+      const key = chainType === 'bitcoin' ? c.name.toLowerCase() : String(c.id)
+      return {
+        key,
+        chainId: chainType === 'bitcoin' ? null : (typeof c.id === 'number' ? c.id : null),
+        name: c.name,
+        type: chainType,
+        symbol: c.nativeToken?.symbol || 'ETH',
+        logoUrl: c.logoURI,
+        providerId: c.id,
+      }
+    })
   } catch (error) {
     console.warn('ChainTokenService: LiFi getChains() failed:', error)
     return []
@@ -243,6 +248,29 @@ function getCCTPChains(): ProviderChainEntry[] {
   ]
 }
 
+/**
+ * Map known provider-specific chain IDs to canonical keys.
+ * This prevents duplicates when e.g. LiFi uses '1151111081099710' for Solana
+ * but NEAR Intents uses 'solana'.
+ */
+const CHAIN_KEY_ALIASES: Record<string, string> = {
+  '1151111081099710': 'solana',
+  '3652501241': 'bitcoin',
+  'solana': 'solana',
+  'bitcoin': 'bitcoin',
+  'near': 'near',
+  'tron': 'tron',
+  'sui': 'sui',
+  'cosmos': 'cosmos',
+  'osmosis': 'osmosis',
+  'dogecoin': 'dogecoin',
+  'turbochain': 'turbochain',
+}
+
+function normalizeChainKey(key: string): string {
+  return CHAIN_KEY_ALIASES[key] || key
+}
+
 // ========== MERGING ==========
 
 /**
@@ -264,10 +292,11 @@ function mergeAllChains(
     providerIdKey: keyof UnifiedChain['providerIds']
   ) {
     for (const entry of entries) {
-      let chain = chainMap.get(entry.key)
+      const normalizedKey = normalizeChainKey(entry.key)
+      let chain = chainMap.get(normalizedKey)
       if (!chain) {
         chain = {
-          key: entry.key,
+          key: normalizedKey,
           chainId: entry.chainId,
           name: entry.name,
           type: entry.type,
@@ -276,7 +305,7 @@ function mergeAllChains(
           providers: emptyProviderSupport(),
           providerIds: {},
         }
-        chainMap.set(entry.key, chain)
+        chainMap.set(normalizedKey, chain)
       }
 
       // Mark provider support
@@ -702,6 +731,23 @@ export const ChainTokenService = {
     }
 
     console.log(`ChainTokenService: Fetching tokens for ${chain.name} (${chainKey})...`)
+
+    // Bitcoin-type chains (BTC, DOGE, etc.) don't have tokens from bridge providers.
+    // Inject their native token directly.
+    if (chain.type === 'bitcoin') {
+      const nativeToken: UnifiedToken = {
+        address: chain.key, // 'bitcoin', 'dogecoin', etc.
+        symbol: chain.symbol || chain.key.toUpperCase(),
+        name: chain.name,
+        decimals: 8, 
+        chainKey: chain.key,
+        isNative: true,
+        logoUrl: chain.logoUrl,
+      }
+      tokenCaches.set(chainKey, { data: [nativeToken], expiry: Date.now() + CACHE_TTL })
+      console.log(`ChainTokenService: 1 native token for ${chain.name}`)
+      return [nativeToken]
+    }
 
     // Fetch from providers that support this chain
     const fetchers: Promise<UnifiedToken[]>[] = []

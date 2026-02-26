@@ -1,7 +1,10 @@
 import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus } from '@/types/provider'
 import { SYMBIOSIS_GATEWAY_MAP, SYMBIOSIS_CHAIN_IDS } from './symbiosis-config'
+import { SYMBIOSIS_CONFIG } from './symbiosis-data'
 
 const SYMBIOSIS_API_BASE = 'https://api.symbiosis.finance/crosschain/v1'
+const SYMBIOSIS_BTC_CHAIN_ID = 3652501241
+const SYMBIOSIS_BTC_FORWARDER_URL = SYMBIOSIS_CONFIG.btcConfigs?.[0]?.forwarderUrl || 'https://btc-forwarder.symbiosis.finance/bsc-v2/forwarder/api/v1'
 
 export class SymbiosisProvider implements IProvider {
   name = 'symbiosis'
@@ -12,32 +15,46 @@ export class SymbiosisProvider implements IProvider {
       const toChainId = typeof request.toChain === 'number' ? request.toChain : Number(request.toChain)
       if (isNaN(fromChainId) || isNaN(toChainId)) return []
       
-      const isFromSupported = SYMBIOSIS_CHAIN_IDS.includes(fromChainId)
-      const isToSupported = SYMBIOSIS_CHAIN_IDS.includes(toChainId)
+      const isFromSupported = SYMBIOSIS_CHAIN_IDS.includes(fromChainId) || fromChainId === SYMBIOSIS_BTC_CHAIN_ID
+      const isToSupported = SYMBIOSIS_CHAIN_IDS.includes(toChainId) || toChainId === SYMBIOSIS_BTC_CHAIN_ID
 
       if (!isFromSupported || !isToSupported) {
         return []
       }
 
+      const isFromBTC = fromChainId === SYMBIOSIS_BTC_CHAIN_ID
+      const isToBTC = toChainId === SYMBIOSIS_BTC_CHAIN_ID
+
+      const swapBody: any = {
+        tokenAmountIn: {
+          chainId: fromChainId,
+          address: request.fromToken,
+          amount: request.fromAmount,
+          decimals: 18 
+        },
+        tokenOut: {
+          chainId: toChainId,
+          address: request.toToken,
+          decimals: 18  
+        },
+        from: request.fromAddress,
+        to: request.toAddress || request.fromAddress,
+        slippage: (request.slippage || 0.5) * 100,
+      }
+
+      // BTC -> Token needs a refund address on the Bitcoin network
+      if (isFromBTC && request.fromAddress) {
+        swapBody.refundAddress = request.fromAddress
+      }
+      // Token -> BTC: 'to' is the BTC address
+      if (isToBTC && request.toAddress) {
+        swapBody.to = request.toAddress
+      }
+
       const response = await fetch(`${SYMBIOSIS_API_BASE}/swap`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tokenAmountIn: {
-            chainId: fromChainId,
-            address: request.fromToken,
-            amount: request.fromAmount,
-            decimals: 18 
-          },
-          tokenOut: {
-            chainId: toChainId,
-            address: request.toToken,
-            decimals: 18  
-          },
-          from: request.fromAddress,
-          to: request.toAddress || request.fromAddress,
-          slippage: (request.slippage || 0.5) * 100,
-        })
+        body: JSON.stringify(swapBody)
       })
 
       if (!response.ok) {
@@ -76,6 +93,37 @@ export class SymbiosisProvider implements IProvider {
 
       const approvalAddress = SYMBIOSIS_GATEWAY_MAP[fromChainId as number]
 
+      let chainType: 'evm' | 'bitcoin' = 'evm'
+      let isDepositTrade = false
+      let depositAddress: string | undefined
+      let amountToSend: string | undefined
+
+      if (isFromBTC) {
+        chainType = 'bitcoin'
+        isDepositTrade = true
+        amountToSend = request.fromAmount
+
+        try {
+          const forwarderRes = await fetch(`${SYMBIOSIS_BTC_FORWARDER_URL}/generate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              calldata: data.tx?.data,
+              to: data.tx?.to,
+              chainId: data.tx?.chainId || 56,
+            })
+          })
+          if (forwarderRes.ok) {
+            const forwarderData = await forwarderRes.json()
+            depositAddress = forwarderData.address || forwarderData.depositAddress
+          } else {
+            console.warn('Symbiosis Forwarder failed, BTC deposit may not work:', await forwarderRes.text())
+          }
+        } catch (e) {
+          console.warn('Symbiosis Forwarder API call failed:', e)
+        }
+      }
+
       return [{
         provider: 'symbiosis',
         id: data.id || Math.random().toString(36).substring(7),
@@ -85,6 +133,12 @@ export class SymbiosisProvider implements IProvider {
         estimatedGas: bridgeFeeUSD,
         estimatedDuration: data.estimatedTime || 65,
         transactionRequest: data.tx, 
+        metadata: {
+          chainType,
+          isDepositTrade,
+          ...(depositAddress ? { depositAddress } : {}),
+          ...(amountToSend ? { amountToSend } : {}),
+        },
         fees: {
           totalFeeUSD: bridgeFeeUSD,
           bridgeFee: bridgeFeeUSD,

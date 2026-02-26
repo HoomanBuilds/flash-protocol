@@ -81,12 +81,22 @@ export class RubicProvider implements IProvider {
       if (!srcTokenBlockchain || !dstTokenBlockchain) return []
 
       // Convert native token address to Rubic format
-      const srcTokenAddress = request.fromToken === '0x0000000000000000000000000000000000000000' 
-        ? '0x0000000000000000000000000000000000000000'
-        : request.fromToken
-      const dstTokenAddress = request.toToken === '0x0000000000000000000000000000000000000000'
-        ? '0x0000000000000000000000000000000000000000'
-        : request.toToken
+      const SOLANA_NATIVE = '11111111111111111111111111111111'
+      const SOLANA_WRAPPED_SOL = 'So11111111111111111111111111111111111111112'
+      
+      let srcTokenAddress = request.fromToken
+      if (srcTokenAddress === SOLANA_NATIVE) {
+        srcTokenAddress = SOLANA_WRAPPED_SOL
+      }
+
+      let dstTokenAddress = request.toToken
+      if (dstTokenAddress === SOLANA_NATIVE) {
+        dstTokenAddress = SOLANA_WRAPPED_SOL
+      }
+
+      // Detect non-EVM chains for deposit trade flow
+      const NON_EVM_CHAINS = ['SOLANA', 'BITCOIN', 'TRON']
+      const isNonEvmSource = NON_EVM_CHAINS.includes(srcTokenBlockchain)
 
       // Rubic quoteBest endpoint
       const commonParams = {
@@ -100,13 +110,24 @@ export class RubicProvider implements IProvider {
         slippage: Math.max(0.01, (request.slippage || 1) / 100), // Min 0.01 (1%)
       }
 
-      // Rubic quoteBest endpoint
-      const response = await fetch(`${RUBIC_API_BASE}/routes/quoteBest`, {
+      // Determine chainType for metadata
+      const chainType: 'evm' | 'solana' | 'bitcoin' =
+        srcTokenBlockchain === 'SOLANA' ? 'solana'
+        : srcTokenBlockchain === 'BITCOIN' ? 'bitcoin'
+        : 'evm'
+
+      // Use deposit-trade endpoint for non-EVM source chains
+      const quoteEndpoint = isNonEvmSource ? `${RUBIC_API_BASE}/routes/quoteDepositTrades` : `${RUBIC_API_BASE}/routes/quoteBest`
+
+      const response = await fetch(quoteEndpoint, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(commonParams)
+        body: JSON.stringify({
+          ...commonParams,
+          ...(isNonEvmSource ? { depositTradeParams: 'all' } : {})
+        })
       })
 
       if (!response.ok) {
@@ -145,40 +166,65 @@ export class RubicProvider implements IProvider {
 
       if (data.id) {
         try {
-          // Fetch actual swap data
-          const swapResponse = await fetch(`${RUBIC_API_BASE}/routes/swap`, {
-             method: 'POST',
-             headers: { 'Content-Type': 'application/json' },
-             body: JSON.stringify({
-               ...commonParams,
-               id: data.id
-             })
-          })
-          
-          if (swapResponse.ok) {
-            const swapData = await swapResponse.json()
-            if (swapData.transaction) {
-               transactionRequest = {
-                 to: swapData.transaction.to,
-                 data: swapData.transaction.data,
-                 value: swapData.transaction.value,
-                 type: 'evm',
-               }
-              
-               approvalAddress = swapData.transaction.approvalAddress || approvalAddress
+          if (isNonEvmSource) {
+            // Non-EVM
+            const swapResponse = await fetch(`${RUBIC_API_BASE}/routes/swapDepositTrade`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                ...commonParams,
+                id: data.id,
+                receiver: request.toAddress || request.fromAddress,
+              })
+            })
+
+            if (swapResponse.ok) {
+              const swapData = await swapResponse.json()
+              if (swapData.transaction?.depositAddress) {
+                transactionRequest = {
+                  depositAddress: swapData.transaction.depositAddress,
+                  amountToSend: swapData.transaction.amountToSend,
+                  exchangeId: swapData.transaction.exchangeId,
+                  type: chainType,
+                }
+              }
             }
           } else {
-             const errorText = await swapResponse.text()
-             try {
-                const errorJson = JSON.parse(errorText)
-                if (errorJson.error?.code === 3003 || errorJson.error?.reason?.includes('not enough balance')) {
-                  insufficientBalance = true
-                  console.log(`[Rubic] Balance check: user has insufficient ${srcTokenBlockchain} balance`)
-                }
-             } catch (e) {
-                // Ignore parse errors
-             }
-             console.warn('Rubic Swap Data Error:', errorText)
+            // EVM
+            const swapResponse = await fetch(`${RUBIC_API_BASE}/routes/swap`, {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({
+                 ...commonParams,
+                 id: data.id
+               })
+            })
+            
+            if (swapResponse.ok) {
+              const swapData = await swapResponse.json()
+              if (swapData.transaction) {
+                 transactionRequest = {
+                   to: swapData.transaction.to,
+                   data: swapData.transaction.data,
+                   value: swapData.transaction.value,
+                   type: 'evm',
+                 }
+                
+                 approvalAddress = swapData.transaction.approvalAddress || approvalAddress
+              }
+            } else {
+               const errorText = await swapResponse.text()
+               try {
+                  const errorJson = JSON.parse(errorText)
+                  if (errorJson.error?.code === 3003 || errorJson.error?.reason?.includes('not enough balance')) {
+                    insufficientBalance = true
+                    console.log(`[Rubic] Balance check: user has insufficient ${srcTokenBlockchain} balance`)
+                  }
+               } catch (e) {
+                  // Ignore parse errors
+               }
+               console.warn('Rubic Swap Data Error:', errorText)
+            }
           }
         } catch (swapErr) {
           console.warn('Failed to fetch Rubic swap data:', swapErr)
@@ -206,7 +252,13 @@ export class RubicProvider implements IProvider {
         },
         toolsUsed: [underlyingProvider],
         metadata: {
-           insufficientBalance: insufficientBalance || undefined
+           insufficientBalance: insufficientBalance || undefined,
+           chainType,
+           isDepositTrade: isNonEvmSource,
+           ...(isNonEvmSource && transactionRequest?.depositAddress ? {
+             depositAddress: transactionRequest.depositAddress,
+             amountToSend: transactionRequest.amountToSend,
+           } : {}),
         },
         routes: [{
           type: 'bridge' as const,

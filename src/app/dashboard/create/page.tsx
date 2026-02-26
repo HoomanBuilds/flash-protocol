@@ -30,12 +30,14 @@ import {
 import { LinkPreview } from '@/components/dashboard/LinkPreview'
 import { createPaymentLinkSchema, type CreatePaymentLinkInput } from '@/lib/validations/payment-link'
 import type { UnifiedChain } from '@/lib/chain-registry'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 export default function CreateLinkPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [dynamicChains, setDynamicChains] = useState<UnifiedChain[]>([])
   const [chainsLoading, setChainsLoading] = useState(true)
+  const { address } = useAppKitAccount()
 
   // Fetch only chains that have USDC available
   useEffect(() => {
@@ -90,6 +92,7 @@ export default function CreateLinkPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(address ? { 'x-wallet-address': address } : {}),
         },
         body: JSON.stringify(data),
       })

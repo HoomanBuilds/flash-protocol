@@ -2,12 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
-import { Terminal, Menu, X } from 'lucide-react'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { usePathname } from 'next/navigation'
+import { Menu, X } from 'lucide-react'
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
-import { useAccount } from 'wagmi'
 import { toast } from '@/components/ui/use-toast'
 
 const NAV_LINKS = [
@@ -19,8 +18,7 @@ const NAV_LINKS = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
-  const router = useRouter()
-  const { isConnected } = useAccount()
+  const { isConnected } = useAppKitAccount()
 
   const isActive = (href: string) => {
     if (href.startsWith('/#')) return false
@@ -69,7 +67,8 @@ export function Navbar() {
         </nav>
         <div className="flex items-center gap-4">
           <div className="hidden sm:block">
-            <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
+            {/* @ts-ignore — appkit-button is a web component */}
+            <appkit-button />
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -96,7 +95,8 @@ export function Navbar() {
             </Link>
           ))}
           <div className="pt-4 border-t border-border">
-            <ConnectButton />
+            {/* @ts-ignore — appkit-button is a web component */}
+            <appkit-button />
           </div>
         </div>
       )}

@@ -2,30 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
-import { cookies } from 'next/headers'
 
-async function getSessionWallet() {
-  const cookieStore = await cookies()
-  const sessionToken = cookieStore.get('session_id')?.value
+// Get wallet address from x-wallet-address header
+function getWalletAddress(req: NextRequest): string | null {
+  return req.headers.get('x-wallet-address') || null
+}
 
-  if (!sessionToken) return null
+async function getAuthContext(req: NextRequest) {
+  const walletAddress = getWalletAddress(req)
+  if (!walletAddress) return null
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createServerClient() as any
-
-  const { data: session } = await supabase
-    .from('sessions')
-    .select('wallet_address')
-    .eq('id', sessionToken)
-    .single()
-
-  if (!session) return null
-
-  return { supabase, walletAddress: session.wallet_address }
+  return { supabase, walletAddress }
 }
 
-export async function GET() {
-  const auth = await getSessionWallet()
+export async function GET(req: NextRequest) {
+  const auth = await getAuthContext(req)
   if (!auth) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -59,14 +52,13 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const auth = await getSessionWallet()
+  const auth = await getAuthContext(req)
   if (!auth) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const { supabase, walletAddress } = auth
 
-  // Parse optional name from body
   let name = 'Untitled Key'
   try {
     const body = await req.json()
@@ -74,15 +66,13 @@ export async function POST(req: NextRequest) {
       name = body.name.trim().substring(0, 100)
     }
   } catch {
-    // No body or invalid JSON — use default name
+    // No body or invalid JSON
   }
 
-  // Generate secure API key
   const rawKey = 'pg_live_' + crypto.randomBytes(32).toString('hex')
   const keyHash = await bcrypt.hash(rawKey, 10)
-  const prefix = rawKey.substring(0, 16) // "pg_live_..."
+  const prefix = rawKey.substring(0, 16)
 
-  // Update merchant record
   const { error } = await supabase
     .from('merchants')
     .update({
@@ -100,7 +90,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to generate API key' }, { status: 500 })
   }
 
-  // Return raw key (ONLY TIME IT'S VISIBLE)
   return NextResponse.json(
     {
       api_key: rawKey,
@@ -113,15 +102,14 @@ export async function POST(req: NextRequest) {
   )
 }
 
-export async function DELETE() {
-  const auth = await getSessionWallet()
+export async function DELETE(req: NextRequest) {
+  const auth = await getAuthContext(req)
   if (!auth) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const { supabase, walletAddress } = auth
 
-  // Revoke API key
   const { error } = await supabase
     .from('merchants')
     .update({

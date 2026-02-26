@@ -1,13 +1,22 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useWalletClient, usePublicClient, useSwitchChain, useConfig } from 'wagmi'
 import { getWalletClient } from '@wagmi/core'
-import { executeRoute, Route, createConfig, EVM } from '@lifi/sdk'
+import { executeRoute, Route, createConfig, EVM, Solana } from '@lifi/sdk'
 import { RangoClient } from 'rango-sdk-basic'
 import { QuoteResponse } from '@/types/provider'
 import { OneClickService, OpenAPI } from '@defuse-protocol/one-click-sdk-typescript'
 import { parseAbi } from 'viem'
 import { useCCTPBridge } from '@/hooks/cctp/useCCTPBridge'
 import { useEvmAdapter } from '@/hooks/cctp/useEvmAdapter'
+import { useAppKitAccount } from '@reown/appkit/react'
+import {
+  buildSolTransfer,
+  buildSplTokenTransfer,
+  deserializeSolanaTransaction,
+  getSolanaConnection,
+  isSolNative,
+} from '@/lib/solana'
+import { PublicKey } from '@solana/web3.js'
 
 OpenAPI.BASE = 'https://1click.chaindefuser.com'
 
@@ -45,6 +54,7 @@ export function useTransactionExecutor() {
   const publicClient = usePublicClient()
   const { switchChainAsync } = useSwitchChain()
   const config = useConfig()
+  const { address } = useAppKitAccount()
   
   const [status, setStatus] = useState<ExecutorStatus>('idle')
   const [error, setError] = useState<string | null>(null)
@@ -67,6 +77,14 @@ export function useTransactionExecutor() {
               await switchChainAsync({ chainId })
               const client = await getWalletClient(config, { chainId })
               return client
+            }
+          }),
+          // Solana provider for LIFI
+          Solana({
+            getWalletAdapter: async () => {
+              const solana = (window as any).phantom?.solana || (window as any).solana
+              if (!solana) throw new Error('Solana wallet not connected')
+              return solana
             }
           })
         ]
@@ -220,7 +238,13 @@ export function useTransactionExecutor() {
       setStatus('executing')
       
       // @ts-ignore
-      if (tx.type !== TransactionType.EVM) throw new Error('Only EVM transactions supported')
+      if (tx.type === TransactionType.SOLANA) {
+        // Solana transaction from Rango
+        return await executeSolanaTx(tx)
+      }
+
+      // @ts-ignore
+      if (tx.type !== TransactionType.EVM) throw new Error(`Unsupported transaction type: ${tx.type}`)
 
       const hash = await walletClient.sendTransaction({
         to: tx.txTo as `0x${string}`,
@@ -313,12 +337,165 @@ export function useTransactionExecutor() {
     }
   }, [walletClient, evmAdapter, executeCCTPBridge])
 
+  //Solana Transaction Signing (Rango serialized tx)
+  const executeSolanaTx = useCallback(async (tx: any) => {
+    const solana = (window as any).phantom?.solana || (window as any).solana
+    if (!solana) throw new Error('Solana wallet not connected')
+
+    setStatus('executing')
+    setStep('Signing Solana Transaction...')
+
+    try {
+      // Rango returns serialized Solana transaction
+      const serialized = tx.serializedMessage || tx.txData
+      if (!serialized) throw new Error('No serialized Solana transaction data')
+
+      const transaction = deserializeSolanaTransaction(serialized)
+      
+      if (!solana?.signAndSendTransaction) {
+        throw new Error('Solana wallet does not support signAndSendTransaction')
+      }
+
+      let txHash: string
+      const result = await solana.signAndSendTransaction(transaction)
+      txHash = typeof result === 'string' ? result : result?.signature || result?.toString()
+
+      setTxHash(txHash)
+      setStatus('completed')
+      return txHash
+    } catch (e: any) {
+      console.error('Solana TX Error:', e)
+      setError(e.message || 'Solana Transaction Failed')
+      setStatus('failed')
+      throw e
+    }
+  }, [])
+
+  const executeSolanaDeposit = useCallback(async (quote: QuoteResponse) => {
+    const solana = (window as any).phantom?.solana || (window as any).solana
+    if (!solana || !address) throw new Error('Solana wallet not connected')
+
+    const depositAddress = quote.metadata?.depositAddress || quote.transactionRequest?.depositAddress
+    if (!depositAddress) throw new Error('No deposit address in quote')
+
+    setStatus('executing')
+    setStep('Sending Solana Deposit...')
+
+    try {
+      const fromPubkey = new PublicKey(address)
+      const toPubkey = new PublicKey(depositAddress)
+      const fromToken = quote.routes[0]?.action.fromToken
+
+      let transaction
+
+      if (!fromToken || isSolNative(fromToken.address)) {
+        const lamports = BigInt(quote.metadata?.amountToSend || quote.fromAmount)
+        transaction = await buildSolTransfer(fromPubkey, toPubkey, lamports)
+      } else {
+        const mint = new PublicKey(fromToken.address)
+        const amount = BigInt(quote.metadata?.amountToSend || quote.fromAmount)
+        transaction = await buildSplTokenTransfer(fromPubkey, toPubkey, mint, amount)
+      }
+
+      let txHash: string
+      if (solana?.signAndSendTransaction) {
+        const result = await solana.signAndSendTransaction(transaction)
+        txHash = typeof result === 'string' ? result : result?.signature || result?.toString()
+      } else {
+        throw new Error('Connected Solana wallet does not support signAndSendTransaction.')
+      }
+
+      setTxHash(txHash)
+      setStep('Deposit Sent. Waiting for swap...')
+
+      if (quote.provider === 'near-intents' && depositAddress) {
+        try {
+          await OneClickService.submitDepositTx({ txHash, depositAddress })
+        } catch (e) {
+          console.warn('Failed to submit Solana deposit hash:', e)
+        }
+      }
+
+      setStatus('completed')
+      return txHash
+    } catch (e: any) {
+      console.error('Solana Deposit Error:', e)
+      setError(e.message || 'Solana Deposit Failed')
+      setStatus('failed')
+      throw e
+    }
+  }, [address])
+
+  const executeBitcoinDeposit = useCallback(async (quote: QuoteResponse) => {
+  
+    const depositAddress = quote.metadata?.depositAddress || quote.transactionRequest?.depositAddress
+    if (!depositAddress) throw new Error('No Bitcoin deposit address in quote')
+
+    const btcProvider = (window as any).unisat || (window as any).xfi?.bitcoin
+    if (!btcProvider) throw new Error('Bitcoin wallet not connected. Install a Bitcoin wallet extension.')
+
+    setStatus('executing')
+    setStep('Sending Bitcoin Transaction...')
+
+    try {
+      const amountToSend = quote.metadata?.amountToSend || quote.fromAmount
+      const satoshis = parseInt(amountToSend as string, 10)
+      
+      let txHash: string
+
+      if (btcProvider?.sendBitcoin) {
+        txHash = await btcProvider.sendBitcoin(depositAddress, satoshis)
+      } else if (btcProvider?.sendTransaction) {
+        const result = await btcProvider.sendTransaction({
+          to: depositAddress,
+          value: satoshis.toString(),
+        })
+        txHash = typeof result === 'string' ? result : result?.txHash || result?.toString()
+      } else {
+        throw new Error('Bitcoin wallet does not support transaction signing')
+      }
+
+      setTxHash(txHash)
+      setStep('BTC sent. Waiting for swap completion...')
+
+      if (quote.provider === 'near-intents' && depositAddress) {
+        try {
+          await OneClickService.submitDepositTx({ txHash, depositAddress })
+        } catch (e) {
+          console.warn('Failed to submit BTC deposit hash:', e)
+        }
+      }
+
+      setStatus('completed')
+      return txHash
+    } catch (e: any) {
+      console.error('Bitcoin Deposit Error:', e)
+      setError(e.message || 'Bitcoin Transaction Failed')
+      setStatus('failed')
+      throw e
+    }
+  }, [])
+
   // Main Entry Point
   const execute = useCallback(async (quote: QuoteResponse, recipientAddress?: string) => {
     setError(null)
     setTxHash(null)
     
     try {
+      // Check if this is a non-EVM chain 
+      const chainType = quote.metadata?.chainType || 'evm'
+      const isDepositTrade = quote.metadata?.isDepositTrade
+
+      if (isDepositTrade) {
+        if (chainType === 'solana') {
+          return await executeSolanaDeposit(quote)
+        }
+        if (chainType === 'bitcoin') {
+          return await executeBitcoinDeposit(quote)
+        }
+      }
+
+      // EVM execution paths
       if (quote.provider === 'lifi') {
         const route = (quote.metadata?.lifiRoute as Route) || quote.routes[0] || quote.transactionRequest
         return await executeLifi(route) 
@@ -389,7 +566,7 @@ export function useTransactionExecutor() {
        setStatus('failed')
        throw e
     }
-  }, [executeLifi, executeRango, executeNearIntents, walletClient])
+  }, [executeLifi, executeRango, executeNearIntents, executeSolanaDeposit, executeBitcoinDeposit, walletClient, publicClient])
 
   return { execute, status, error, txHash, step }
 }

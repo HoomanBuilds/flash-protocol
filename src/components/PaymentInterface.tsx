@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useAccount, useSwitchChain, useBalance } from 'wagmi'
+import { useBalance, useSwitchChain, useAccount } from 'wagmi'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { parseUnits } from 'viem'
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -45,7 +46,10 @@ interface PaymentInterfaceProps {
 }
 
 export default function PaymentInterface({ link, onSuccess }: PaymentInterfaceProps) {
-  const { address, isConnected, chain: connectedChain } = useAccount()
+  const { address: appKitAddress, isConnected } = useAppKitAccount()
+  const address = appKitAddress as `0x${string}` | undefined
+  const typedAddress = address as `0x${string}` | undefined
+  const { chain: connectedChain } = useAccount()
   const { switchChain } = useSwitchChain()
   const { toast } = useToast()
   
@@ -62,6 +66,10 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     connectedChain?.id ? String(connectedChain.id) : '42161'
   )
   const [fromTokenAddress, setFromTokenAddress] = useState('0x0000000000000000000000000000000000000000')
+
+  // Derive chain type from dynamic chains
+  const selectedChain = dynamicChains.find(c => String(c.chainId) === fromChainKey || c.key === fromChainKey)
+  const chainType = selectedChain?.type || 'evm'
 
   // Derive numeric chainId for wagmi compatibility
   const fromChainId = (() => {
@@ -165,13 +173,13 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     loadTokens()
   }, [fromChainKey])
 
-  // Fetch Bundle
+  // Balance — only use wagmi balance for EVM chains
   const { data: balanceData } = useBalance({
     address: address,
     chainId: fromChainId,
     token: fromTokenAddress === '0x0000000000000000000000000000000000000000' ? undefined : fromTokenAddress as `0x${string}`,
     query: {
-      enabled: !!address && !!fromChainId,
+      enabled: !!address && !!fromChainId && chainType === 'evm',
       refetchInterval: 10000
     }
   })
@@ -274,6 +282,15 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     setQuotes([])
     setSelectedQuote(null)
 
+    // Validate address format matches chain type
+    const isEvmChain = chainType === 'evm'
+    const isEvmAddress = address?.startsWith('0x')
+    if (isEvmChain && !isEvmAddress) {
+      setError('Your connected wallet is not an EVM wallet. Please switch to an EVM wallet (MetaMask, etc.) using the wallet button to pay on this chain.')
+      setIsLoading(false)
+      return
+    }
+
     try {
       const amountInWei = parseUnits(amountToUse, fromToken.decimals).toString()
 
@@ -326,7 +343,8 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     setError('')
 
     try {
-      if (Number(connectedChain?.id) !== fromChainId) {
+      // Only switch chain for EVM chains
+      if (chainType === 'evm' && Number(connectedChain?.id) !== fromChainId) {
         await switchChain({ chainId: fromChainId })
       }
 
@@ -500,15 +518,19 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
             <div className="space-y-3">
               <Label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Payment Network</Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500" />
+                {selectedChain?.logoUrl ? (
+                  <img src={selectedChain.logoUrl} alt={selectedChain.name} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full object-cover" />
+                ) : (
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500" />
+                )}
                 {chainsLoading ? (
-                  <div className="w-full pl-8 pr-4 py-4 bg-background border border-border text-muted-foreground font-mono text-sm flex items-center gap-2">
+                  <div className="w-full pl-10 pr-4 py-4 bg-background border border-border text-muted-foreground font-mono text-sm flex items-center gap-2">
                     <Loader2 className="w-3 h-3 animate-spin" />
                     <span>Loading networks...</span>
                   </div>
                 ) : (
                   <select
-                    className="w-full pl-8 pr-4 py-4 bg-background border border-border text-foreground font-mono text-sm focus:border-foreground/50 transition-all outline-none appearance-none cursor-pointer hover:bg-muted/50"
+                    className={`w-full ${selectedChain?.logoUrl ? 'pl-10' : 'pl-8'} pr-4 py-4 bg-background border border-border text-foreground font-mono text-sm focus:border-foreground/50 transition-all outline-none appearance-none cursor-pointer hover:bg-muted/50`}
                     value={fromChainKey}
                     onChange={(e) => handleChainChange(e.target.value)}
                   >

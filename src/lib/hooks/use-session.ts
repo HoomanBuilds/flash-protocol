@@ -1,19 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useAppKitAccount } from '@reown/appkit/react'
 
+/**
+ * Hook that provides the connected wallet address.
+ * Uses Reown AppKit's useAppKitAccount which works across all chains
+ * (EVM, Solana, etc.), unlike wagmi's useAccount which is EVM-only.
+ */
 export function useSession() {
-  const [sessionToken, setSessionToken] = useState<string | null>(null)
+  const { address, isConnected } = useAppKitAccount()
 
-  useEffect(() => {
-    // Basic cookie parser
-    const getCookie = (name: string) => {
-      const value = `; ${document.cookie}`
-      const parts = value.split(`; ${name}=`)
-      if (parts.length === 2) return parts.pop()?.split(';').shift()
-    }
-    
-    const token = getCookie('session_id')
-    if (token) setSessionToken(token)
-  }, [])
-
-  return { sessionToken }
+  return {
+    sessionToken: address || null,
+    walletAddress: address || null,
+    isConnected,
+  }
 }

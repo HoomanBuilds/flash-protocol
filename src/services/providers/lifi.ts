@@ -21,9 +21,25 @@ export class LifiProvider implements IProvider {
         options.referrer = referrer
       }
       
-      const fromChainNum = typeof request.fromChain === 'number' ? request.fromChain : Number(request.fromChain)
-      const toChainNum = typeof request.toChain === 'number' ? request.toChain : Number(request.toChain)
-      if (isNaN(fromChainNum) || isNaN(toChainNum)) return []
+      // Solana mainnet = 1151111081099710
+      const LIFI_SOLANA_CHAIN_ID = 1151111081099710
+      const resolveLifiChainId = (chain: number | string): number | null => {
+        if (typeof chain === 'number') return chain
+        const num = Number(chain)
+        if (!isNaN(num)) return num
+        if (chain === 'solana') return LIFI_SOLANA_CHAIN_ID
+        return null 
+      }
+
+      const fromChainNum = resolveLifiChainId(request.fromChain)
+      const toChainNum = resolveLifiChainId(request.toChain)
+      if (!fromChainNum || !toChainNum) return []
+
+      const isSolanaSource = fromChainNum === LIFI_SOLANA_CHAIN_ID
+      let fromAddress = request.fromAddress || ''
+      if (isSolanaSource && fromAddress.startsWith('0x')) {
+        fromAddress = ''
+      }
 
       const routesResponse = await getRoutes({
         fromChainId: fromChainNum,
@@ -31,7 +47,7 @@ export class LifiProvider implements IProvider {
         fromTokenAddress: request.fromToken,
         toTokenAddress: request.toToken,
         fromAmount: request.fromAmount,
-        fromAddress: request.fromAddress,
+        fromAddress,
         toAddress: request.toAddress,
         options
       })
@@ -138,7 +154,10 @@ export class LifiProvider implements IProvider {
       estimatedGas: route.gasCostUSD || '0',
       estimatedDuration: route.steps.reduce((acc, step) => acc + (step.estimate.executionDuration || 0), 0),
       transactionRequest: txData || route,
-      metadata: { lifiRoute: route },
+      metadata: {
+        lifiRoute: route,
+        chainType: route.fromToken?.chainId === 1151111081099710 ? 'solana' as const : 'evm' as const,
+      },
       fees: {
         totalFeeUSD: (totalBridgeFee + gasCostUSD).toFixed(4),
         bridgeFee: totalBridgeFee > 0 ? totalBridgeFee.toFixed(4) : undefined,

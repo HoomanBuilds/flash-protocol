@@ -17,7 +17,7 @@ export async function verifyApiKey(req: NextRequest) {
     return { error: 'Invalid API key format', status: 401 }
   }
   
-  const supabase = createServerClient() as any as any
+  const supabase = createServerClient() as any
   
   // Get all merchants with API enabled
   const { data: merchants } = await supabase

@@ -1,8 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { useAccount } from 'wagmi'
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { Loader2, AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import PaymentInterface from '@/components/PaymentInterface'
@@ -30,7 +29,8 @@ export default function PayPage({
   params: Promise<{ linkId: string }>
   searchParams: Promise<{ txId?: string }>
 }) {
-  const { address, isConnected } = useAccount()
+  const { open } = useAppKit()
+  const { address, isConnected } = useAppKitAccount()
   const [link, setLink] = useState<PaymentLinkData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -141,26 +141,8 @@ export default function PayPage({
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
           <span className="text-xs tracking-widest text-muted-foreground uppercase">SECURE_PAYMENT_CHANNEL</span>
         </div>
-        {!isConnected && (
-          <ConnectButton.Custom>
-            {({ openConnectModal, mounted }) =>
-              mounted && (
-                <button
-                  onClick={openConnectModal}
-                  className="text-xs bg-foreground text-background px-4 py-2 hover:bg-foreground/90 transition-colors uppercase tracking-wider font-bold"
-                >
-                  CONNECT_WALLET
-                </button>
-              )
-            }
-          </ConnectButton.Custom>
-        )}
-        {isConnected && (
-          <div className="flex items-center gap-4">
-            <span className="text-xs text-muted-foreground hidden sm:inline-block">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
-            <ConnectButton showBalance={false} chainStatus="icon" accountStatus="avatar" />
-          </div>
-        )}
+        {/* @ts-ignore — appkit-button is a web component */}
+        <appkit-button />
       </header>
 
       {/* Main Content */}
@@ -192,17 +174,9 @@ export default function PayPage({
           {!isConnected ? (
             <div className="text-center py-12 border border-dashed border-border bg-background">
               <p className="text-muted-foreground mb-6 font-mono text-sm">WALLET_REQUIRED</p>
-              <ConnectButton.Custom>
-                {({ openConnectModal, mounted }) => (
-                  <button
-                    onClick={openConnectModal}
-                    disabled={!mounted}
-                    className="bg-foreground text-background font-bold py-3 px-8 text-sm uppercase tracking-wider transition-all hover:bg-foreground/90"
-                  >
-                    INITIALIZE_CONNECTION
-                  </button>
-                )}
-              </ConnectButton.Custom>
+              <button onClick={() => open()} className="px-6 py-3 bg-foreground text-background font-medium hover:opacity-90 transition-opacity">
+                Connect Wallet to Pay
+              </button>
             </div>
           ) : (
             <PaymentInterface link={link} onSuccess={handlePaymentComplete} />
