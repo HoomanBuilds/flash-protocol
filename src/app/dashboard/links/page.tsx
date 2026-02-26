@@ -45,7 +45,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import QRCode from 'react-qr-code'
 import { useToast } from '@/components/ui/use-toast'
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 interface PaymentLink {
   id: string
@@ -79,7 +79,7 @@ function LinksPageContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { toast } = useToast()
-  const { primaryWallet } = useDynamicContext()
+  const { address } = useAppKitAccount()
   const linkId = searchParams.get('id')
 
   // List State
@@ -112,7 +112,7 @@ function LinksPageContent() {
   async function fetchLinks() {
     try {
       setLoadingLinks(true)
-      const headers: Record<string, string> = primaryWallet?.address ? { 'x-wallet-address': primaryWallet.address } : {}
+      const headers: Record<string, string> = address ? { 'x-wallet-address': address } : {}
       const res = await fetch('/api/payment-links', { headers })
       if (res.ok) {
         const data = await res.json()
@@ -129,7 +129,7 @@ function LinksPageContent() {
     try {
       setLoadingDetails(true)
       // Run in parallel for speed
-      const walletHeaders: Record<string, string> = primaryWallet?.address ? { 'x-wallet-address': primaryWallet.address } : {}
+      const walletHeaders: Record<string, string> = address ? { 'x-wallet-address': address } : {}
       const [linkRes, txRes] = await Promise.all([
         fetch(`/api/payment-links/${id}`, { headers: walletHeaders }),
         fetch(`/api/transactions?payment_link_id=${id}`, { headers: walletHeaders })

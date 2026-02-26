@@ -1,15 +1,16 @@
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 /**
- * Hook that provides the connected wallet address from Dynamic.xyz
- * Replaces the old session cookie-based approach.
+ * Hook that provides the connected wallet address.
+ * Uses Reown AppKit's useAppKitAccount which works across all chains
+ * (EVM, Solana, etc.), unlike wagmi's useAccount which is EVM-only.
  */
 export function useSession() {
-  const { primaryWallet } = useDynamicContext()
+  const { address, isConnected } = useAppKitAccount()
 
   return {
-    sessionToken: primaryWallet?.address || null,
-    walletAddress: primaryWallet?.address || null,
-    isConnected: !!primaryWallet,
+    sessionToken: address || null,
+    walletAddress: address || null,
+    isConnected,
   }
 }

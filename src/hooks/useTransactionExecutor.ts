@@ -8,7 +8,7 @@ import { OneClickService, OpenAPI } from '@defuse-protocol/one-click-sdk-typescr
 import { parseAbi } from 'viem'
 import { useCCTPBridge } from '@/hooks/cctp/useCCTPBridge'
 import { useEvmAdapter } from '@/hooks/cctp/useEvmAdapter'
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { useAppKitAccount } from '@reown/appkit/react'
 import {
   buildSolTransfer,
   buildSplTokenTransfer,
@@ -54,7 +54,7 @@ export function useTransactionExecutor() {
   const publicClient = usePublicClient()
   const { switchChainAsync } = useSwitchChain()
   const config = useConfig()
-  const { primaryWallet } = useDynamicContext()
+  const { address } = useAppKitAccount()
   
   const [status, setStatus] = useState<ExecutorStatus>('idle')
   const [error, setError] = useState<string | null>(null)
@@ -82,15 +82,15 @@ export function useTransactionExecutor() {
           // Solana provider for LIFI
           Solana({
             getWalletAdapter: async () => {
-              if (!primaryWallet?.connector) throw new Error('Solana wallet not connected')
-              const connector = primaryWallet.connector as any
-              return connector
+              const solana = (window as any).phantom?.solana || (window as any).solana
+              if (!solana) throw new Error('Solana wallet not connected')
+              return solana
             }
           })
         ]
       })
     }
-  }, [walletClient, switchChainAsync, primaryWallet])
+  }, [walletClient, switchChainAsync])
 
   const executeLifi = useCallback(async (route: Route) => {
     if (!walletClient) throw new Error('Wallet not connected')
@@ -339,7 +339,8 @@ export function useTransactionExecutor() {
 
   //Solana Transaction Signing (Rango serialized tx)
   const executeSolanaTx = useCallback(async (tx: any) => {
-    if (!primaryWallet) throw new Error('Solana wallet not connected')
+    const solana = (window as any).phantom?.solana || (window as any).solana
+    if (!solana) throw new Error('Solana wallet not connected')
 
     setStatus('executing')
     setStep('Signing Solana Transaction...')
@@ -351,18 +352,13 @@ export function useTransactionExecutor() {
 
       const transaction = deserializeSolanaTransaction(serialized)
       
-      const connector = primaryWallet.connector as any
-      if (!connector?.signAndSendTransaction && !primaryWallet.signMessage) {
+      if (!solana?.signAndSendTransaction) {
         throw new Error('Solana wallet does not support signAndSendTransaction')
       }
 
       let txHash: string
-      if (connector?.signAndSendTransaction) {
-        const result = await connector.signAndSendTransaction(transaction)
-        txHash = typeof result === 'string' ? result : result?.signature || result?.toString()
-      } else {
-        throw new Error('Connected Solana wallet does not support signAndSendTransaction. Please use a compatible wallet (e.g. Phantom, Solflare).')
-      }
+      const result = await solana.signAndSendTransaction(transaction)
+      txHash = typeof result === 'string' ? result : result?.signature || result?.toString()
 
       setTxHash(txHash)
       setStatus('completed')
@@ -373,11 +369,11 @@ export function useTransactionExecutor() {
       setStatus('failed')
       throw e
     }
-  }, [primaryWallet])
+  }, [])
 
-  // Deposit Address Execution (Solana)
   const executeSolanaDeposit = useCallback(async (quote: QuoteResponse) => {
-    if (!primaryWallet) throw new Error('Solana wallet not connected')
+    const solana = (window as any).phantom?.solana || (window as any).solana
+    if (!solana || !address) throw new Error('Solana wallet not connected')
 
     const depositAddress = quote.metadata?.depositAddress || quote.transactionRequest?.depositAddress
     if (!depositAddress) throw new Error('No deposit address in quote')
@@ -386,38 +382,32 @@ export function useTransactionExecutor() {
     setStep('Sending Solana Deposit...')
 
     try {
-      const fromPubkey = new PublicKey(primaryWallet.address!)
+      const fromPubkey = new PublicKey(address)
       const toPubkey = new PublicKey(depositAddress)
       const fromToken = quote.routes[0]?.action.fromToken
 
       let transaction
 
       if (!fromToken || isSolNative(fromToken.address)) {
-        // Native SOL transfer
         const lamports = BigInt(quote.metadata?.amountToSend || quote.fromAmount)
         transaction = await buildSolTransfer(fromPubkey, toPubkey, lamports)
       } else {
-        // SPL Token transfer
         const mint = new PublicKey(fromToken.address)
         const amount = BigInt(quote.metadata?.amountToSend || quote.fromAmount)
         transaction = await buildSplTokenTransfer(fromPubkey, toPubkey, mint, amount)
       }
 
-      // Sign and send via Dynamic.xyz Solana wallet connector
-      const connector = primaryWallet.connector as any
       let txHash: string
-
-      if (connector?.signAndSendTransaction) {
-        const result = await connector.signAndSendTransaction(transaction)
+      if (solana?.signAndSendTransaction) {
+        const result = await solana.signAndSendTransaction(transaction)
         txHash = typeof result === 'string' ? result : result?.signature || result?.toString()
       } else {
-        throw new Error('Connected Solana wallet does not support signAndSendTransaction. Please use a compatible wallet (e.g. Phantom, Solflare).')
+        throw new Error('Connected Solana wallet does not support signAndSendTransaction.')
       }
 
       setTxHash(txHash)
       setStep('Deposit Sent. Waiting for swap...')
 
-      // Submit hash to solver (Near Intents)
       if (quote.provider === 'near-intents' && depositAddress) {
         try {
           await OneClickService.submitDepositTx({ txHash, depositAddress })
@@ -434,34 +424,29 @@ export function useTransactionExecutor() {
       setStatus('failed')
       throw e
     }
-  }, [primaryWallet])
+  }, [address])
 
-  // Deposit Address Execution (Bitcoin)
   const executeBitcoinDeposit = useCallback(async (quote: QuoteResponse) => {
   
     const depositAddress = quote.metadata?.depositAddress || quote.transactionRequest?.depositAddress
     if (!depositAddress) throw new Error('No Bitcoin deposit address in quote')
 
-    if (!primaryWallet) throw new Error('Bitcoin wallet not connected')
+    const btcProvider = (window as any).unisat || (window as any).xfi?.bitcoin
+    if (!btcProvider) throw new Error('Bitcoin wallet not connected. Install a Bitcoin wallet extension.')
 
     setStatus('executing')
     setStep('Sending Bitcoin Transaction...')
 
     try {
-      const connector = primaryWallet.connector as any
-      
       const amountToSend = quote.metadata?.amountToSend || quote.fromAmount
-      
       const satoshis = parseInt(amountToSend as string, 10)
       
       let txHash: string
 
-      if (connector?.sendBitcoin) {
-        // Preferred: Direct BTC send
-        txHash = await connector.sendBitcoin(depositAddress, satoshis)
-      } else if (connector?.sendTransaction) {
-        // Fallback: Generic send
-        const result = await connector.sendTransaction({
+      if (btcProvider?.sendBitcoin) {
+        txHash = await btcProvider.sendBitcoin(depositAddress, satoshis)
+      } else if (btcProvider?.sendTransaction) {
+        const result = await btcProvider.sendTransaction({
           to: depositAddress,
           value: satoshis.toString(),
         })
@@ -473,7 +458,6 @@ export function useTransactionExecutor() {
       setTxHash(txHash)
       setStep('BTC sent. Waiting for swap completion...')
 
-      // Submit hash to solver (Near Intents)
       if (quote.provider === 'near-intents' && depositAddress) {
         try {
           await OneClickService.submitDepositTx({ txHash, depositAddress })
@@ -490,7 +474,7 @@ export function useTransactionExecutor() {
       setStatus('failed')
       throw e
     }
-  }, [primaryWallet])
+  }, [])
 
   // Main Entry Point
   const execute = useCallback(async (quote: QuoteResponse, recipientAddress?: string) => {

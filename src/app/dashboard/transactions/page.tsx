@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { 
   Loader2, 
   ArrowUpRight, 
@@ -44,7 +44,7 @@ export default function TransactionsPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const { primaryWallet } = useDynamicContext()
+  const { address } = useAppKitAccount()
 
   useEffect(() => {
     fetchTransactions()
@@ -53,7 +53,7 @@ export default function TransactionsPage() {
   async function fetchTransactions() {
     try {
       setLoading(true)
-      const headers: Record<string, string> = primaryWallet?.address ? { 'x-wallet-address': primaryWallet.address } : {}
+      const headers: Record<string, string> = address ? { 'x-wallet-address': address } : {}
       const res = await fetch('/api/transactions?limit=50', { headers })
       if (res.ok) {
         const data = await res.json()

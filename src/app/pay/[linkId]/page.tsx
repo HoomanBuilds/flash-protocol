@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { Loader2, AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import PaymentInterface from '@/components/PaymentInterface'
@@ -29,9 +29,8 @@ export default function PayPage({
   params: Promise<{ linkId: string }>
   searchParams: Promise<{ txId?: string }>
 }) {
-  const { primaryWallet } = useDynamicContext()
-  const address = primaryWallet?.address
-  const isConnected = !!primaryWallet
+  const { open } = useAppKit()
+  const { address, isConnected } = useAppKitAccount()
   const [link, setLink] = useState<PaymentLinkData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -143,12 +142,13 @@ export default function PayPage({
           <span className="text-xs tracking-widest text-muted-foreground uppercase">SECURE_PAYMENT_CHANNEL</span>
         </div>
         {!isConnected && (
-          <DynamicWidget />
+          <button onClick={() => open()} className="px-4 py-2 text-sm bg-foreground text-background font-medium hover:opacity-90 transition-opacity">
+            Connect Wallet
+          </button>
         )}
         {isConnected && (
           <div className="flex items-center gap-4">
             <span className="text-xs text-muted-foreground hidden sm:inline-block">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
-            <DynamicWidget />
           </div>
         )}
       </header>
@@ -182,7 +182,9 @@ export default function PayPage({
           {!isConnected ? (
             <div className="text-center py-12 border border-dashed border-border bg-background">
               <p className="text-muted-foreground mb-6 font-mono text-sm">WALLET_REQUIRED</p>
-              <DynamicWidget />
+              <button onClick={() => open()} className="px-6 py-3 bg-foreground text-background font-medium hover:opacity-90 transition-opacity">
+                Connect Wallet to Pay
+              </button>
             </div>
           ) : (
             <PaymentInterface link={link} onSuccess={handlePaymentComplete} />

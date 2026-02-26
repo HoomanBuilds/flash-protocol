@@ -3,7 +3,7 @@ import { createServerClient } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 
-// Get wallet address from x-wallet-address header (set by client after Dynamic.xyz connection)
+// Get wallet address from x-wallet-address header
 function getWalletAddress(req: NextRequest): string | null {
   return req.headers.get('x-wallet-address') || null
 }

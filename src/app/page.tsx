@@ -1,8 +1,9 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Zap, Globe2, ShieldCheck, Percent, Wallet, Layers, ArrowRight, Activity, Terminal } from 'lucide-react'
 import Link from 'next/link'
-import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { motion } from 'framer-motion'
 import { toast } from '@/components/ui/use-toast'
 import DottedMap from '@/components/ui/dotted-map'
@@ -95,8 +96,16 @@ const itemVariants = {
 }
 
 export default function Home() {
-  const { primaryWallet } = useDynamicContext()
-  const isConnected = !!primaryWallet
+  const { open } = useAppKit()
+  const { isConnected } = useAppKitAccount()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Only trust wallet state after hydration to prevent SSR mismatch
+  const walletReady = mounted && isConnected
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-foreground selection:text-background text-base">
@@ -130,14 +139,14 @@ export default function Home() {
               className="flex flex-col sm:flex-row gap-4 pt-4"
             >
               <div className="flex gap-4">
-                {isConnected ? (
+                {walletReady ? (
                   <Link href="/dashboard" className="h-12 px-8 bg-foreground text-background font-medium flex items-center justify-center hover:opacity-90 transition-opacity">
                     OPEN DASHBOARD
                   </Link>
                 ) : (
-                  <div className="[&_button]:!h-12 [&_button]:!rounded-none [&_button]:!font-mono">
-                    <DynamicWidget />
-                  </div>
+                  <button onClick={() => open()} className="h-12 px-8 bg-foreground text-background font-medium flex items-center justify-center hover:opacity-90 transition-opacity">
+                    CONNECT WALLET
+                  </button>
                 )}
                 <Link href="/docs" className="h-12 px-8 border border-border flex items-center justify-center hover:bg-muted/50 transition-colors font-mono text-sm">
                   READ_DOCS
@@ -308,7 +317,7 @@ export default function Home() {
                   <Link 
                    href="/dashboard" 
                    onClick={(e) => {
-                     if (!isConnected) {
+                     if (!walletReady) {
                        e.preventDefault()
                        toast({
                          title: 'WALLET REQUIRED',

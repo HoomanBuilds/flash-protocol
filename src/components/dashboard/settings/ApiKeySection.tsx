@@ -23,7 +23,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 interface KeyMetadata {
   name: string | null
@@ -56,8 +56,8 @@ function maskPrefix(prefix: string): string {
 
 export default function ApiKeySection({ merchantId: _merchantId }: { merchantId: string }) {
   const { toast } = useToast()
-  const { primaryWallet } = useDynamicContext()
-  const walletHeaders: Record<string, string> = primaryWallet?.address ? { 'x-wallet-address': primaryWallet.address } : {}
+  const { address } = useAppKitAccount()
+  const walletHeaders: Record<string, string> = address ? { 'x-wallet-address': address } : {}
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
   const [keyMetadata, setKeyMetadata] = useState<KeyMetadata | null>(null)

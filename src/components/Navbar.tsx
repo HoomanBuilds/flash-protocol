@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import { DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core'
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { toast } from '@/components/ui/use-toast'
@@ -18,8 +18,7 @@ const NAV_LINKS = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
-  const { primaryWallet } = useDynamicContext()
-  const isConnected = !!primaryWallet
+  const { isConnected } = useAppKitAccount()
 
   const isActive = (href: string) => {
     if (href.startsWith('/#')) return false
@@ -68,7 +67,8 @@ export function Navbar() {
         </nav>
         <div className="flex items-center gap-4">
           <div className="hidden sm:block">
-            <DynamicWidget />
+            {/* @ts-ignore — appkit-button is a web component */}
+            <appkit-button />
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -95,7 +95,8 @@ export function Navbar() {
             </Link>
           ))}
           <div className="pt-4 border-t border-border">
-            <DynamicWidget />
+            {/* @ts-ignore — appkit-button is a web component */}
+            <appkit-button />
           </div>
         </div>
       )}

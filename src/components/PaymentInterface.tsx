@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useBalance, useSwitchChain, useAccount as useWagmiAccount } from 'wagmi'
+import { useBalance, useSwitchChain, useAccount } from 'wagmi'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { parseUnits } from 'viem'
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -46,10 +46,10 @@ interface PaymentInterfaceProps {
 }
 
 export default function PaymentInterface({ link, onSuccess }: PaymentInterfaceProps) {
-  const { primaryWallet } = useDynamicContext()
-  const address = primaryWallet?.address as `0x${string}` | undefined
-  const isConnected = !!primaryWallet
-  const { chain: connectedChain } = useWagmiAccount()
+  const { address: appKitAddress, isConnected } = useAppKitAccount()
+  const address = appKitAddress as `0x${string}` | undefined
+  const typedAddress = address as `0x${string}` | undefined
+  const { chain: connectedChain } = useAccount()
   const { switchChain } = useSwitchChain()
   const { toast } = useToast()
   
