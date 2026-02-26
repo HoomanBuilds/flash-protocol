@@ -7,19 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "inngest": "npx inngest-cli@latest dev",
-    "postinstall": "node scripts/patch-dynamic-sdk.js"
+    "inngest": "npx inngest-cli@latest dev"
   },
   "dependencies": {
     "@circle-fin/adapter-viem-v2": "^1.4.0",
     "@circle-fin/bridge-kit": "^1.5.0",
     "@defuse-protocol/intents-sdk": "^0.51.0",
     "@defuse-protocol/one-click-sdk-typescript": "^0.1.15",
-    "@dynamic-labs/bitcoin": "^4.63.1",
-    "@dynamic-labs/ethereum": "^4.63.1",
-    "@dynamic-labs/sdk-react-core": "^4.63.1",
-    "@dynamic-labs/solana": "^4.63.1",
-    "@dynamic-labs/wagmi-connector": "^4.63.1",
     "@hookform/resolvers": "^5.2.2",
     "@lifi/sdk": "^3.15.4",
     "@radix-ui/react-separator": "^1.1.8",
@@ -27,8 +21,12 @@
     "@react-pdf/renderer": "^4.3.2",
     "@react-three/fiber": "^9.5.0",
     "@react-three/postprocessing": "^3.0.4",
+    "@reown/appkit": "^1.8.18",
+    "@reown/appkit-adapter-solana": "^1.8.18",
+    "@reown/appkit-adapter-wagmi": "^1.8.18",
     "@sentry/nextjs": "^10.38.0",
     "@solana/spl-token": "^0.4.14",
+    "@solana/wallet-adapter-wallets": "^0.19.37",
     "@solana/web3.js": "^1.98.4",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.93.3",
@@ -55,7 +53,7 @@
     "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.167.1",
-    "viem": "^2.45.1",
+    "viem": "^2.46.3",
     "wagmi": "^2.19.5",
     "zod": "^4.3.6",
     "zustand": "^5.0.11"
@@ -74,5 +72,6 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.4.0",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
