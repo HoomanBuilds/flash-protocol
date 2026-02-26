@@ -1,7 +1,7 @@
 import { providers } from './providers'
 import { QuoteRequest, QuoteResponse } from '@/types/provider'
 
-const PROVIDER_TIMEOUT_MS = 20000 
+const PROVIDER_TIMEOUT_MS = 30000 
 const QUOTE_VALIDITY_MS = 60000
 
 // Provider reliability scores

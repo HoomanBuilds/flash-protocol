@@ -81,12 +81,18 @@ export class RubicProvider implements IProvider {
       if (!srcTokenBlockchain || !dstTokenBlockchain) return []
 
       // Convert native token address to Rubic format
-      const srcTokenAddress = request.fromToken === '0x0000000000000000000000000000000000000000' 
-        ? '0x0000000000000000000000000000000000000000'
-        : request.fromToken
-      const dstTokenAddress = request.toToken === '0x0000000000000000000000000000000000000000'
-        ? '0x0000000000000000000000000000000000000000'
-        : request.toToken
+      const SOLANA_NATIVE = '11111111111111111111111111111111'
+      const SOLANA_WRAPPED_SOL = 'So11111111111111111111111111111111111111112'
+      
+      let srcTokenAddress = request.fromToken
+      if (srcTokenAddress === SOLANA_NATIVE) {
+        srcTokenAddress = SOLANA_WRAPPED_SOL
+      }
+
+      let dstTokenAddress = request.toToken
+      if (dstTokenAddress === SOLANA_NATIVE) {
+        dstTokenAddress = SOLANA_WRAPPED_SOL
+      }
 
       // Detect non-EVM chains for deposit trade flow
       const NON_EVM_CHAINS = ['SOLANA', 'BITCOIN', 'TRON']

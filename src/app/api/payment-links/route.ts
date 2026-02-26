@@ -65,8 +65,8 @@ export async function GET(req: NextRequest) {
     const walletAddress = getWalletAddress(req)
     if (!walletAddress) return NextResponse.json({ error: 'Wallet not connected' }, { status: 401 })
 
-    const merchant = await UserService.findUserByWallet(walletAddress)
-    if (!merchant) return NextResponse.json({ error: 'Merchant not found' }, { status: 404 })
+    const merchant = await UserService.upsertUser(walletAddress)
+    if (!merchant) return NextResponse.json({ error: 'Failed to resolve merchant' }, { status: 500 })
 
     const supabase = createServerClient()
 

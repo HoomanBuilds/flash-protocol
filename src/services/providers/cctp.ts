@@ -155,8 +155,8 @@ export class CCTPProvider implements IProvider {
               type: 'GAS',
               name: 'Network Gas',
               description: 'Gas for Burn (Source) + Mint (Dest)',
-              amount: '0.005', // Rough estimate/placeholder
-              amountUSD: '0.10', // Rough estimate
+              amount: feeAmount.toString(),
+              amountUSD: (Number(feeAmount) / 1e6).toFixed(2),
               included: false
             }]
           }

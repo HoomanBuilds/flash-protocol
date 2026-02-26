@@ -282,6 +282,15 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     setQuotes([])
     setSelectedQuote(null)
 
+    // Validate address format matches chain type
+    const isEvmChain = chainType === 'evm'
+    const isEvmAddress = address?.startsWith('0x')
+    if (isEvmChain && !isEvmAddress) {
+      setError('Your connected wallet is not an EVM wallet. Please switch to an EVM wallet (MetaMask, etc.) using the wallet button to pay on this chain.')
+      setIsLoading(false)
+      return
+    }
+
     try {
       const amountInWei = parseUnits(amountToUse, fromToken.decimals).toString()
 

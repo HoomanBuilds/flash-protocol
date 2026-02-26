@@ -38,7 +38,7 @@ export default function DashboardOverview() {
       }
     }
     fetchLinks()
-  }, [])
+  }, [address])
 
   const activeLinks = links.filter(l => l.status === 'active').length
   const totalRevenue = links.reduce((sum, link) => sum + (link.total_revenue || 0), 0)

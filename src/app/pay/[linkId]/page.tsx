@@ -141,16 +141,8 @@ export default function PayPage({
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
           <span className="text-xs tracking-widest text-muted-foreground uppercase">SECURE_PAYMENT_CHANNEL</span>
         </div>
-        {!isConnected && (
-          <button onClick={() => open()} className="px-4 py-2 text-sm bg-foreground text-background font-medium hover:opacity-90 transition-opacity">
-            Connect Wallet
-          </button>
-        )}
-        {isConnected && (
-          <div className="flex items-center gap-4">
-            <span className="text-xs text-muted-foreground hidden sm:inline-block">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
-          </div>
-        )}
+        {/* @ts-ignore — appkit-button is a web component */}
+        <appkit-button />
       </header>
 
       {/* Main Content */}
