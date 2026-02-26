@@ -518,15 +518,19 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
             <div className="space-y-3">
               <Label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Payment Network</Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500" />
+                {selectedChain?.logoUrl ? (
+                  <img src={selectedChain.logoUrl} alt={selectedChain.name} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full object-cover" />
+                ) : (
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500" />
+                )}
                 {chainsLoading ? (
-                  <div className="w-full pl-8 pr-4 py-4 bg-background border border-border text-muted-foreground font-mono text-sm flex items-center gap-2">
+                  <div className="w-full pl-10 pr-4 py-4 bg-background border border-border text-muted-foreground font-mono text-sm flex items-center gap-2">
                     <Loader2 className="w-3 h-3 animate-spin" />
                     <span>Loading networks...</span>
                   </div>
                 ) : (
                   <select
-                    className="w-full pl-8 pr-4 py-4 bg-background border border-border text-foreground font-mono text-sm focus:border-foreground/50 transition-all outline-none appearance-none cursor-pointer hover:bg-muted/50"
+                    className={`w-full ${selectedChain?.logoUrl ? 'pl-10' : 'pl-8'} pr-4 py-4 bg-background border border-border text-foreground font-mono text-sm focus:border-foreground/50 transition-all outline-none appearance-none cursor-pointer hover:bg-muted/50`}
                     value={fromChainKey}
                     onChange={(e) => handleChainChange(e.target.value)}
                   >
