@@ -7,7 +7,7 @@ function getWalletAddress(req: NextRequest) {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { walletAddress: string } }
+  { params }: { params: Promise<{ walletAddress: string }> }
 ) {
   try {
     // 1. Verify the caller is authenticated
@@ -16,7 +16,7 @@ export async function GET(
       return NextResponse.json({ error: 'Wallet not connected' }, { status: 401 })
     }
 
-    const { walletAddress } = params
+    const { walletAddress } = await params
     if (!walletAddress) {
       return NextResponse.json({ error: 'Target wallet address required' }, { status: 400 })
     }
