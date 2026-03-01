@@ -150,6 +150,7 @@ export type Database = {
           id: string
           payment_link_id: string | null
           customer_wallet: string | null
+          receiver_wallet: string | null
           from_chain_id: number | null
           from_token: string | null
           from_token_symbol: string | null
@@ -184,6 +185,7 @@ export type Database = {
           id?: string
           payment_link_id?: string | null
           customer_wallet?: string | null
+          receiver_wallet?: string | null
           from_chain_id?: number | null
           from_token?: string | null
           from_token_symbol?: string | null
@@ -218,6 +220,7 @@ export type Database = {
           id?: string
           payment_link_id?: string | null
           customer_wallet?: string | null
+          receiver_wallet?: string | null
           from_chain_id?: number | null
           from_token?: string | null
           from_token_symbol?: string | null

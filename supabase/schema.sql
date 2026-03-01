@@ -122,6 +122,7 @@ create table if not exists transactions (
     id uuid primary key default uuid_generate_v4(),
     payment_link_id uuid references payment_links(id),
     customer_wallet varchar,
+    receiver_wallet varchar,
     from_chain_id integer,
     from_token varchar,
     from_token_symbol varchar,
@@ -164,6 +165,7 @@ create index if not exists idx_tx_status on transactions(status);
 create index if not exists idx_tx_provider on transactions(provider);
 create index if not exists idx_tx_source_hash on transactions(source_tx_hash);
 create index if not exists idx_tx_customer_wallet on transactions(customer_wallet);
+create index if not exists idx_tx_receiver_wallet on transactions(receiver_wallet);
 create index if not exists idx_tx_created_at on transactions(created_at desc);
 
 -- Quotes Table
@@ -355,3 +357,53 @@ select cron.schedule(
     $$select delete_old_api_logs()$$
 );
 */
+
+-- ==========================================
+-- CHAIN & TOKEN CACHING
+-- ==========================================
+
+-- Pre-computed chain data from all providers (refreshed every 15min via Inngest)
+CREATE TABLE IF NOT EXISTS cached_chains (
+  key TEXT PRIMARY KEY,
+  chain_id INTEGER,
+  name TEXT NOT NULL,
+  type TEXT NOT NULL,
+  symbol TEXT NOT NULL,
+  logo_url TEXT,
+  has_usdc BOOLEAN DEFAULT false,
+  providers JSONB NOT NULL DEFAULT '{}'::jsonb,
+  provider_ids JSONB NOT NULL DEFAULT '{}'::jsonb,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Pre-computed token data per chain
+CREATE TABLE IF NOT EXISTS cached_tokens (
+  id TEXT PRIMARY KEY,
+  chain_key TEXT NOT NULL,
+  address TEXT NOT NULL,
+  symbol TEXT NOT NULL,
+  name TEXT NOT NULL,
+  decimals INTEGER NOT NULL DEFAULT 18,
+  logo_url TEXT,
+  is_native BOOLEAN DEFAULT false,
+  provider_ids JSONB,
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT fk_chain
+    FOREIGN KEY(chain_key) 
+    REFERENCES cached_chains(key)
+    ON DELETE CASCADE
+);
+
+-- RLS
+ALTER TABLE cached_chains ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "cached_chains_public_read" ON cached_chains FOR SELECT USING (true);
+CREATE POLICY "cached_chains_service_write" ON cached_chains FOR ALL USING (true);
+
+ALTER TABLE cached_tokens ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "cached_tokens_public_read" ON cached_tokens FOR SELECT USING (true);
+CREATE POLICY "cached_tokens_service_write" ON cached_tokens FOR ALL USING (true);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_cached_tokens_chain ON cached_tokens(chain_key);
+CREATE INDEX IF NOT EXISTS idx_cached_chains_has_usdc ON cached_chains(has_usdc);
+CREATE INDEX IF NOT EXISTS idx_cached_chains_type ON cached_chains(type);
