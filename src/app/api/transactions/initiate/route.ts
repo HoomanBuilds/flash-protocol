@@ -14,6 +14,7 @@ const initiateSchema = z.object({
   provider: z.string().default('lifi'),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   route: z.any(),
+  toAddress: z.string().optional(), // receiver wallet for P2P direct hits (android)
 })
 
 export async function POST(request: Request) {
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
       .from('transactions')
       .insert({
         customer_wallet: params.walletAddress,
+        receiver_wallet: params.toAddress || null,
         from_chain_id: params.fromChainId,
         to_chain_id: params.toChainId,
         from_token: params.fromToken,
