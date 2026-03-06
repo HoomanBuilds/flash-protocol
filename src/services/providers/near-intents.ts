@@ -10,7 +10,7 @@ if (process.env.NEAR_INTENTS_JWT) {
 // Hardcoded fallback — used when getTokens() fails to build maps
 const FALLBACK_PREFIX_MAP: Record<string, string> = {
   '1': 'eth',
-  '137': 'polygon', 
+  '137': 'pol',
   '42161': 'arb',
   '10': 'op',
   '8453': 'base',
@@ -21,7 +21,9 @@ const FALLBACK_PREFIX_MAP: Record<string, string> = {
   'bitcoin': 'btc',
   'near': 'near',
   'dogecoin': 'doge',
-  '1313161554': 'aurora',
+  '80094': 'bera',
+  'tron': 'tron',
+  'sui': 'sui',
 }
 
 const FALLBACK_NATIVE_IDS: Record<string, string> = {
@@ -40,24 +42,33 @@ const FALLBACK_NATIVE_IDS: Record<string, string> = {
 // Dynamic maps: built from getTokens() response at first use
 let dynamicPrefixMap: Record<string, string> | null = null
 let dynamicNativeAssetIds: Record<string, string> | null = null
+// Maps chainKey:contractAddress -> assetId (for non-EVM where address format differs)
+let dynamicAssetIdLookup: Record<string, string> | null = null
 let nearMapsLoading: Promise<void> | null = null
 
-// Map NEAR blockchain name to our chain key
+// Non-EVM chains where token addresses are case-sensitive (base58, etc.)
+const NON_EVM_CHAINS = new Set(['solana', 'near', 'bitcoin', 'dogecoin', 'sui', 'tron', 'bch', 'ltc', 'xrp', 'ton'])
+
+// Map NEAR blockchain name (abbreviated) to our chain key
 const NEAR_BLOCKCHAIN_TO_KEY: Record<string, string> = {
-  ethereum: '1',
-  arbitrum: '42161',
+  eth: '1',
+  arb: '42161',
   base: '8453',
-  optimism: '10',
-  polygon: '137',
+  op: '10',
+  pol: '137',
   bsc: '56',
-  avalanche: '43114',
+  avax: '43114',
   gnosis: '100',
   near: 'near',
-  solana: 'solana',
-  bitcoin: 'bitcoin',
-  dogecoin: 'dogecoin',
-  aurora: '1313161554',
-  turbochain: 'turbochain',
+  sol: 'solana',
+  btc: 'bitcoin',
+  doge: 'dogecoin',
+  bera: '80094',
+  tron: 'tron',
+  sui: 'sui',
+  bch: 'bch',
+  ltc: 'ltc',
+  ton: 'ton',
 }
 
 async function ensureNearMaps(): Promise<void> {
@@ -71,6 +82,7 @@ async function ensureNearMaps(): Promise<void> {
 
       dynamicPrefixMap = {}
       dynamicNativeAssetIds = {}
+      dynamicAssetIdLookup = {}
 
       for (const t of tokens) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,9 +107,15 @@ async function ensureNearMaps(): Promise<void> {
         if (!token.contractAddress && assetId && !dynamicNativeAssetIds[chainKey]) {
           dynamicNativeAssetIds[chainKey] = assetId
         }
+
+        
+        if (token.contractAddress && assetId) {
+          const lookupKey = `${chainKey}:${token.contractAddress}`
+          dynamicAssetIdLookup[lookupKey] = assetId
+        }
       }
 
-      console.log(`NEAR Intents: Built maps for ${Object.keys(dynamicPrefixMap).length} chains from getTokens()`)
+      console.log(`NEAR Intents: Built maps for ${Object.keys(dynamicPrefixMap).length} chains, ${Object.keys(dynamicAssetIdLookup).length} token lookups from getTokens()`)
     } catch (error) {
       console.warn('NEAR Intents: Failed to build maps from getTokens(), using fallbacks:', error)
       dynamicPrefixMap = { ...FALLBACK_PREFIX_MAP }
@@ -121,22 +139,23 @@ export class NearIntentsProvider implements IProvider {
     const chainKey = String(chainId)
     const prefixMap = dynamicPrefixMap || FALLBACK_PREFIX_MAP
     const nativeMap = dynamicNativeAssetIds || FALLBACK_NATIVE_IDS
-    
+
     const chainPrefix = prefixMap[chainKey]
     if (!chainPrefix) {
       console.log(`NEAR Intents: Unsupported chain ${chainKey}`)
       return null
     }
 
-    const address = tokenAddress.toLowerCase()
-    
-    // Native token detection 
-    const isNative = 
-      address === '0x0000000000000000000000000000000000000000' || // EVM native
-      address === '11111111111111111111111111111111' || // Solana native (system program)
-      address === 'so11111111111111111111111111111111111111112' || // Wrapped SOL
-      address === '' || !address // Empty = native
-    
+    // For native token detection, lowercase only for comparison
+    const addrLower = tokenAddress.toLowerCase()
+
+    // Native token detection
+    const isNative =
+      addrLower === '0x0000000000000000000000000000000000000000' || // EVM native
+      addrLower === '11111111111111111111111111111111' || // Solana native 
+      addrLower === 'so11111111111111111111111111111111111111112' || // Wrapped SOL
+      tokenAddress === '' || !tokenAddress // Empty = native
+
     if (isNative) {
       const nativeId = nativeMap[chainKey]
       if (!nativeId) {
@@ -146,7 +165,16 @@ export class NearIntentsProvider implements IProvider {
       return nativeId
     }
 
-    return `nep141:${chainPrefix}-${address}.omft.near`
+    // For non-EVM chains, asset IDs use a different format
+    if (NON_EVM_CHAINS.has(chainKey) && dynamicAssetIdLookup) {
+      const lookupId = dynamicAssetIdLookup[`${chainKey}:${tokenAddress}`]
+      if (lookupId) return lookupId
+      console.log(`NEAR Intents: Token ${tokenAddress} on ${chainKey} not found in lookup cache`)
+      return null
+    }
+
+    // EVM chains: construct the asset ID
+    return `nep141:${chainPrefix}-${addrLower}.omft.near`
   }
 
   // Cache for token metadata

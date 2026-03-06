@@ -182,20 +182,24 @@ async function fetchNearChains(): Promise<ProviderChainEntry[]> {
 
     // Map NEAR blockchain names to chain keys
     const nearBlockchainToKey: Record<string, { key: string; chainId: number | null; type: ChainType; name: string; symbol: string }> = {
-      ethereum: { key: '1', chainId: 1, type: 'evm', name: 'Ethereum', symbol: 'ETH' },
-      arbitrum: { key: '42161', chainId: 42161, type: 'evm', name: 'Arbitrum One', symbol: 'ETH' },
+      eth: { key: '1', chainId: 1, type: 'evm', name: 'Ethereum', symbol: 'ETH' },
+      arb: { key: '42161', chainId: 42161, type: 'evm', name: 'Arbitrum One', symbol: 'ETH' },
       base: { key: '8453', chainId: 8453, type: 'evm', name: 'Base', symbol: 'ETH' },
-      optimism: { key: '10', chainId: 10, type: 'evm', name: 'Optimism', symbol: 'ETH' },
-      polygon: { key: '137', chainId: 137, type: 'evm', name: 'Polygon', symbol: 'MATIC' },
+      op: { key: '10', chainId: 10, type: 'evm', name: 'Optimism', symbol: 'ETH' },
+      pol: { key: '137', chainId: 137, type: 'evm', name: 'Polygon', symbol: 'POL' },
       bsc: { key: '56', chainId: 56, type: 'evm', name: 'BNB Smart Chain', symbol: 'BNB' },
-      avalanche: { key: '43114', chainId: 43114, type: 'evm', name: 'Avalanche', symbol: 'AVAX' },
+      avax: { key: '43114', chainId: 43114, type: 'evm', name: 'Avalanche', symbol: 'AVAX' },
       gnosis: { key: '100', chainId: 100, type: 'evm', name: 'Gnosis', symbol: 'xDAI' },
       near: { key: 'near', chainId: null, type: 'near', name: 'NEAR', symbol: 'NEAR' },
-      solana: { key: 'solana', chainId: null, type: 'solana', name: 'Solana', symbol: 'SOL' },
-      bitcoin: { key: 'bitcoin', chainId: null, type: 'bitcoin', name: 'Bitcoin', symbol: 'BTC' },
-      dogecoin: { key: 'dogecoin', chainId: null, type: 'bitcoin', name: 'Dogecoin', symbol: 'DOGE' },
-      turbochain: { key: 'turbochain', chainId: null, type: 'evm', name: 'Turbo Chain', symbol: 'ETH' },
-      aurora: { key: '1313161554', chainId: 1313161554, type: 'evm', name: 'Aurora', symbol: 'ETH' },
+      sol: { key: 'solana', chainId: null, type: 'solana', name: 'Solana', symbol: 'SOL' },
+      btc: { key: 'bitcoin', chainId: null, type: 'bitcoin', name: 'Bitcoin', symbol: 'BTC' },
+      doge: { key: 'dogecoin', chainId: null, type: 'bitcoin', name: 'Dogecoin', symbol: 'DOGE' },
+      bera: { key: '80094', chainId: 80094, type: 'evm', name: 'Berachain', symbol: 'BERA' },
+      tron: { key: 'tron', chainId: null, type: 'tron', name: 'Tron', symbol: 'TRX' },
+      sui: { key: 'sui', chainId: null, type: 'sui', name: 'Sui', symbol: 'SUI' },
+      bch: { key: 'bch', chainId: null, type: 'bitcoin', name: 'Bitcoin Cash', symbol: 'BCH' },
+      ltc: { key: 'ltc', chainId: null, type: 'bitcoin', name: 'Litecoin', symbol: 'LTC' },
+      ton: { key: 'ton', chainId: null, type: 'cosmos', name: 'TON', symbol: 'TON' },
     }
 
     const entries: ProviderChainEntry[] = []
@@ -295,9 +299,11 @@ function mergeAllChains(
       const normalizedKey = normalizeChainKey(entry.key)
       let chain = chainMap.get(normalizedKey)
       if (!chain) {
+        // Non-EVM chains should not carry provider-specific numeric IDs as chainId
+        const isNonEvm = entry.type !== 'evm'
         chain = {
           key: normalizedKey,
-          chainId: entry.chainId,
+          chainId: isNonEvm ? null : entry.chainId,
           name: entry.name,
           type: entry.type,
           symbol: entry.symbol,
@@ -483,22 +489,26 @@ async function fetchRangoTokens(chain: UnifiedChain): Promise<UnifiedToken[]> {
  */
 let nearTokensCache: { tokens: unknown[]; expiry: number } | null = null
 
-// Reverse mapping: chain key → NEAR blockchain name
+// Reverse mapping: chain key → NEAR blockchain name (abbreviated)
 const KEY_TO_NEAR_BLOCKCHAIN: Record<string, string> = {
-  '1': 'ethereum',
-  '42161': 'arbitrum',
+  '1': 'eth',
+  '42161': 'arb',
   '8453': 'base',
-  '10': 'optimism',
-  '137': 'polygon',
+  '10': 'op',
+  '137': 'pol',
   '56': 'bsc',
-  '43114': 'avalanche',
+  '43114': 'avax',
   '100': 'gnosis',
-  '1313161554': 'aurora',
   'near': 'near',
-  'solana': 'solana',
-  'bitcoin': 'bitcoin',
-  'dogecoin': 'dogecoin',
-  'turbochain': 'turbochain',
+  'solana': 'sol',
+  'bitcoin': 'btc',
+  'dogecoin': 'doge',
+  '80094': 'bera',
+  'tron': 'tron',
+  'sui': 'sui',
+  'bch': 'bch',
+  'ltc': 'ltc',
+  'ton': 'ton',
 }
 
 async function fetchNearTokens(chain: UnifiedChain): Promise<UnifiedToken[]> {

@@ -278,7 +278,7 @@ export class RubicProvider implements IProvider {
               decimals: data.tokens?.to?.decimals || 18
             },
             fromAmount: request.fromAmount,
-            toAmount: this.toWei(data.estimate.destinationTokenAmount, 18)
+            toAmount: this.toWei(data.estimate.destinationTokenAmount, toDecimals)
           },
           // TODO: Add support for platform fees
           estimate: {
