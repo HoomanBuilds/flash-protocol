@@ -9,9 +9,20 @@ const quoteSchema = z.object({
   toTokenAddress: z.string(),
   fromAmount: z.string(),
   fromAddress: z.string().optional(),
-  toAddress: z.string().optional(), 
+  toAddress: z.string().optional(),
   fromTokenDecimals: z.number().optional(),
 })
+
+// Normalize common chain key aliases (e.g. 'sol' → 'solana', 'btc' → 'bitcoin')
+const CHAIN_KEY_ALIASES: Record<string, string> = {
+  sol: 'solana',
+  btc: 'bitcoin',
+}
+
+function normalizeChainId(id: string | number): string | number {
+  if (typeof id === 'string' && CHAIN_KEY_ALIASES[id]) return CHAIN_KEY_ALIASES[id]
+  return id
+}
 
 export async function POST(request: Request) {
   try {
@@ -20,8 +31,8 @@ export async function POST(request: Request) {
 
     // Using QuoteAggregator to fetch from all providers
     const result = await QuoteAggregator.getQuotes({
-      fromChain: params.fromChainId,
-      toChain: params.toChainId,
+      fromChain: normalizeChainId(params.fromChainId),
+      toChain: normalizeChainId(params.toChainId),
       fromToken: params.fromTokenAddress,
       toToken: params.toTokenAddress,
       fromAmount: params.fromAmount,

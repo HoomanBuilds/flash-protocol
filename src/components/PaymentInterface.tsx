@@ -35,7 +35,7 @@ interface PaymentInterfaceProps {
     amount?: number
     currency: string
     receive_mode: 'same_chain' | 'specific_chain'
-    receive_chain_id?: number
+    receive_chain_id?: number | string
     receive_token?: string
     receive_token_symbol?: string
     recipient_address: string
@@ -77,7 +77,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     return !isNaN(num) && Number.isInteger(num) ? num : 0
   })()
 
-  const toChainId = link.receive_mode === 'same_chain' ? fromChainId : (link.receive_chain_id || 1)
+  const toChainKey = link.receive_mode === 'same_chain' ? fromChainKey : (link.receive_chain_id ? String(link.receive_chain_id) : '42161')
 
   const [quotes, setQuotes] = useState<QuoteResponse[]>([])
   const [selectedQuote, setSelectedQuote] = useState<QuoteResponse | null>(null)
@@ -108,7 +108,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
 
     async function resolveUSDC() {
       try {
-        const res = await fetch(`/api/tokens?chainKey=${toChainId}`)
+        const res = await fetch(`/api/tokens?chainKey=${toChainKey}`)
         const data = await res.json()
         if (data.success && data.tokens) {
           const usdc = data.tokens.find((t: any) =>
@@ -123,12 +123,16 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
         console.warn('Dynamic USDC resolution failed, using fallback:', err)
       }
       // Fallback to static map
-      setResolvedUSDCAddress(getUSDCAddress(toChainId))
+      const numericId = Number(toChainKey)
+      setResolvedUSDCAddress(!isNaN(numericId) ? getUSDCAddress(numericId) : undefined)
     }
     resolveUSDC()
-  }, [toChainId, link.receive_token])
+  }, [toChainKey, link.receive_token])
 
-  const destinationToken = link.receive_token || resolvedUSDCAddress || getUSDCAddress(toChainId)
+  const destinationToken = link.receive_token || resolvedUSDCAddress || (() => {
+    const numericId = Number(toChainKey)
+    return !isNaN(numericId) ? getUSDCAddress(numericId) : undefined
+  })()
 
   // Fetch chains on mount
   useEffect(() => {
@@ -300,7 +304,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
         body: JSON.stringify({
           fromChainId: fromChainKey,
           fromTokenAddress,
-          toChainId,
+          toChainId: toChainKey,
           toTokenAddress: destinationToken,
           fromAmount: amountInWei,
           fromAddress: address,
@@ -356,7 +360,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
           paymentLinkId: link.id,
           walletAddress: address,
           fromChainId,
-          toChainId,
+          toChainId: toChainKey,
           fromToken: fromTokenAddress,
           toToken: destinationToken,
           fromAmount: selectedQuote.fromAmount,
@@ -536,7 +540,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
                   >
                     {/* Popular chains at the top */}
                     {(() => {
-                      const popularIds = ['42161', '8453', '137', '10', '1']
+                      const popularIds = ['42161', '8453', '137', '10', '1', 'solana']
                       const popularChains = popularIds
                         .map(id => dynamicChains.find(c => c.key === id || String(c.chainId) === id))
                         .filter(Boolean) as UnifiedChain[]

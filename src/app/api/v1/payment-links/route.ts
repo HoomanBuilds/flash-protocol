@@ -17,14 +17,15 @@ const createPaymentLinkSchema = z.object({
   expires_at: z.string().datetime().optional()
 })
 
-const CHAIN_ID_MAP: Record<string, number> = {
-  'ethereum': 1,
-  'polygon': 137,
-  'arbitrum': 42161,
-  'optimism': 10,
-  'base': 8453,
-  'avalanche': 43114,
-  'bsc': 56
+const CHAIN_ID_MAP: Record<string, string> = {
+  'ethereum': '1',
+  'polygon': '137',
+  'arbitrum': '42161',
+  'optimism': '10',
+  'base': '8453',
+  'avalanche': '43114',
+  'bsc': '56',
+  'solana': 'solana',
 }
 
 export async function POST(req: NextRequest) {
@@ -63,19 +64,18 @@ export async function POST(req: NextRequest) {
     .eq('id', merchant.id)
     .single()
   
-  let receiveChainId = merchantData?.default_receive_chain
-  
+  let receiveChainId: string | undefined = merchantData?.default_receive_chain
+    ? String(merchantData.default_receive_chain)
+    : undefined
+
   // Handle string chain names if provided
   if (data.receive_chain) {
     const chainLower = data.receive_chain.toLowerCase()
     if (CHAIN_ID_MAP[chainLower]) {
       receiveChainId = CHAIN_ID_MAP[chainLower]
     } else {
-      // Try parsing as number
-      const parsedId = parseInt(data.receive_chain)
-      if (!isNaN(parsedId)) {
-        receiveChainId = parsedId
-      }
+      // Pass through as-is (supports numeric IDs and non-numeric keys like 'solana')
+      receiveChainId = data.receive_chain
     }
   }
 

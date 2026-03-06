@@ -7,7 +7,7 @@ export const createPaymentLinkSchema = z.object({
   currency: z.string(),
   receive_token: z.string().optional(),
   receive_token_symbol: z.string().optional(),
-  receive_chain_id: z.number().int().positive().optional(),
+  receive_chain_id: z.union([z.number(), z.string()]).optional(),
   recipient_address: z.string().min(1, 'Recipient address is required'),
   receive_mode: z.enum(['same_chain', 'specific_chain']),
   config: z.object({

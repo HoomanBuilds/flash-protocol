@@ -79,7 +79,7 @@ create table if not exists payment_links (
     currency varchar default 'USD',
     receive_token varchar,
     receive_token_symbol varchar,
-    receive_chain_id integer,
+    receive_chain_id varchar,
     recipient_address varchar,
     title text,
     description text,

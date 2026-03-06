@@ -223,11 +223,12 @@ export default function CreateLinkPage() {
                           <p className="text-xs text-muted-foreground">Popular chains</p>
                           <div className="flex flex-wrap gap-2">
                             {[
-                              { id: 42161, name: 'Arbitrum', icon: '' },
-                              { id: 8453, name: 'Base', icon: '' },
-                              { id: 137, name: 'Polygon', icon: '' },
-                              { id: 10, name: 'Optimism', icon: '' },
-                              { id: 1, name: 'Ethereum', icon: '' },
+                              { id: '42161', name: 'Arbitrum', icon: '' },
+                              { id: '8453', name: 'Base', icon: '' },
+                              { id: '137', name: 'Polygon', icon: '' },
+                              { id: '10', name: 'Optimism', icon: '' },
+                              { id: '1', name: 'Ethereum', icon: '' },
+                              { id: 'solana', name: 'Solana', icon: '' },
                             ].map((chain) => (
                               <button
                                 key={chain.id}
@@ -259,7 +260,7 @@ export default function CreateLinkPage() {
 
                         {/* Full dropdown */}
                         <Select
-                          onValueChange={(val) => field.onChange(parseInt(val))}
+                          onValueChange={(val) => field.onChange(val)}
                           value={field.value?.toString() || ''}
                         >
                           <FormControl>

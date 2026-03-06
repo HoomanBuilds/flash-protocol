@@ -15,7 +15,7 @@ interface PaymentLinkData {
   currency: string
   recipient_address: string
   receive_mode: 'same_chain' | 'specific_chain'
-  receive_chain_id?: number
+  receive_chain_id?: number | string
   receive_token?: string
   receive_token_symbol?: string
   success_url?: string | null

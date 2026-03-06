@@ -26,13 +26,13 @@ export async function GET(request: Request) {
       .from('cached_tokens' as any)
       .select('*')
       .eq('chain_key', chainKey)
-      .order('is_native', { ascending: false })
-      .order('symbol')
 
     const tokens = data as any[] | null
 
     // If cache has data, return it
     if (!error && tokens && tokens.length > 0) {
+      const STABLECOIN_SYMBOLS = new Set(['USDC', 'USDT', 'DAI', 'USDC.e', 'USDbC'])
+
       const mapped = tokens.map((t: any) => ({
         address: t.address,
         symbol: t.symbol,
@@ -43,6 +43,17 @@ export async function GET(request: Request) {
         chainKey: t.chain_key,
         providerIds: t.provider_ids,
       }))
+
+      // Sort: native first, then stablecoins, then alphabetically
+      mapped.sort((a: any, b: any) => {
+        if (a.isNative && !b.isNative) return -1
+        if (!a.isNative && b.isNative) return 1
+        const aStable = STABLECOIN_SYMBOLS.has(a.symbol)
+        const bStable = STABLECOIN_SYMBOLS.has(b.symbol)
+        if (aStable && !bStable) return -1
+        if (!aStable && bStable) return 1
+        return a.symbol.localeCompare(b.symbol)
+      })
 
       return NextResponse.json({
         success: true,
