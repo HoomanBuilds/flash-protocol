@@ -1,8 +1,29 @@
 import { providers } from './providers'
-import { QuoteRequest, QuoteResponse } from '@/types/provider'
+import { QuoteRequest, QuoteResponse, ChainId } from '@/types/provider'
 
-const PROVIDER_TIMEOUT_MS = 30000 
+const PROVIDER_TIMEOUT_MS = 30000
 const QUOTE_VALIDITY_MS = 60000
+
+/**
+ * Normalize chain identifiers before they reach providers.
+ * Maps common aliases (e.g. 'sol' → 'solana') so providers
+ * don't silently fail on non-canonical keys.
+ */
+const CHAIN_ID_ALIASES: Record<string, string> = {
+  sol: 'solana',
+  btc: 'bitcoin',
+  doge: 'dogecoin',
+  '-239': 'ton',
+  '728126428': 'tron',
+  '1151111081099710': 'solana',
+  '23448594291968336': 'starknet',
+}
+
+function normalizeChainId(id: ChainId): ChainId {
+  if (typeof id === 'string' && CHAIN_ID_ALIASES[id]) return CHAIN_ID_ALIASES[id]
+  if (typeof id === 'number' && CHAIN_ID_ALIASES[String(id)]) return CHAIN_ID_ALIASES[String(id)]
+  return id
+}
 
 // Provider reliability scores
 const PROVIDER_RELIABILITY: Record<string, number> = {
@@ -98,6 +119,13 @@ export const QuoteAggregator = {
     const fetchedAt = Date.now()
     const expiresAt = fetchedAt + QUOTE_VALIDITY_MS
 
+    // Normalize chain keys so providers don't choke on aliases like 'sol'
+    const normalizedRequest: QuoteRequest = {
+      ...request,
+      fromChain: normalizeChainId(request.fromChain),
+      toChain: normalizeChainId(request.toChain),
+    }
+
     const providerStats = {
       succeeded: [] as string[],
       failed: [] as string[],
@@ -107,15 +135,15 @@ export const QuoteAggregator = {
 
     console.log('=== QUOTE AGGREGATOR START ===')
     console.log(`Querying ${providers.length} providers:`, providers.map(p => p.name))
-    console.log('Request:', JSON.stringify(request, null, 2))
+    console.log('Request:', JSON.stringify(normalizedRequest, null, 2))
 
     // Query all providers in parallel with individual timeouts
     const quotePromises = providers.map(async provider => {
       console.log(`[${provider.name}] Starting query...`)
       const startTime = Date.now()
-      
+
       const result = await withTimeout(
-        provider.getQuote(request),
+        provider.getQuote(normalizedRequest),
         PROVIDER_TIMEOUT_MS,
         provider.name
       )
