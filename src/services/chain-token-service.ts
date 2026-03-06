@@ -88,10 +88,12 @@ async function fetchRangoChains(): Promise<ProviderChainEntry[]> {
       .filter((bc: { enabled?: boolean }) => bc.enabled !== false)
       .map((bc: { name: string; chainId?: string | null; type?: string; logo?: string; defaultDecimals?: number; displayName?: string; shortName?: string }) => {
         const chainId = bc.chainId ? parseInt(bc.chainId) : null
-        const key = chainId && !isNaN(chainId) ? String(chainId) : bc.name.toLowerCase()
+        // Negative or extremely large chainIds are non-EVM — use name as key
+        const isValidEvmChainId = chainId && !isNaN(chainId) && chainId > 0 && chainId < 1e15
+        const key = isValidEvmChainId ? String(chainId) : bc.name.toLowerCase()
         return {
           key,
-          chainId: chainId && !isNaN(chainId) ? chainId : null,
+          chainId: isValidEvmChainId ? chainId : null,
           name: bc.displayName || bc.name,
           type: normalizeChainType(bc.type || 'EVM'),
           symbol: bc.shortName || bc.name,
@@ -199,7 +201,19 @@ async function fetchNearChains(): Promise<ProviderChainEntry[]> {
       sui: { key: 'sui', chainId: null, type: 'sui', name: 'Sui', symbol: 'SUI' },
       bch: { key: 'bch', chainId: null, type: 'bitcoin', name: 'Bitcoin Cash', symbol: 'BCH' },
       ltc: { key: 'ltc', chainId: null, type: 'bitcoin', name: 'Litecoin', symbol: 'LTC' },
-      ton: { key: 'ton', chainId: null, type: 'cosmos', name: 'TON', symbol: 'TON' },
+      ton: { key: 'ton', chainId: null, type: 'ton', name: 'TON', symbol: 'TON' },
+      starknet: { key: 'starknet', chainId: null, type: 'starknet', name: 'StarkNet', symbol: 'STRK' },
+      monad: { key: '143', chainId: 143, type: 'evm', name: 'Monad', symbol: 'MON' },
+      xlayer: { key: '196', chainId: 196, type: 'evm', name: 'X Layer', symbol: 'OKB' },
+      plasma: { key: '9745', chainId: 9745, type: 'evm', name: 'Plasma', symbol: 'ETH' },
+      xrp: { key: 'xrp', chainId: null, type: 'other', name: 'XRP Ledger', symbol: 'XRP' },
+      stellar: { key: 'stellar', chainId: null, type: 'other', name: 'Stellar', symbol: 'XLM' },
+      zec: { key: 'zec', chainId: null, type: 'bitcoin', name: 'Zcash', symbol: 'ZEC' },
+      dash: { key: 'dash', chainId: null, type: 'bitcoin', name: 'Dash', symbol: 'DASH' },
+      cardano: { key: 'cardano', chainId: null, type: 'other', name: 'Cardano', symbol: 'ADA' },
+      aptos: { key: 'aptos', chainId: null, type: 'aptos', name: 'Aptos', symbol: 'APT' },
+      aleo: { key: 'aleo', chainId: null, type: 'other', name: 'Aleo', symbol: 'ALEO' },
+      adi: { key: 'adi', chainId: null, type: 'other', name: 'ADI', symbol: 'ADI' },
     }
 
     const entries: ProviderChainEntry[] = []
@@ -216,12 +230,12 @@ async function fetchNearChains(): Promise<ProviderChainEntry[]> {
           providerId: blockchain, // NEAR Intents chain prefix
         })
       } else {
-        // Unknown blockchain — use the name as key
+        // Unknown blockchain — use the name as key, type as 'other' (not EVM)
         entries.push({
           key: blockchain,
           chainId: null,
           name: blockchain.charAt(0).toUpperCase() + blockchain.slice(1),
-          type: 'evm' as ChainType,
+          type: 'other' as ChainType,
           symbol: blockchain.toUpperCase(),
           logoUrl: undefined,
           providerId: blockchain,
@@ -270,7 +284,17 @@ const CHAIN_KEY_ALIASES: Record<string, string> = {
   'cosmos': 'cosmos',
   'osmosis': 'osmosis',
   'dogecoin': 'dogecoin',
+  'doge': 'dogecoin',
   'turbochain': 'turbochain',
+  '-239': 'ton',
+  'ton': 'ton',
+  '23448594291968336': 'starknet',
+  'starknet': 'starknet',
+  '728126428': 'tron',
+  'aptos': 'aptos',
+  'cardano': 'cardano',
+  'stellar': 'stellar',
+  'xrp': 'xrp',
 }
 
 /**
@@ -286,6 +310,18 @@ const CHAIN_KEY_TYPES: Record<string, ChainType> = {
   cosmos: 'cosmos',
   osmosis: 'cosmos',
   dogecoin: 'bitcoin',
+  bch: 'bitcoin',
+  ltc: 'bitcoin',
+  dash: 'bitcoin',
+  zec: 'bitcoin',
+  ton: 'ton',
+  starknet: 'starknet',
+  aptos: 'aptos',
+  stellar: 'other',
+  xrp: 'other',
+  cardano: 'other',
+  aleo: 'other',
+  adi: 'other',
 }
 
 function normalizeChainKey(key: string): string {
@@ -532,6 +568,18 @@ const KEY_TO_NEAR_BLOCKCHAIN: Record<string, string> = {
   'bch': 'bch',
   'ltc': 'ltc',
   'ton': 'ton',
+  'starknet': 'starknet',
+  '143': 'monad',
+  '196': 'xlayer',
+  '9745': 'plasma',
+  'xrp': 'xrp',
+  'stellar': 'stellar',
+  'zec': 'zec',
+  'dash': 'dash',
+  'cardano': 'cardano',
+  'aptos': 'aptos',
+  'aleo': 'aleo',
+  'adi': 'adi',
 }
 
 async function fetchNearTokens(chain: UnifiedChain): Promise<UnifiedToken[]> {

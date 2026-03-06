@@ -97,7 +97,25 @@ export const refreshChainsTokens = inngest.createFunction(
       chainsWithUSDC += result.usdc
     }
 
-    // Step 3: Clean up stale data (chains not updated in last 30 min)
+    // Step 3: Clean up stale/duplicate chain keys that should have been aliased
+    await step.run('cleanup-aliased-keys', async () => {
+      const supabase = createServerClient()
+      const staleKeys = ['sol', 'btc', 'doge', '-239', '23448594291968336', '728126428']
+      const activeKeys = chains.map(c => c.key)
+      const keysToDelete = staleKeys.filter(k => !activeKeys.includes(k))
+
+      if (keysToDelete.length > 0) {
+        await (supabase.from as any)('cached_tokens')
+          .delete()
+          .in('chain_key', keysToDelete)
+        await (supabase.from as any)('cached_chains')
+          .delete()
+          .in('key', keysToDelete)
+        logger.info(`Cleaned up aliased chain keys: ${keysToDelete.join(', ')}`)
+      }
+    })
+
+    // Step 4: Clean up stale data (chains not updated in last 30 min)
     await step.run('cleanup-stale', async () => {
       const supabase = createServerClient()
       const cutoff = new Date(Date.now() - 30 * 60 * 1000).toISOString()

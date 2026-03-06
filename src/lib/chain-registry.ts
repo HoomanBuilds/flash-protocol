@@ -3,7 +3,18 @@ import type { ChainId } from '@/types/provider'
 /**
  * Chain types supported across all providers
  */
-export type ChainType = 'evm' | 'solana' | 'bitcoin' | 'cosmos' | 'near' | 'tron' | 'sui'
+export type ChainType =
+  | 'evm'
+  | 'solana'
+  | 'bitcoin'
+  | 'cosmos'
+  | 'near'
+  | 'tron'
+  | 'sui'
+  | 'ton'
+  | 'starknet'
+  | 'aptos'
+  | 'other'
 
 /**
  * Unified chain representation across all providers
@@ -103,6 +114,10 @@ export function normalizeChainType(type: string): ChainType {
     'near': 'near',
     'tron': 'tron',
     'sui': 'sui',
+    'ton': 'ton',
+    'starknet': 'starknet',
+    'aptos': 'aptos',
+    'other': 'other',
   }
   return typeMap[normalized] || 'evm'
 }

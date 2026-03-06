@@ -275,7 +275,7 @@ export default function CreateLinkPage() {
                               <SelectItem value="none" disabled>No chains available</SelectItem>
                             ) : (
                               dynamicChains.map(chain => (
-                                <SelectItem key={chain.key} value={chain.chainId?.toString() || chain.key}>
+                                <SelectItem key={chain.key} value={chain.key}>
                                   {chain.name}
                                 </SelectItem>
                               ))

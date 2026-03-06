@@ -24,6 +24,10 @@ const CHAIN_TYPE_LABELS: Record<string, string> = {
   near: 'NEAR',
   tron: 'Tron',
   sui: 'Sui',
+  ton: 'TON',
+  starknet: 'StarkNet',
+  aptos: 'Aptos',
+  other: 'Other Networks',
 }
 const PRICE_REFRESH_INTERVAL = 30_000
 
