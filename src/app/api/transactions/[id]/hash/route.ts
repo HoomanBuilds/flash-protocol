@@ -4,8 +4,8 @@ import { inngest } from '@/inngest/client'
 
 interface TransactionRecord {
   id: string
-  from_chain_id: number
-  to_chain_id: number
+  from_chain_id: string | number
+  to_chain_id: string | number
   provider: string
   route_details?: { requestId?: string }
 }

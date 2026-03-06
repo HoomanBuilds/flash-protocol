@@ -5,8 +5,8 @@ import { z } from 'zod'
 const initiateSchema = z.object({
   paymentLinkId: z.string().nullable().optional(), // Accept null or undefined
   walletAddress: z.string(),
-  fromChainId: z.number(),
-  toChainId: z.number(),
+  fromChainId: z.union([z.number(), z.string()]),
+  toChainId: z.union([z.number(), z.string()]),
   fromToken: z.string(),
   toToken: z.string(),
   fromAmount: z.string(),

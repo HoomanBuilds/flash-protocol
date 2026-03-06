@@ -40,7 +40,7 @@ export async function PUT(req: NextRequest) {
     const body = await req.json()
     const { default_receive_chain, default_receive_token } = body
 
-    if (default_receive_chain !== undefined && typeof default_receive_chain !== 'number' && default_receive_chain !== null) {
+    if (default_receive_chain !== undefined && typeof default_receive_chain !== 'number' && typeof default_receive_chain !== 'string' && default_receive_chain !== null) {
       return NextResponse.json({ error: 'Invalid default_receive_chain provided' }, { status: 400 })
     }
     if (default_receive_token !== undefined && typeof default_receive_token !== 'string' && default_receive_token !== null) {
