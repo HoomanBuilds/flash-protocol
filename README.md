@@ -121,7 +121,7 @@ For integrators and developers, the platform includes a dedicated documentation 
 ### Example: Create a Payment Link
 
 ```bash
-curl -X POST https://flashprotocol.com/api/v1/payment-links \
+curl -X POST https://flash-protocol.vercel.app/api/v1/payment-links \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
