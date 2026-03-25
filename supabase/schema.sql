@@ -49,6 +49,11 @@ create table if not exists merchants (
     api_created_at timestamp with time zone,
     api_last_used_at timestamp with time zone,
     api_total_calls integer default 0,
+    -- Stealth Privacy columns
+    stealth_enabled boolean default false,
+    stealth_viewing_key_node text,
+    -- uncompressed public key required (132 chars approx), not 42-char eth address
+    stealth_meta_address text check(stealth_meta_address is null or length(stealth_meta_address) >= 130),
     -- Timestamps
     created_at timestamp with time zone default now(),
     last_login_at timestamp with time zone
@@ -70,6 +75,8 @@ comment on column merchants.api_key_hash is 'Hashed API key for programmatic acc
 comment on column merchants.api_key_prefix is 'First 16 chars of API key for display (e.g., cp_live_abc12345)';
 comment on column merchants.api_enabled is 'Whether API access is enabled for this merchant';
 comment on column merchants.api_total_calls is 'Total number of API calls made by this merchant';
+comment on column merchants.stealth_viewing_key_node is 'BIP-32 viewing key node for stealth address generation (NOT the spending key)';
+comment on column merchants.stealth_meta_address is 'Public stealth meta-address for verification';
 
 -- Payment Links Table
 create table if not exists payment_links (
@@ -94,6 +101,8 @@ create table if not exists payment_links (
     success_url text,
     cancel_url text,
     api_metadata jsonb default '{}'::jsonb,
+    -- Stealth privacy
+    use_stealth boolean default false,
     -- Timestamps
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now()
@@ -167,6 +176,41 @@ create index if not exists idx_tx_source_hash on transactions(source_tx_hash);
 create index if not exists idx_tx_customer_wallet on transactions(customer_wallet);
 create index if not exists idx_tx_receiver_wallet on transactions(receiver_wallet);
 create index if not exists idx_tx_created_at on transactions(created_at desc);
+
+-- ==========================================
+-- STEALTH ADDRESSES (Per-payment stealth Safe tracking)
+-- ==========================================
+
+create table if not exists stealth_addresses (
+    id uuid primary key default uuid_generate_v4(),
+    merchant_id uuid references merchants(id) not null,
+    payment_link_id uuid references payment_links(id),
+    transaction_id uuid references transactions(id),
+    nonce integer not null,
+    stealth_safe_address varchar not null,
+    chain_id varchar not null,
+    ephemeral_public_key text not null,
+    amount_received decimal,
+    claimed boolean default false,
+    claimed_at timestamp with time zone,
+    claim_tx_hash varchar,
+    created_at timestamp with time zone default now()
+);
+
+-- RLS for Stealth Addresses
+alter table stealth_addresses enable row level security;
+create policy "stealth_addresses_public_read" on stealth_addresses for select using (true);
+create policy "stealth_addresses_service_write" on stealth_addresses for all using (true);
+
+-- Indexes for Stealth Addresses
+create index if not exists idx_stealth_merchant on stealth_addresses(merchant_id);
+create index if not exists idx_stealth_unclaimed on stealth_addresses(merchant_id, claimed) where claimed = false;
+create index if not exists idx_stealth_safe on stealth_addresses(stealth_safe_address);
+create index if not exists idx_stealth_nonce on stealth_addresses(merchant_id, nonce);
+create index if not exists idx_stealth_payment_link on stealth_addresses(payment_link_id);
+
+-- Comments
+comment on table stealth_addresses is 'Per-payment stealth Safe addresses generated via Fluidkey SDK';
 
 -- Quotes Table
 create table if not exists quotes (
