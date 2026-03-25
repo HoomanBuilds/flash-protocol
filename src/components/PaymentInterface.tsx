@@ -45,6 +45,7 @@ interface PaymentInterfaceProps {
     recipient_address: string
     success_url?: string | null
     cancel_url?: string | null
+    stealth_chain_native?: boolean
   }
   onSuccess?: (txHash: string, transactionId: string) => void
 }
@@ -108,7 +109,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   const [resolvedUSDCAddress, setResolvedUSDCAddress] = useState<string | undefined>(undefined)
 
   useEffect(() => {
-    if (link.receive_token) return
+    if (link.receive_token || link.stealth_chain_native) return
 
     async function resolveUSDC() {
       try {
@@ -132,7 +133,10 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     resolveUSDC()
   }, [toChainKey, link.receive_token])
 
-  const destinationToken = link.receive_token || resolvedUSDCAddress || getUSDCAddress(toChainKey)
+  // If stealth mode, destination is always native token on the receive chain
+  const destinationToken = link.stealth_chain_native
+    ? '0x0000000000000000000000000000000000000000'
+    : (link.receive_token || resolvedUSDCAddress || getUSDCAddress(toChainKey))
 
   // Fetch chains on mount
   useEffect(() => {
@@ -652,10 +656,16 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
                 isLoading={isExecuting}
                 loadingStep={executorStep || undefined}
                 fromTokenInfo={fromToken ? { symbol: fromToken.symbol, decimals: fromToken.decimals } : undefined}
-                toTokenInfo={{
-                  symbol: link.receive_token_symbol || 'USDC',
-                  decimals: (link.receive_token_symbol === 'DAI' || link.receive_token_symbol === 'ETH') ? 18 : 6
-                }}
+                toTokenInfo={link.stealth_chain_native
+                  ? {
+                      symbol: selectedChain?.symbol || 'ETH',
+                      decimals: 18,
+                    }
+                  : {
+                      symbol: link.receive_token_symbol || 'USDC',
+                      decimals: (link.receive_token_symbol === 'DAI' || link.receive_token_symbol === 'ETH') ? 18 : 6,
+                    }
+                }
               />
             </div>
           )}

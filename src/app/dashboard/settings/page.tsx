@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import ApiKeySection from '@/components/dashboard/settings/ApiKeySection'
+import StealthSettings from '@/components/dashboard/settings/StealthSettings'
 import { Separator } from '@/components/ui/separator'
 
 export default function SettingsPage() {
@@ -17,6 +18,8 @@ export default function SettingsPage() {
       <Separator className="my-6" />
       
       <div className="grid gap-6">
+        <StealthSettings />
+
         <Card>
           <CardHeader>
             <CardTitle>Developer Settings</CardTitle>
@@ -25,9 +28,6 @@ export default function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Merchant ID is fetched via session internally inside the component or context, 
-                for now we pass a placeholder or let internal logic handle it. 
-                ApiKeySection handles its own auth via useSession hook we created. */}
             <ApiKeySection merchantId="" />
           </CardContent>
         </Card>

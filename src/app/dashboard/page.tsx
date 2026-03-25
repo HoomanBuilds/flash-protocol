@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Plus, CreditCard, Activity, ArrowUpRight, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAppKitAccount } from '@reown/appkit/react'
+import ClaimPanel from '@/components/dashboard/ClaimPanel'
 
 interface PaymentLink {
   id: string
@@ -77,6 +78,9 @@ export default function DashboardOverview() {
           <p className="text-xs text-muted-foreground mt-1">{links.length} total generated</p>
         </div>
       </div>
+
+      {/* Stealth Claims */}
+      <ClaimPanel />
 
       {/* Recent Links */}
       <div className="space-y-6">

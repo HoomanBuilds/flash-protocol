@@ -20,6 +20,7 @@ interface PaymentLinkData {
   receive_token_symbol?: string
   success_url?: string | null
   cancel_url?: string | null
+  stealth_chain_native?: boolean
 }
 
 export default function PayPage({ 
@@ -140,6 +141,11 @@ export default function PayPage({
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
           <span className="text-xs tracking-widest text-muted-foreground uppercase">SECURE_PAYMENT_CHANNEL</span>
+          {link.stealth_chain_native && (
+            <span className="ml-2 px-2 py-0.5 text-[10px] font-mono border border-green-500/30 bg-green-500/10 text-green-500 uppercase tracking-widest">
+              🔒 PRIVACY
+            </span>
+          )}
         </div>
         {/* @ts-ignore — appkit-button is a web component */}
         <appkit-button />
