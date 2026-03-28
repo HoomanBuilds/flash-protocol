@@ -658,7 +658,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
                 fromTokenInfo={fromToken ? { symbol: fromToken.symbol, decimals: fromToken.decimals } : undefined}
                 toTokenInfo={link.stealth_chain_native
                   ? {
-                      symbol: selectedChain?.symbol || 'ETH',
+                      symbol: link.receive_token_symbol || 'ETH',
                       decimals: 18,
                     }
                   : {
