@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { UserService } from '@/services/internal/user'
 import { createPaymentLinkSchema } from '@/lib/validations/payment-link'
+import { ChainTokenService } from '@/services/chain-token-service'
 
 
 function getWalletAddress(req: NextRequest): string | null {
@@ -36,14 +37,11 @@ export async function POST(req: NextRequest) {
         .single()
 
       if (merchantData?.stealth_enabled) {
-        const NATIVE_SYMBOLS: Record<string, string> = {
-          '1': 'ETH', '10': 'ETH', '42161': 'ETH', '8453': 'ETH',
-          '137': 'MATIC', '56': 'BNB', '43114': 'AVAX', '100': 'xDAI',
-          '324': 'ETH', '534352': 'ETH', '59144': 'ETH',
-        }
         const chainKey = String(data.receive_chain_id || '1')
+        const chains = await ChainTokenService.getChains()
+        const chainConfig = chains.find(c => c.key === chainKey)
         data.receive_token = '0x0000000000000000000000000000000000000000'
-        data.receive_token_symbol = NATIVE_SYMBOLS[chainKey] || 'ETH'
+        data.receive_token_symbol = chainConfig?.symbol || 'ETH'
       } else {
         // Merchant doesn't have stealth enabled, ignore the flag
         data.use_stealth = false

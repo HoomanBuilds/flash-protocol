@@ -46,11 +46,10 @@ export default function CreateLinkPage() {
   const [privacySetupLoading, setPrivacySetupLoading] = useState(false)
   const [privacyError, setPrivacyError] = useState('')
 
-  // Native token symbols per chain ID
-  const NATIVE_SYMBOLS: Record<string, string> = {
-    '1': 'ETH', '10': 'ETH', '42161': 'ETH', '8453': 'ETH',
-    '137': 'MATIC', '56': 'BNB', '43114': 'AVAX', '100': 'xDAI',
-    '324': 'ETH', '534352': 'ETH', '59144': 'ETH', 'solana': 'SOL',
+  // Look up native token symbol from dynamic chain data
+  const getNativeSymbol = (chainId: string) => {
+    const chain = dynamicChains.find(c => c.key === chainId)
+    return chain?.symbol || 'ETH'
   }
 
   // Check if merchant already has stealth keys set up (silent check)
@@ -184,7 +183,7 @@ export default function CreateLinkPage() {
   const watchedValues = form.watch()
   const receiveMode = watchedValues.receive_mode
   const selectedChainId = watchedValues.receive_chain_id?.toString() || ''
-  const nativeSymbol = NATIVE_SYMBOLS[selectedChainId] || 'ETH'
+  const nativeSymbol = getNativeSymbol(selectedChainId)
 
   // When privacy + chain changes, auto-set native token
   useEffect(() => {
