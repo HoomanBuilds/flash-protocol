@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import ApiKeySection from '@/components/dashboard/settings/ApiKeySection'
 import StealthSettings from '@/components/dashboard/settings/StealthSettings'
+import WebhookSettings from '@/components/dashboard/settings/WebhookSettings'
 import { Separator } from '@/components/ui/separator'
 
 export default function SettingsPage() {
@@ -29,6 +30,18 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <ApiKeySection merchantId="" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Webhooks</CardTitle>
+            <CardDescription>
+              Receive real-time notifications when payment events occur.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <WebhookSettings />
           </CardContent>
         </Card>
       </div>
