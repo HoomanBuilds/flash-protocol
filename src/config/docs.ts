@@ -32,7 +32,7 @@ export const toolsDocsConfig: DocSection[] = [
     title: "Integration",
     items: [
       { title: "Redirect Flow", href: "/docs/redirects", icon: ArrowRightLeft },
-      { title: "Webhooks", href: "/docs/webhooks", icon: Webhook, disabled: true, label: "Soon" },
+      { title: "Webhooks", href: "/docs/webhooks", icon: Webhook },
     ]
   },
   {

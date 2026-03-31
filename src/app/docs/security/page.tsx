@@ -24,9 +24,9 @@ export default function DocsSecurityPage() {
             Always verify the transaction status by:
         </p>
         <ul className="list-disc pl-6 space-y-2 mb-4 text-sm font-medium">
+            <li>Listening for <a href="/docs/webhooks" className="underline underline-offset-4 hover:text-foreground">webhooks</a> (recommended).</li>
             <li>Querying the API for the payment status.</li>
             <li>Checking the transaction hash on-chain (advanced users).</li>
-            <li>Listening for webhooks (coming soon).</li>
         </ul>
       </DocSection>
     </div>

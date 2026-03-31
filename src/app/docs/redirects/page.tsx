@@ -41,7 +41,8 @@ export default function DocsRedirectsPage() {
           <strong>Do not trust the URL parameters alone.</strong> A malicious user could manually type <code>?status=completed</code> in their browser to spoof a successful payment.
         </p>
         <p className="mb-4">
-          Since Webhooks are currently in development, you <strong>must</strong> verify the transaction status using our API before fulfilling the order.
+          The recommended approach is to use <a href="/docs/webhooks" className="underline underline-offset-4 hover:text-foreground font-medium">webhooks</a> to
+          receive real-time notifications when payments complete or fail. Alternatively, verify the transaction status using our API before fulfilling the order.
         </p>
 
         <h3 className="text-sm font-bold font-mono uppercase tracking-widest mt-6 mb-2">Recommended Flow</h3>
@@ -75,7 +76,8 @@ if (transaction && transaction.status === 'completed') {
       </DocSection>
 
       <DocNote type="info">
-        Webhooks will be available in the next release to automate this process without polling.
+        <strong>Tip:</strong> Set up <a href="/docs/webhooks" className="underline underline-offset-4 hover:text-foreground">webhooks</a> to
+        automate order fulfillment without polling. Your server receives a signed POST when payments complete or fail.
       </DocNote>
     </div>
   )
