@@ -4,6 +4,7 @@ import { OneClickService, OpenAPI } from '@defuse-protocol/one-click-sdk-typescr
 import { SYMBIOSIS_CONFIG } from '@/services/providers/symbiosis-data'
 import { CHAINS } from '@/lib/chains'
 import { TOKENS } from '@/lib/tokens'
+import { filterSpamTokens } from '@/lib/token-filter'
 import {
   UnifiedChain,
   UnifiedToken,
@@ -758,7 +759,12 @@ function mergeTokens(tokenSets: UnifiedToken[][], chainKey?: string): UnifiedTok
     }
   }
 
-  const result = Array.from(tokenMap.values())
+  const filtered = filterSpamTokens(
+    Array.from(tokenMap.values()),
+    providerCount,
+    chainKey,
+  )
+  const result = filtered
   const canonical = chainKey ? buildCanonicalAddresses(chainKey) : new Set<string>()
 
   // Sort: native first, then canonical stablecoins, then multi-provider stablecoins,
