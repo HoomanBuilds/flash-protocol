@@ -13,6 +13,29 @@ import {
   type ChainType,
 } from '@/lib/chain-registry'
 
+/**
+ * Known native token addresses across all chain types.
+ * Used for consistent isNative detection regardless of provider format.
+ */
+const KNOWN_NATIVE_ADDRESSES = new Set([
+  '0x0000000000000000000000000000000000000000', // EVM null address
+  '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', // EVM alternate native
+  '11111111111111111111111111111111', // Solana System Program
+  'so11111111111111111111111111111111111111112', // Wrapped SOL mint
+])
+
+function isKnownNativeAddress(address: string): boolean {
+  return !address || address === 'null' || KNOWN_NATIVE_ADDRESSES.has(address.toLowerCase())
+}
+
+/**
+ * Compute merge key for token deduplication.
+ */
+function normalizeTokenKey(token: UnifiedToken): string {
+  if (token.isNative) return '__native__'
+  return token.address.toLowerCase()
+}
+
 // Ensure LiFi SDK is initialized
 createConfig({
   integrator: process.env.NEXT_PUBLIC_LIFI_INTEGRATOR_ID || 'flash-protocol',
@@ -489,7 +512,7 @@ async function fetchLifiTokens(chain: UnifiedChain): Promise<UnifiedToken[]> {
       name: t.name,
       decimals: t.decimals,
       logoUrl: t.logoURI,
-      isNative: t.address === '0x0000000000000000000000000000000000000000',
+      isNative: isKnownNativeAddress(t.address),
       chainKey: chain.key,
     }))
   } catch (error) {
@@ -534,7 +557,7 @@ async function fetchRangoTokens(chain: UnifiedChain): Promise<UnifiedToken[]> {
       name: t.name || t.symbol || 'Unknown',
       decimals: t.decimals || 18,
       logoUrl: t.image || undefined,
-      isNative: !t.address || t.address === null,
+      isNative: !t.address || t.address === null || isKnownNativeAddress(t.address),
       chainKey: chain.key,
     }))
   } catch (error) {
@@ -611,7 +634,7 @@ async function fetchNearTokens(chain: UnifiedChain): Promise<UnifiedToken[]> {
       name: t.name || t.symbol || 'Unknown',
       decimals: t.decimals || 18,
       logoUrl: t.icon || undefined,
-      isNative: !t.contractAddress || t.contractAddress === null,
+      isNative: !t.contractAddress || t.contractAddress === null || isKnownNativeAddress(t.contractAddress),
       chainKey: chain.key,
       providerIds: {
         nearIntents: t.assetId,
@@ -732,7 +755,7 @@ function mergeTokens(tokenSets: UnifiedToken[][], chainKey?: string): UnifiedTok
   for (const tokens of tokenSets) {
     const seenInSet = new Set<string>()
     for (const token of tokens) {
-      const key = token.address.toLowerCase()
+      const key = normalizeTokenKey(token)
       const existing = tokenMap.get(key)
       if (!existing) {
         tokenMap.set(key, token)
@@ -740,8 +763,23 @@ function mergeTokens(tokenSets: UnifiedToken[][], chainKey?: string): UnifiedTok
       } else {
         // Enrich existing token
         if (!existing.logoUrl && token.logoUrl) existing.logoUrl = token.logoUrl
-        if (!existing.name && token.name) existing.name = token.name
-        // Count this provider if we haven't seen this address in this set yet
+        if (!existing.name && token.name) existing.name = token.name 
+
+        // Merge providerIds
+        if (token.providerIds) {
+          existing.providerIds = { ...existing.providerIds, ...token.providerIds }
+        }
+
+        if (
+          existing.isNative &&
+          existing.address === '0x0000000000000000000000000000000000000000' &&
+          token.address !== '0x0000000000000000000000000000000000000000' &&
+          token.address !== ''
+        ) {
+          existing.address = token.address
+        }
+
+        // Count this provider if we haven't seen this key in this set yet
         if (!seenInSet.has(key)) {
           providerCount.set(key, (providerCount.get(key) || 1) + 1)
         }
@@ -751,17 +789,26 @@ function mergeTokens(tokenSets: UnifiedToken[][], chainKey?: string): UnifiedTok
   }
 
   // Persist provider count into providerIds._count so it survives DB caching
-  for (const [addr, count] of providerCount) {
-    const token = tokenMap.get(addr)
+  for (const [key, count] of providerCount) {
+    const token = tokenMap.get(key)
     if (token && count > 1) {
       if (!token.providerIds) token.providerIds = {}
       ;(token.providerIds as Record<string, unknown>)._count = count
     }
   }
 
+  // Build address -> count lookup that maps actual addresses to normalized key counts.
+  const addressCounts = new Map<string, number>()
+  for (const [key, count] of providerCount) {
+    const token = tokenMap.get(key)
+    if (token) {
+      addressCounts.set(token.address.toLowerCase(), count)
+    }
+  }
+
   const filtered = filterSpamTokens(
     Array.from(tokenMap.values()),
-    providerCount,
+    addressCounts,
     chainKey,
   )
   const result = filtered
@@ -785,8 +832,8 @@ function mergeTokens(tokenSets: UnifiedToken[][], chainKey?: string): UnifiedTok
       if (aCanonical && !bCanonical) return -1
       if (!aCanonical && bCanonical) return 1
       // More providers = more likely real
-      const aCount = providerCount.get(a.address.toLowerCase()) || 0
-      const bCount = providerCount.get(b.address.toLowerCase()) || 0
+      const aCount = providerCount.get(normalizeTokenKey(a)) || 0
+      const bCount = providerCount.get(normalizeTokenKey(b)) || 0
       if (aCount !== bCount) return bCount - aCount
     }
 
@@ -890,9 +937,10 @@ export const ChainTokenService = {
       fetchers.push(fetchLifiTokens(chain))
     }
 
-    if (chain.providers.rango) {
-      fetchers.push(fetchRangoTokens(chain))
-    }
+    // DISABLED: Rango returns ~8000 tokens with many spam/duplicate symbols
+    // if (chain.providers.rango) {
+    //   fetchers.push(fetchRangoTokens(chain))
+    // }
 
     if (chain.providers.nearIntents) {
       fetchers.push(fetchNearTokens(chain))
