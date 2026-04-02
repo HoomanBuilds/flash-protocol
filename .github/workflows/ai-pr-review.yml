@@ -1,7 +1,7 @@
 name: ⚡ Flash PR Review
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize]
 
 permissions:
@@ -22,9 +22,10 @@ jobs:
       github.event.pull_request.user.login != 'dependabot[bot]'
 
     steps:
-      - name: Checkout
+      - name: Checkout PR Head
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: Setup Node
