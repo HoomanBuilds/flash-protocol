@@ -1,0 +1,189 @@
+name: ⚡ Flash PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: flash-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    name: AI Code Review
+    # Skip draft PRs and bot PRs
+    if: |
+      !github.event.pull_request.draft &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Get PR Diff
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          git diff origin/${{ github.base_ref }}...HEAD > pr.diff
+
+          DIFF_SIZE=$(wc -c < pr.diff)
+          echo "diff_size=$DIFF_SIZE" >> $GITHUB_ENV
+          echo "📄 Diff size: $DIFF_SIZE bytes"
+
+          # Extract changed file list
+          git diff --name-only origin/${{ github.base_ref }}...HEAD > changed-files.txt
+          echo "📁 Changed files:"
+          cat changed-files.txt
+
+      - name: Skip if diff too small
+        if: env.diff_size == '0'
+        run: echo "Empty diff, skipping review"
+
+      - name: Get PR Context
+        if: env.diff_size != '0'
+        run: |
+          # Save PR body to file (avoids shell escaping issues)
+          cat > pr-context.json << 'PREOF'
+          {
+            "title": "${{ github.event.pull_request.title }}",
+            "author": "${{ github.event.pull_request.user.login }}",
+            "number": ${{ github.event.pull_request.number }},
+            "base": "${{ github.base_ref }}",
+            "head": "${{ github.head_ref }}",
+            "action": "${{ github.event.action }}"
+          }
+          PREOF
+
+      - name: Run Flash Review
+        if: env.diff_size != '0'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/ai-review/review.js
+
+      - name: Post Summary Comment
+        if: env.diff_size != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs')
+
+            if (!fs.existsSync('review-output.md')) {
+              console.log('No review output found, skipping')
+              return
+            }
+
+            const review = fs.readFileSync('review-output.md', 'utf8')
+
+            // Find existing Flash comment to update
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            })
+
+            const botComment = comments.find(
+              (c) => c.user.type === 'Bot' && c.body.includes('⚡ Flash Review')
+            )
+
+            const body = review
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                ...context.repo,
+                comment_id: botComment.id,
+                body,
+              })
+              console.log('✅ Updated existing review comment')
+            } else {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              })
+              console.log('✅ Created new review comment')
+            }
+
+      - name: Post Inline Comments
+        if: env.diff_size != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs')
+
+            if (!fs.existsSync('inline-comments.json')) {
+              console.log('No inline comments found, skipping')
+              return
+            }
+
+            const comments = JSON.parse(fs.readFileSync('inline-comments.json', 'utf8'))
+
+            if (comments.length === 0) {
+              console.log('No inline comments to post')
+              return
+            }
+
+            // Post as a pull request review with inline comments
+            try {
+              await github.rest.pulls.createReview({
+                ...context.repo,
+                pull_number: context.issue.number,
+                commit_id: '${{ github.event.pull_request.head.sha }}',
+                event: 'COMMENT',
+                comments: comments.map((c) => ({
+                  path: c.path,
+                  line: c.line,
+                  body: c.body,
+                })),
+              })
+              console.log(`✅ Posted ${comments.length} inline comments`)
+            } catch (err) {
+              // Fallback: post inline comments individually (some may fail on invalid lines)
+              console.log(`⚠️ Batch review failed, posting individually: ${err.message}`)
+              let posted = 0
+              for (const c of comments) {
+                try {
+                  await github.rest.pulls.createReviewComment({
+                    ...context.repo,
+                    pull_number: context.issue.number,
+                    commit_id: '${{ github.event.pull_request.head.sha }}',
+                    path: c.path,
+                    line: c.line,
+                    body: c.body,
+                  })
+                  posted++
+                } catch (e) {
+                  console.log(`⚠️ Skipped comment on ${c.path}:${c.line}: ${e.message}`)
+                }
+              }
+              console.log(`✅ Posted ${posted}/${comments.length} inline comments`)
+            }
+
+      - name: Gate on Critical Issues
+        if: env.diff_size != '0'
+        run: |
+          if [ -f review-output.md ] && grep -q "🚨 CRITICAL" review-output.md; then
+            echo ""
+            echo "╔══════════════════════════════════════════════╗"
+            echo "║  🚨 Flash found CRITICAL issues in this PR  ║"
+            echo "║  Fix them before merging.                    ║"
+            echo "╚══════════════════════════════════════════════╝"
+            echo ""
+            exit 1
+          fi
+          echo "✅ No critical issues found"
