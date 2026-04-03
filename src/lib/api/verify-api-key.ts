@@ -19,19 +19,22 @@ export async function verifyApiKey(req: NextRequest) {
   
   const supabase = createServerClient() as any
   
-  // Get all merchants with API enabled
+  const prefix = apiKey.substring(0, 16)
+
+  // Get merchants with matching prefix and API enabled
   const { data: merchants } = await supabase
     .from('merchants')
     .select('id, wallet_address, api_key_hash, api_enabled, api_total_calls')
     .eq('api_enabled', true)
+    .eq('api_key_prefix', prefix)
     
   if (!merchants || merchants.length === 0) {
     return { error: 'Invalid API key', status: 401 }
   }
   
   // Check if key matches any merchant
+  // (Iterating to handle the extremely unlikely edge case of prefix collision)
   for (const merchant of merchants) {
-    // Note: This iterates through all enabled merchants which is O(N) but acceptable for MVP
     const isValid = await bcrypt.compare(apiKey, merchant.api_key_hash)
     
     if (isValid) {
