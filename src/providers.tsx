@@ -14,7 +14,7 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
 const queryClient = new QueryClient()
 
 const alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_KEY
-const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || ''
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'fallback-project-id'
 
 // Testnet keywords to filter out
 const TESTNET_KEYWORDS = [
@@ -69,24 +69,22 @@ const solanaAdapter = new SolanaAdapter({
 })
 
 // Initialize AppKit modal (runs once at module load)
-if (projectId) {
-  createAppKit({
-    adapters: [wagmiAdapter, solanaAdapter],
-    projectId,
-    networks: mainnetNetworks as [AppKitNetwork, ...AppKitNetwork[]],
-    defaultNetwork: allNetworks.mainnet,
-    metadata: {
-      name: 'Flash Protocol',
-      description: 'Cross-chain payment gateway',
-      url: typeof window !== 'undefined' ? window.location.origin : 'https://flashprotocol.com',
-      icons: ['/logo-black.png'],
-    },
-    features: {
-      analytics: false,
-    },
-    themeMode: 'dark',
-  })
-}
+createAppKit({
+  adapters: [wagmiAdapter, solanaAdapter],
+  projectId,
+  networks: mainnetNetworks as [AppKitNetwork, ...AppKitNetwork[]],
+  defaultNetwork: allNetworks.mainnet,
+  metadata: {
+    name: 'Flash Protocol',
+    description: 'Cross-chain payment gateway',
+    url: typeof window !== 'undefined' ? window.location.origin : 'https://flashprotocol.com',
+    icons: ['/logo-black.png'],
+  },
+  features: {
+    analytics: false,
+  },
+  themeMode: 'dark',
+})
 
 export function Providers({ children }: { children: ReactNode }) {
   return (

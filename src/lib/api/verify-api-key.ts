@@ -52,12 +52,13 @@ export async function verifyApiKey(req: NextRequest) {
       // Note: In Next.js middleware/edge, we should be careful with async/await blocking using waitUntil if available,
       // but here we are in a helper function called by route handlers.
       // We will do a fire-and-forget insert.
+      const clientIp = req.headers.get('x-forwarded-for') || 'unknown'
       supabase.from('api_logs').insert({
         merchant_id: merchant.id,
         endpoint: req.nextUrl.pathname,
         method: req.method,
         status_code: 200, // Assumed success if we get here
-        ip_address: req.headers.get('x-forwarded-for') || 'unknown',
+        ip_address: clientIp.split(',')[0].trim(),
         user_agent: req.headers.get('user-agent') || 'unknown'
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       }).then(({ error }: any) => {
