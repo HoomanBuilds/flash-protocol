@@ -41,8 +41,7 @@ export async function GET(req: NextRequest) {
     // Format for API response
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formatted = transactions?.map((tx: any) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { payment_links, ...rest } = tx;
+        const { payment_links: _payment_links, ...rest } = tx;
         return rest;
     });
 
