@@ -14,7 +14,7 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
 const queryClient = new QueryClient()
 
 const alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_KEY
-const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || ''
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'fallback-id'
 
 // Testnet keywords to filter out
 const TESTNET_KEYWORDS = [
