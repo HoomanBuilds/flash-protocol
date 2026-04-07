@@ -86,24 +86,19 @@ export async function PUT(req: NextRequest) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createServerClient() as any
 
-  const { error: updateError } = await supabase
+  const { data: updated, error: updateError } = await supabase
     .from('merchants')
     .update(updateObj)
     .eq('id', merchant.id)
-
-  if (updateError) {
-    console.error('Update merchant error:', updateError)
-    return NextResponse.json({ error: 'Failed to update merchant profile' }, { status: 500 })
-  }
-
-  // Fetch updated merchant data
-  const { data: updated } = await supabase
-    .from('merchants')
     .select(
       'wallet_address, business_name, email, default_receive_chain, default_receive_token, stealth_enabled, created_at',
     )
-    .eq('id', merchant.id)
     .single()
+
+  if (updateError || !updated) {
+    console.error('Update merchant error:', updateError)
+    return NextResponse.json({ error: 'Failed to update merchant profile' }, { status: 500 })
+  }
 
   return NextResponse.json({
     wallet_address: updated.wallet_address,

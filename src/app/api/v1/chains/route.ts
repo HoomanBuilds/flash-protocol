@@ -15,7 +15,8 @@ export async function GET(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url)
-    const type = searchParams.get('type') || 'all'
+    const rawType = searchParams.get('type') || 'all'
+    const type = ['all', 'evm', 'solana', 'bitcoin', 'near', 'tron', 'sui', 'ton', 'starknet', 'aptos'].includes(rawType) ? rawType : 'all'
     const hasUSDC = searchParams.get('hasUSDC') === 'true'
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
