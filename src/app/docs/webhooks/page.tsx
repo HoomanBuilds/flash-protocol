@@ -289,6 +289,7 @@ const { data } = await response.json();`,
       "description": "Production webhook",
       "active": true,
       "created_at": "2026-03-30T12:00:00.000Z",
+      "updated_at": "2026-03-30T12:00:00.000Z",
       "recent_deliveries": {
         "total": 142,
         "successful": 138,
@@ -331,7 +332,7 @@ const { data } = await response.json();`,
       "id": "delivery-uuid-2",
       "event_type": "payment.failed",
       "response_status": 500,
-      "error_message": null,
+      "error_message": "Internal Server Error",
       "delivered": false,
       "duration_ms": 340,
       "attempt": 1,
@@ -376,6 +377,19 @@ const { data } = await response.json();`,
 
 const endpoint = await response.json();`,
           }}
+        />
+
+        <DocCodeBlock
+          title="200 OK"
+          code={`{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "url": "https://yoursite.com/webhooks/flash",
+  "events": ["payment.completed"],
+  "description": "Production webhook",
+  "active": false,
+  "created_at": "2026-03-30T12:00:00.000Z",
+  "updated_at": "2026-03-31T09:00:00.000Z"
+}`}
         />
       </DocSection>
 

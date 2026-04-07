@@ -44,16 +44,50 @@ export default function DocsAuthPage() {
         </div>
 
         <DocNote type="info">
-          This endpoint uses session authentication (httpOnly cookie), not API key auth. It is intended for use from the Dashboard or authenticated browser sessions.
+          This endpoint uses wallet authentication (<code>x-wallet-address</code> header), not API key auth. It is intended for use from the Dashboard or authenticated browser sessions.
         </DocNote>
 
-        <DocCodeBlock 
+        <DocCodeBlock
           title="201 Created"
           code={`{
   "api_key": "pg_live_8cd80b4a9f2e...",
   "prefix": "pg_live_8cd80b4a",
+  "name": "Untitled Key",
   "created_at": "2024-03-20T14:00:00Z",
   "warning": "Save this key securely. You won't see it again."
+}`}
+        />
+      </DocSection>
+
+      <DocSection title="Check API Key Status">
+        <p className="mb-4">
+          Check whether an active API key exists for the merchant and retrieve its metadata.
+        </p>
+        <div className="flex items-center gap-2 mb-4">
+            <span className="bg-foreground text-background px-2 py-1 text-[10px] font-bold font-mono tracking-widest">GET</span>
+            <code className="bg-muted px-2 py-1 text-xs font-mono text-muted-foreground">/api/v1/auth/api-keys</code>
+        </div>
+
+        <DocNote type="info">
+          This endpoint uses wallet authentication (<code>x-wallet-address</code> header), not API key auth.
+        </DocNote>
+
+        <DocCodeBlock
+          title="200 OK (active key)"
+          code={`{
+  "active": true,
+  "name": "Production Key",
+  "prefix": "pg_live_8cd80b4a",
+  "created_at": "2024-03-20T14:00:00Z",
+  "last_used_at": "2024-03-21T10:30:00Z",
+  "total_calls": 142
+}`}
+        />
+
+        <DocCodeBlock
+          title="200 OK (no key)"
+          code={`{
+  "active": false
 }`}
         />
       </DocSection>

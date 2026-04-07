@@ -115,35 +115,30 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to fetch webhook endpoints' }, { status: 500 })
   }
 
-  // Fetch delivery stats for all endpoints in two queries
-  const endpointIds = (endpoints || []).map((ep: { id: string }) => ep.id)
-
-  const totalsByEndpoint: Record<string, number> = {}
-  const successByEndpoint: Record<string, number> = {}
-
-  if (endpointIds.length > 0) {
-    const { data: allDeliveries } = await supabase
-      .from('webhook_deliveries')
-      .select('webhook_endpoint_id, delivered')
-      .in('webhook_endpoint_id', endpointIds)
-
-    for (const d of allDeliveries || []) {
-      const epId = d.webhook_endpoint_id
-      totalsByEndpoint[epId] = (totalsByEndpoint[epId] || 0) + 1
-      if (d.delivered) {
-        successByEndpoint[epId] = (successByEndpoint[epId] || 0) + 1
+  // Fetch delivery stats per endpoint using count queries (not full row fetches)
+  const enriched = await Promise.all(
+    (endpoints || []).map(async (ep: { id: string }) => {
+      const [{ count: total }, { count: successful }] = await Promise.all([
+        supabase
+          .from('webhook_deliveries')
+          .select('id', { count: 'exact', head: true })
+          .eq('webhook_endpoint_id', ep.id),
+        supabase
+          .from('webhook_deliveries')
+          .select('id', { count: 'exact', head: true })
+          .eq('webhook_endpoint_id', ep.id)
+          .eq('delivered', true),
+      ])
+      return {
+        ...ep,
+        recent_deliveries: {
+          total: total || 0,
+          successful: successful || 0,
+          failed: (total || 0) - (successful || 0),
+        },
       }
-    }
-  }
-
-  const enriched = (endpoints || []).map((ep: { id: string }) => {
-    const total = totalsByEndpoint[ep.id] || 0
-    const successful = successByEndpoint[ep.id] || 0
-    return {
-      ...ep,
-      recent_deliveries: { total, successful, failed: total - successful },
-    }
-  })
+    }),
+  )
 
   return NextResponse.json({ data: enriched })
 }

@@ -1,4 +1,4 @@
-import { Book, Key, Link as LinkIcon, ArrowRightLeft, ShieldCheck, Webhook } from 'lucide-react'
+import { Book, Key, Link as LinkIcon, ArrowRightLeft, ShieldCheck, Webhook, User, Layers } from 'lucide-react'
 
 export type DocSection = {
   title: string
@@ -26,6 +26,8 @@ export const toolsDocsConfig: DocSection[] = [
     items: [
       { title: "Payment Links", href: "/docs/payment-links", icon: LinkIcon },
       { title: "Transactions", href: "/docs/transactions", icon: ArrowRightLeft },
+      { title: "Merchant", href: "/docs/merchant", icon: User },
+      { title: "Chains & Tokens", href: "/docs/chains-tokens", icon: Layers },
     ]
   },
   {
