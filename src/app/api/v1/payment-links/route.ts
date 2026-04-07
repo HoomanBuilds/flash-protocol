@@ -111,14 +111,15 @@ export async function POST(req: NextRequest) {
   }
   
   // 5. Log API call (optional/async)
-  const clientIp = req.headers.get('x-forwarded-for') || 'unknown'
+  const forwardedFor = req.headers.get('x-forwarded-for')
+  const clientIp = forwardedFor ? forwardedFor.split(',')[0].trim() : 'unknown'
   supabase.from('api_logs').insert({
     merchant_id: merchant.id,
     endpoint: '/api/v1/payment-links',
     method: 'POST',
     status_code: 201,
     request_body: body,
-    ip_address: clientIp.split(',')[0]
+    ip_address: clientIp
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }).then(({ error }: any) => {
     if(error) console.error('Failed to log API call', error)
