@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
     method: 'POST',
     status_code: 201,
     request_body: body,
-    ip_address: clientIp.split(',')[0],
+    ip_address: clientIp.split(',')[0].trim(),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }).then(({ error }: any) => {
     if (error) console.error('Failed to log API call', error)
