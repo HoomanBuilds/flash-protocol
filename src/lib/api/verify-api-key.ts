@@ -57,7 +57,7 @@ export async function verifyApiKey(req: NextRequest) {
         endpoint: req.nextUrl.pathname,
         method: req.method,
         status_code: 200, // Assumed success if we get here
-        ip_address: req.headers.get('x-forwarded-for') || 'unknown',
+        ip_address: (req.headers.get('x-forwarded-for') || 'unknown').split(',')[0].trim(),
         user_agent: req.headers.get('user-agent') || 'unknown'
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       }).then(({ error }: any) => {
