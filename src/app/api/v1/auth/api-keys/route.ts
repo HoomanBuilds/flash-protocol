@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase'
+import { createServerClient, createSSRClient } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 
@@ -11,6 +11,13 @@ function getWalletAddress(req: NextRequest): string | null {
 async function getAuthContext(req: NextRequest) {
   const walletAddress = getWalletAddress(req)
   if (!walletAddress) return null
+
+  const supabaseSsr = await createSSRClient()
+  const { data: { user } } = await supabaseSsr.auth.getUser()
+
+  if (!user || user.user_metadata?.wallet_address !== walletAddress) {
+    return null
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createServerClient() as any
