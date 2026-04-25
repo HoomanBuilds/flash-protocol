@@ -183,8 +183,13 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url)
-    const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100)
-    const offset = parseInt(searchParams.get('offset') || '0')
+
+    // Parse pagination parameters securely to avoid NaN or negative values
+    const rawLimit = parseInt(searchParams.get('limit') || '10')
+    const limit = isNaN(rawLimit) || rawLimit < 1 ? 10 : Math.min(rawLimit, 100)
+
+    const rawOffset = parseInt(searchParams.get('offset') || '0')
+    const offset = isNaN(rawOffset) || rawOffset < 0 ? 0 : rawOffset
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const supabase = createServerClient() as any

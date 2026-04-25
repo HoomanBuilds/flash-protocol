@@ -19,7 +19,9 @@ export async function GET(req: NextRequest) {
     const supabase = createServerClient()
     const { searchParams } = new URL(req.url)
     const paymentLinkId = searchParams.get('payment_link_id')
-    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100)
+
+    const rawLimit = parseInt(searchParams.get('limit') || '50')
+    const limit = isNaN(rawLimit) || rawLimit < 1 ? 50 : Math.min(rawLimit, 100)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let query = (supabase.from('transactions') as any)
