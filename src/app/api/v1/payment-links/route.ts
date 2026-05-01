@@ -183,8 +183,13 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url)
-    const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100)
-    const offset = parseInt(searchParams.get('offset') || '0')
+
+    let limit = parseInt(searchParams.get('limit') || '10')
+    if (isNaN(limit) || limit < 1) limit = 10
+    limit = Math.min(limit, 100)
+
+    let offset = parseInt(searchParams.get('offset') || '0')
+    if (isNaN(offset) || offset < 0) offset = 0
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const supabase = createServerClient() as any
