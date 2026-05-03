@@ -20,7 +20,9 @@ export async function GET(req: NextRequest) {
 
     const supabase = createServerClient()
     const { searchParams } = new URL(req.url)
-    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100)
+    let parsedLimit = parseInt(searchParams.get('limit') || '50', 10)
+    if (isNaN(parsedLimit) || parsedLimit < 1) parsedLimit = 50
+    const limit = Math.min(parsedLimit, 100)
 
     // 1. Fetch Sent Transactions (where customer_wallet = walletAddress)
     const { data: sentTransactions, error: sentError } = await supabase
