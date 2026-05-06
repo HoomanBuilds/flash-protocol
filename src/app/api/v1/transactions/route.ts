@@ -10,8 +10,10 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url)
-    const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100)
-    const offset = parseInt(searchParams.get('offset') || '0')
+    const parsedLimit = parseInt(searchParams.get('limit') || '10')
+    const limit = isNaN(parsedLimit) || parsedLimit <= 0 ? 10 : Math.min(parsedLimit, 100)
+    const parsedOffset = parseInt(searchParams.get('offset') || '0')
+    const offset = isNaN(parsedOffset) || parsedOffset < 0 ? 0 : parsedOffset
     const status = searchParams.get('status')
     const paymentLinkId = searchParams.get('payment_link_id')
     
