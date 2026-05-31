@@ -14,6 +14,7 @@ import { QuoteResponse } from '@/types/provider'
 import { useTransactionExecutor } from '@/hooks/useTransactionExecutor'
 import { useToast } from '@/components/ui/use-toast'
 import type { UnifiedChain, UnifiedToken } from '@/lib/chain-registry'
+import { collapseTokensBySymbol } from '@/lib/token-filter'
 
 // Chain type group labels for the dropdown
 const CHAIN_TYPE_LABELS: Record<string, string> = {
@@ -57,9 +58,15 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   const { chain: connectedChain } = useAccount()
   const { switchChain } = useSwitchChain()
   const { toast } = useToast()
-  
+
   // Custom Executor Hook
-  const { execute, status: executorStatus, step: executorStep, error: executorError, txHash } = useTransactionExecutor()
+  const {
+    execute,
+    status: executorStatus,
+    step: executorStep,
+    error: executorError,
+    txHash,
+  } = useTransactionExecutor()
 
   // Dynamic chain/token state
   const [dynamicChains, setDynamicChains] = useState<UnifiedChain[]>([])
@@ -68,12 +75,16 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   const [tokensLoading, setTokensLoading] = useState(false)
 
   const [fromChainKey, setFromChainKey] = useState<string>(
-    connectedChain?.id ? String(connectedChain.id) : '42161'
+    connectedChain?.id ? String(connectedChain.id) : '42161',
   )
-  const [fromTokenAddress, setFromTokenAddress] = useState('0x0000000000000000000000000000000000000000')
+  const [fromTokenAddress, setFromTokenAddress] = useState(
+    '0x0000000000000000000000000000000000000000',
+  )
 
   // Derive chain type from dynamic chains
-  const selectedChain = dynamicChains.find(c => String(c.chainId) === fromChainKey || c.key === fromChainKey)
+  const selectedChain = dynamicChains.find(
+    (c) => String(c.chainId) === fromChainKey || c.key === fromChainKey,
+  )
   const chainType = selectedChain?.type || 'evm'
 
   // Derive numeric chainId for wagmi compatibility
@@ -82,7 +93,12 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     return !isNaN(num) && Number.isInteger(num) ? num : 0
   })()
 
-  const toChainKey = link.receive_mode === 'same_chain' ? fromChainKey : (link.receive_chain_id ? String(link.receive_chain_id) : '42161')
+  const toChainKey =
+    link.receive_mode === 'same_chain'
+      ? fromChainKey
+      : link.receive_chain_id
+        ? String(link.receive_chain_id)
+        : '42161'
 
   const [quotes, setQuotes] = useState<QuoteResponse[]>([])
   const [selectedQuote, setSelectedQuote] = useState<QuoteResponse | null>(null)
@@ -103,10 +119,20 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   const isFixedAmount = typeof link.amount === 'number' && link.amount > 0
   const displayAmountUSD = isFixedAmount ? link.amount! : parseFloat(manualAmount) || 0
 
-  const fromToken = dynamicTokens.find(t => t.address.toLowerCase() === fromTokenAddress.toLowerCase())
+  const fromToken = dynamicTokens.find(
+    (t) => t.address.toLowerCase() === fromTokenAddress.toLowerCase(),
+  )
+
+  // Defensive client-side collapse: one canonical row per symbol so the dropdown
+  // never shows duplicate USDC/SOL even if an unmerged cache row slips through.
+  // Selection still resolves against the full dynamicTokens list above.
+  const displayTokens = collapseTokensBySymbol(dynamicTokens, fromChainKey)
 
   // Dynamic USDC address resolution for destination chain
   const [resolvedUSDCAddress, setResolvedUSDCAddress] = useState<string | undefined>(undefined)
+  // Destination-token decimals — sent to the quote API so ranking normalizes each
+  // provider's output against the real dest decimals (USDC = 6).
+  const [resolvedUSDCDecimals, setResolvedUSDCDecimals] = useState<number | undefined>(undefined)
 
   useEffect(() => {
     if (link.receive_token || link.stealth_chain_native) return
@@ -116,11 +142,10 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
         const res = await fetch(`/api/tokens?chainKey=${toChainKey}`)
         const data = await res.json()
         if (data.success && data.tokens) {
-          const usdc = data.tokens.find((t: any) =>
-            t.symbol?.toUpperCase() === 'USDC'
-          )
+          const usdc = data.tokens.find((t: any) => t.symbol?.toUpperCase() === 'USDC')
           if (usdc?.address) {
             setResolvedUSDCAddress(usdc.address)
+            if (typeof usdc.decimals === 'number') setResolvedUSDCDecimals(usdc.decimals)
             return
           }
         }
@@ -136,7 +161,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   // If stealth mode, destination is always native token on the receive chain
   const destinationToken = link.stealth_chain_native
     ? '0x0000000000000000000000000000000000000000'
-    : (link.receive_token || resolvedUSDCAddress || getUSDCAddress(toChainKey))
+    : link.receive_token || resolvedUSDCAddress || getUSDCAddress(toChainKey)
 
   // Fetch chains on mount
   useEffect(() => {
@@ -185,11 +210,14 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
   const { data: balanceData } = useBalance({
     address: address,
     chainId: fromChainId,
-    token: fromTokenAddress === '0x0000000000000000000000000000000000000000' ? undefined : fromTokenAddress as `0x${string}`,
+    token:
+      fromTokenAddress === '0x0000000000000000000000000000000000000000'
+        ? undefined
+        : (fromTokenAddress as `0x${string}`),
     query: {
       enabled: !!address && !!fromChainId && chainType === 'evm',
-      refetchInterval: 10000
-    }
+      refetchInterval: 10000,
+    },
   })
 
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -222,7 +250,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
       // Calculate converted amount if we have a USD amount
       if (displayAmountUSD > 0 && data.priceUSD > 0) {
         const toSymbol = link.receive_token_symbol || 'USDC'
-        const slippage = (STABLECOINS.has(fromToken.symbol) && STABLECOINS.has(toSymbol)) ? 0.5 : 1.0
+        const slippage = STABLECOINS.has(fromToken.symbol) && STABLECOINS.has(toSymbol) ? 0.5 : 1.0
         const rawAmount = displayAmountUSD / data.priceUSD
         const withSlippage = rawAmount * (1 + slippage / 100)
 
@@ -294,7 +322,9 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
     const isEvmChain = chainType === 'evm'
     const isEvmAddress = address?.startsWith('0x')
     if (isEvmChain && !isEvmAddress) {
-      setError('Your connected wallet is not an EVM wallet. Please switch to an EVM wallet (MetaMask, etc.) using the wallet button to pay on this chain.')
+      setError(
+        'Your connected wallet is not an EVM wallet. Please switch to an EVM wallet (MetaMask, etc.) using the wallet button to pay on this chain.',
+      )
       setIsLoading(false)
       return
     }
@@ -314,6 +344,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
           fromAddress: address,
           toAddress: link.recipient_address,
           fromTokenDecimals: fromToken.decimals,
+          toTokenDecimals: resolvedUSDCDecimals,
         }),
       })
 
@@ -322,8 +353,14 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
         setQuotes(data.routes)
         const best = data.bestQuote || data.routes[0]
         setSelectedQuote(best)
+      } else if (data.unsupported && data.reason) {
+        throw new Error(data.reason)
       } else {
-        throw new Error(data.error || 'No routes found for this swap. Try a different token or chain.')
+        throw new Error(
+          data.reason ||
+            data.error ||
+            'No routes found for this swap. Try a different token or chain.',
+        )
       }
     } catch (e) {
       console.error(e)
@@ -336,14 +373,13 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
 
   useEffect(() => {
     if (selectedQuote?.metadata?.insufficientBalance) {
-        toast({
-            variant: "destructive",
-            title: "Insufficient Balance",
-            description: `You don't have enough balance for the ${selectedQuote.provider} route. Try a different token or add funds.`
-        })
+      toast({
+        variant: 'destructive',
+        title: 'Insufficient Balance',
+        description: `You don't have enough balance for the ${selectedQuote.provider} route. Try a different token or add funds.`,
+      })
     }
   }, [selectedQuote])
-
 
   const handleExecute = async () => {
     if (!selectedQuote || !address) return
@@ -377,7 +413,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
 
       // 2. Execute via Executor Hook (Handles LiFi/Rango logic)
       const hash = await execute(selectedQuote, link.recipient_address)
-      
+
       if (!hash) throw new Error('Execution completed but no hash returned')
 
       // 3. Update Backend with Hash
@@ -385,7 +421,7 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
         await fetch(`/api/transactions/${transactionId}/hash`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ txHash: hash })
+          body: JSON.stringify({ txHash: hash }),
         })
       } catch (err) {
         console.error('Failed to update backend with hash:', err)
@@ -394,7 +430,6 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
       if (onSuccess) {
         onSuccess(hash, transactionId)
       }
-
     } catch (e) {
       console.error(e)
       const message = e instanceof Error ? e.message : 'Transaction Failed'
@@ -410,12 +445,17 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
       setError(executorError)
       setIsLoading(false)
     }
-    // We don't auto-handle success status here because handleExecute awaits execute() 
+    // We don't auto-handle success status here because handleExecute awaits execute()
     // and calls onSuccess manually.
   }, [executorError])
 
-  const timeSinceUpdate = lastPriceUpdate > 0 ? Math.floor((Date.now() - lastPriceUpdate) / 1000) : null
-  const isExecuting = isLoading || executorStatus === 'approving' || executorStatus === 'executing'
+  const timeSinceUpdate =
+    lastPriceUpdate > 0 ? Math.floor((Date.now() - lastPriceUpdate) / 1000) : null
+  const isExecuting =
+    isLoading ||
+    executorStatus === 'approving' ||
+    executorStatus === 'executing' ||
+    executorStatus === 'submitted'
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -467,7 +507,8 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
                         ≈ {convertedAmount} {fromToken.symbol}
                       </span>
                       <span className="text-[10px] text-muted-foreground font-mono">
-                        (${tokenPriceUSD?.toLocaleString(undefined, { maximumFractionDigits: 2 })} / {fromToken.symbol})
+                        (${tokenPriceUSD?.toLocaleString(undefined, { maximumFractionDigits: 2 })} /{' '}
+                        {fromToken.symbol})
                       </span>
                       <button
                         onClick={fetchPrice}
@@ -517,17 +558,24 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
 
           <div className="space-y-4">
             <p className="text-[11px] text-yellow-500 text-center md:text-left font-mono">
-               We recommend Arbitrum for lowest fees, near-instant settlement, and greater route compatibility.
+              We recommend Arbitrum for lowest fees, near-instant settlement, and greater route
+              compatibility.
             </p>
-          </div>  
-            {/* Controls Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-muted/30 p-6 border border-border">
-              {/* Network Selection */}
+          </div>
+          {/* Controls Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-muted/30 p-6 border border-border">
+            {/* Network Selection */}
             <div className="space-y-3">
-              <Label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Payment Network</Label>
+              <Label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                Payment Network
+              </Label>
               <div className="relative">
                 {selectedChain?.logoUrl ? (
-                  <img src={selectedChain.logoUrl} alt={selectedChain.name} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full object-cover" />
+                  <img
+                    src={selectedChain.logoUrl}
+                    alt={selectedChain.name}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full object-cover"
+                  />
                 ) : (
                   <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500" />
                 )}
@@ -546,32 +594,46 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
                     {(() => {
                       const popularIds = ['42161', '8453', '137', '10', '1', 'solana']
                       const popularChains = popularIds
-                        .map(id => dynamicChains.find(c => c.key === id || String(c.chainId) === id))
+                        .map((id) =>
+                          dynamicChains.find((c) => c.key === id || String(c.chainId) === id),
+                        )
                         .filter(Boolean) as UnifiedChain[]
-                      const remainingChains = dynamicChains.filter(c =>
-                        !popularIds.includes(c.key) && !popularIds.includes(String(c.chainId || ''))
+                      const remainingChains = dynamicChains.filter(
+                        (c) =>
+                          !popularIds.includes(c.key) &&
+                          !popularIds.includes(String(c.chainId || '')),
                       )
 
                       return (
                         <>
                           {popularChains.length > 0 && (
                             <optgroup label="⭐ Popular">
-                              {popularChains.map(c => (
-                                <option key={c.key} value={c.key}>{c.name}</option>
+                              {popularChains.map((c) => (
+                                <option key={c.key} value={c.key}>
+                                  {c.name}
+                                </option>
                               ))}
                             </optgroup>
                           )}
                           {Object.entries(
-                            remainingChains.reduce((groups, chain) => {
-                              const type = chain.type || 'evm'
-                              if (!groups[type]) groups[type] = []
-                              groups[type].push(chain)
-                              return groups
-                            }, {} as Record<string, UnifiedChain[]>)
+                            remainingChains.reduce(
+                              (groups, chain) => {
+                                const type = chain.type || 'evm'
+                                if (!groups[type]) groups[type] = []
+                                groups[type].push(chain)
+                                return groups
+                              },
+                              {} as Record<string, UnifiedChain[]>,
+                            ),
                           ).map(([type, chains]) => (
-                            <optgroup key={type} label={CHAIN_TYPE_LABELS[type] || type.toUpperCase()}>
-                              {chains.map(c => (
-                                <option key={c.key} value={c.key}>{c.name}</option>
+                            <optgroup
+                              key={type}
+                              label={CHAIN_TYPE_LABELS[type] || type.toUpperCase()}
+                            >
+                              {chains.map((c) => (
+                                <option key={c.key} value={c.key}>
+                                  {c.name}
+                                </option>
                               ))}
                             </optgroup>
                           ))}
@@ -581,8 +643,21 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
                   </select>
                 )}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-50">
-                    <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <svg
+                    width="10"
+                    height="6"
+                    viewBox="0 0 10 6"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="opacity-50"
+                  >
+                    <path
+                      d="M1 1L5 5L9 1"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </div>
               </div>
@@ -590,7 +665,9 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
 
             {/* Asset Selection */}
             <div className="space-y-3">
-              <Label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Payment Asset</Label>
+              <Label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                Payment Asset
+              </Label>
               <div className="relative">
                 {tokensLoading ? (
                   <div className="w-full px-4 py-4 bg-background border border-border text-muted-foreground font-mono text-sm flex items-center gap-2">
@@ -603,16 +680,30 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
                     value={fromTokenAddress}
                     onChange={(e) => handleTokenChange(e.target.value)}
                   >
-                    {dynamicTokens.map(t => (
+                    {displayTokens.map((t) => (
                       <option key={t.address} value={t.address}>
-                        {t.symbol}{t.name && t.name !== t.symbol ? ` — ${t.name}` : ''}
+                        {t.symbol}
+                        {t.name && t.name !== t.symbol ? ` — ${t.name}` : ''}
                       </option>
                     ))}
                   </select>
                 )}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-50">
-                    <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <svg
+                    width="10"
+                    height="6"
+                    viewBox="0 0 10 6"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="opacity-50"
+                  >
+                    <path
+                      d="M1 1L5 5L9 1"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </div>
               </div>
@@ -623,7 +714,9 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
           <Button
             className="w-full h-16 text-base font-bold tracking-wide bg-foreground text-background hover:bg-foreground/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-mono"
             onClick={handleGetQuote}
-            disabled={isExecuting || (isFixedAmount ? !convertedAmount : !manualAmount) || priceLoading}
+            disabled={
+              isExecuting || (isFixedAmount ? !convertedAmount : !manualAmount) || priceLoading
+            }
           >
             {isExecuting ? (
               <div className="flex items-center gap-2">
@@ -646,7 +739,9 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pt-4">
               <div className="flex items-center gap-4 mb-6">
                 <div className="h-px flex-1 bg-border" />
-                <span className="text-xs text-muted-foreground font-mono uppercase tracking-widest">ROUTE_OPTIMIZED</span>
+                <span className="text-xs text-muted-foreground font-mono uppercase tracking-widest">
+                  ROUTE_OPTIMIZED
+                </span>
                 <div className="h-px flex-1 bg-border" />
               </div>
 
@@ -655,16 +750,22 @@ export default function PaymentInterface({ link, onSuccess }: PaymentInterfacePr
                 onSwap={handleExecute}
                 isLoading={isExecuting}
                 loadingStep={executorStep || undefined}
-                fromTokenInfo={fromToken ? { symbol: fromToken.symbol, decimals: fromToken.decimals } : undefined}
-                toTokenInfo={link.stealth_chain_native
-                  ? {
-                      symbol: link.receive_token_symbol || 'ETH',
-                      decimals: 18,
-                    }
-                  : {
-                      symbol: link.receive_token_symbol || 'USDC',
-                      decimals: (link.receive_token_symbol === 'DAI' || link.receive_token_symbol === 'ETH') ? 18 : 6,
-                    }
+                fromTokenInfo={
+                  fromToken ? { symbol: fromToken.symbol, decimals: fromToken.decimals } : undefined
+                }
+                toTokenInfo={
+                  link.stealth_chain_native
+                    ? {
+                        symbol: link.receive_token_symbol || 'ETH',
+                        decimals: 18,
+                      }
+                    : {
+                        symbol: link.receive_token_symbol || 'USDC',
+                        decimals:
+                          link.receive_token_symbol === 'DAI' || link.receive_token_symbol === 'ETH'
+                            ? 18
+                            : 6,
+                      }
                 }
               />
             </div>

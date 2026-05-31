@@ -15,8 +15,11 @@ export interface QuoteRequest {
   fromAmount: string 
   fromAddress: string 
   toAddress?: string  
-  slippage?: number 
+  slippage?: number
   fromTokenDecimals?: number // Required for Rubic
+  /** Authoritative destination-token decimals — used to rank quotes fairly
+   *  (a provider that mislabels the dest token's decimals can't win). */
+  toTokenDecimals?: number
 }
 
 export interface FeeCost {
@@ -54,13 +57,20 @@ export interface QuoteStep {
 }
 
 export interface QuoteResponse {
-  provider: string 
-  id: string 
+  provider: string
+  id: string
   fromAmount: string
   toAmount: string
   toAmountMin: string
-  estimatedGas: string 
-  estimatedDuration: number 
+  estimatedGas: string
+  estimatedDuration: number
+  /** REAL decimals of the destination token. Providers MUST set this from the
+   *  live response (never hardcode). Used to normalize toAmount for fair ranking. */
+  toTokenDecimals?: number
+  /** OPTIONAL refinement — USD price of 1 whole destination token (only some providers expose it). */
+  toTokenPriceUSD?: number
+  /** OPTIONAL — provider-supplied USD value of the output (LiFi/NEAR have it; Rubic/Symbiosis do not). */
+  toAmountUSD?: string
   routes: QuoteStep[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transactionRequest?: any 
@@ -75,21 +85,24 @@ export interface QuoteResponse {
   }
   toolsUsed?: string[] 
   metadata?: {
-    chainType?: 'evm' | 'solana' | 'bitcoin'
+    chainType?: 'evm' | 'solana' | 'bitcoin' | 'other'
     isDepositTrade?: boolean
     depositAddress?: string
+    depositMemo?: string
     amountToSend?: string
     [key: string]: unknown
-  }  
+  }
 }
 
 export interface StatusRequest {
   txHash: string
   fromChainId: ChainId
   toChainId: ChainId
-  bridge?: string 
-  requestId?: string 
+  bridge?: string
+  requestId?: string
   depositAddress?: string
+  /** Memo/tag for deposit chains that require it (NEAR Intents status lookup). */
+  depositMemo?: string
 }
 
 export type TransactionStatus = 'PENDING' | 'DONE' | 'FAILED' | 'NOT_FOUND'

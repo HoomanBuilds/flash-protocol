@@ -1,6 +1,7 @@
 import { ChainTokenService } from '@/services/chain-token-service'
 import { TOKENS } from '@/lib/tokens'
-import { isSpamToken, buildCanonicalAddresses } from '@/lib/token-filter'
+import { isSpamToken, buildCanonicalAddresses, collapseTokensBySymbol } from '@/lib/token-filter'
+import type { UnifiedToken } from '@/lib/chain-registry'
 
 /** Shape of a row in the cached_tokens Supabase table */
 interface CachedTokenRow {
@@ -67,7 +68,7 @@ export async function getTokens(supabase: SupabaseClient, chainKey: string) {
 
     // Filter spam from cached data (catches pre-existing unfiltered tokens)
     const spamCanonical = buildCanonicalAddresses(chainKey)
-    const mapped = rawMapped.filter((t) => {
+    let mapped = rawMapped.filter((t) => {
       const count =
         t.providerIds && typeof (t.providerIds as Record<string, unknown>)._count === 'number'
           ? ((t.providerIds as Record<string, unknown>)._count as number)
@@ -93,6 +94,14 @@ export async function getTokens(supabase: SupabaseClient, chainKey: string) {
         }
       }
     }
+
+    // Collapse same-symbol variants (USDC/USDC.e, un-deduped native SOL rows)
+    // into one canonical row per symbol — the cache table stores one row per
+    // address, so this is where the duplicate USDC/SOL entries get merged.
+    mapped = collapseTokensBySymbol(
+      mapped as unknown as UnifiedToken[],
+      chainKey,
+    ) as unknown as MappedToken[]
 
     // Provider count: stored as _count in providerIds by mergeTokens(), or count object keys
     const getProviderCount = (t: MappedToken) => {

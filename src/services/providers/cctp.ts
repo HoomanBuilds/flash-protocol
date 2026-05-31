@@ -1,4 +1,12 @@
-import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus, FeeCost } from '@/types/provider'
+import {
+  IProvider,
+  QuoteRequest,
+  QuoteResponse,
+  StatusRequest,
+  StatusResponse,
+  TransactionStatus,
+  FeeCost,
+} from '@/types/provider'
 
 /**
  * CCTP Provider - Circle Cross-Chain Transfer Protocol
@@ -6,14 +14,14 @@ import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, 
 
 // USDC contract addresses on supported chains
 const USDC_ADDRESSES: Record<number, string> = {
-  1: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',      // Ethereum
-  42161: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',  // Arbitrum
-  8453: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',   // Base
-  137: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',    // Polygon
-  10: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',     // Optimism
-  43114: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',  // Avalanche
-  59144: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',  // Linea
-  146: '0x29219dd400f2bf60e5a23d13be72b486d4038894',    // Sonic
+  1: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // Ethereum
+  42161: '0xaf88d065e77c8cc2239327c5edb3a432268e5831', // Arbitrum
+  8453: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913', // Base
+  137: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359', // Polygon
+  10: '0x0b2c639c533813f4aa9d7837caf62653d097ff85', // Optimism
+  43114: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', // Avalanche
+  59144: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff', // Linea
+  146: '0x29219dd400f2bf60e5a23d13be72b486d4038894', // Sonic
 }
 
 // Bridge Kit chain name mapping
@@ -75,101 +83,114 @@ export class CCTPProvider implements IProvider {
         return []
       }
 
-      const fromNum = typeof request.fromChain === 'number' ? request.fromChain : Number(request.fromChain)
+      const fromNum =
+        typeof request.fromChain === 'number' ? request.fromChain : Number(request.fromChain)
       const toNum = typeof request.toChain === 'number' ? request.toChain : Number(request.toChain)
       if (isNaN(fromNum) || isNaN(toNum)) return []
 
       const sourceChain = CHAIN_TO_BRIDGE_KIT[fromNum]
       const destChain = CHAIN_TO_BRIDGE_KIT[toNum]
 
-      
       const domainIds: Record<number, number> = {
-        1: 0,      // Ethereum
-        43114: 1,  // Avalanche
-        10: 2,     // Optimism
-        42161: 3,  // Arbitrum
-        8453: 6,   // Base
-        137: 7,    // Polygon
+        1: 0, // Ethereum
+        43114: 1, // Avalanche
+        10: 2, // Optimism
+        42161: 3, // Arbitrum
+        8453: 6, // Base
+        137: 7, // Polygon
         59144: 11, // Linea
-        146: 14,   // Sonic
+        146: 14, // Sonic
       }
 
       const sourceDomain = domainIds[fromNum]
       const destDomain = domainIds[toNum]
 
-      let feePercentage = 0
+      // Fail CLOSED: if the real Iris fee can't be resolved we return no quote.
+      // Returning a fee=0 (1:1) quote would falsely beat every real provider in
+      // ranking and over-promise the output to the user.
+      let feePercentage: number | null = null
       try {
         const feeResponse = await fetch(
-          `${IRIS_API}/v2/burn/USDC/fees/${sourceDomain}/${destDomain}`
+          `${IRIS_API}/v2/burn/USDC/fees/${sourceDomain}/${destDomain}`,
         )
         if (feeResponse.ok) {
           const feeData = await feeResponse.json()
-          if (feeData && feeData.length > 0) {
+          if (feeData && feeData.length > 0 && typeof feeData[0].minimumFee === 'number') {
             feePercentage = feeData[0].minimumFee / 10000
           }
         }
       } catch (e) {
         console.warn('CCTP: Could not fetch fee estimate:', e)
       }
+      if (feePercentage === null) {
+        console.warn('CCTP: Iris fee unavailable, dropping quote (fail closed)')
+        return []
+      }
 
       const inputAmount = BigInt(request.fromAmount)
       const feeAmount = BigInt(Math.floor(Number(inputAmount) * feePercentage))
       const outputAmount = inputAmount - feeAmount
 
-      // Fast Transfer: 20s, Standard: 900s (15 min)
-      const estimatedDuration = 20
+      // CCTP standard settlement is ~15-20 min (attestation + mint), not seconds.
+      const estimatedDuration = 1200
 
-      return [{
-        provider: 'cctp',
-        id: `cctp-${Date.now()}-${Math.random().toString(36).substring(7)}`,
-        fromAmount: request.fromAmount,
-        toAmount: outputAmount.toString(),
-        toAmountMin: outputAmount.toString(),
-        estimatedGas: '0',
-        estimatedDuration,
-        bridgeFee: feeAmount.toString(),
-        bridgeFeeUSD: (Number(feeAmount) / 1e6).toFixed(2),
-        transactionRequest: null,
-        routes: [{
-          type: 'bridge' as const,
-          tool: 'cctp',
-          action: {
-            fromToken: {
-              address: request.fromToken,
-              chainId: request.fromChain,
-              symbol: 'USDC',
-              decimals: 6
+      return [
+        {
+          provider: 'cctp',
+          id: `cctp-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+          fromAmount: request.fromAmount,
+          toAmount: outputAmount.toString(),
+          toAmountMin: outputAmount.toString(),
+          toTokenDecimals: 6, // CCTP only ever bridges USDC (6 decimals on all supported chains)
+          estimatedGas: '0',
+          estimatedDuration,
+          bridgeFee: feeAmount.toString(),
+          bridgeFeeUSD: (Number(feeAmount) / 1e6).toFixed(2),
+          transactionRequest: null,
+          routes: [
+            {
+              type: 'bridge' as const,
+              tool: 'cctp',
+              action: {
+                fromToken: {
+                  address: request.fromToken,
+                  chainId: request.fromChain,
+                  symbol: 'USDC',
+                  decimals: 6,
+                },
+                toToken: {
+                  address: request.toToken,
+                  chainId: request.toChain,
+                  symbol: 'USDC',
+                  decimals: 6,
+                },
+                fromAmount: request.fromAmount,
+                toAmount: outputAmount.toString(),
+              },
+              estimate: {
+                executionDuration: estimatedDuration,
+                feeCosts: [
+                  {
+                    type: 'BRIDGE',
+                    name: 'CCTP Bridge Fee',
+                    description: 'Circle fee deducted from the bridged amount',
+                    amount: feeAmount.toString(),
+                    amountUSD: (Number(feeAmount) / 1e6).toFixed(2),
+                    included: true,
+                  },
+                ],
+              },
             },
-            toToken: {
-              address: request.toToken,
-              chainId: request.toChain,
-              symbol: 'USDC',
-              decimals: 6
-            },
-            fromAmount: request.fromAmount,
-            toAmount: outputAmount.toString()
+          ],
+          metadata: {
+            sourceChain,
+            destChain,
+            sourceDomain,
+            destDomain,
+            fastTransfer: true,
           },
-          estimate: {
-            executionDuration: estimatedDuration,
-            feeCosts: [{
-              type: 'GAS',
-              name: 'Network Gas',
-              description: 'Gas for Burn (Source) + Mint (Dest)',
-              amount: feeAmount.toString(),
-              amountUSD: (Number(feeAmount) / 1e6).toFixed(2),
-              included: false
-            }]
-          }
-        }],
-        metadata: {
-          sourceChain,
-          destChain,
-          sourceDomain,
-          destDomain,
-          fastTransfer: true
-        }
-      }]
-
+        },
+      ]
     } catch (error) {
       console.error('CCTP Quote Error:', error)
       return []
@@ -178,9 +199,7 @@ export class CCTPProvider implements IProvider {
 
   async getStatus(request: StatusRequest): Promise<StatusResponse> {
     try {
-      const response = await fetch(
-        `${IRIS_API}/v2/messages?transactionHash=${request.txHash}`
-      )
+      const response = await fetch(`${IRIS_API}/v2/messages?transactionHash=${request.txHash}`)
 
       if (!response.ok) {
         return { status: 'NOT_FOUND' }
@@ -226,9 +245,9 @@ export class CCTPProvider implements IProvider {
       return {
         status,
         subStatus,
-        txLink: message.destinationTransactionHash 
+        txLink: message.destinationTransactionHash
           ? `https://blockscan.com/tx/${message.destinationTransactionHash}`
-          : undefined
+          : undefined,
       }
     } catch (error) {
       console.error('CCTP Status Error:', error)

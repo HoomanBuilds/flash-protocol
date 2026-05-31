@@ -1,5 +1,8 @@
 import { providers } from './providers'
 import { QuoteRequest, QuoteResponse, ChainId } from '@/types/provider'
+import { rankQuotes } from './ranking'
+import { validateQuoteRequest } from '@/lib/chain-address'
+import { ChainTokenService } from './chain-token-service'
 
 const PROVIDER_TIMEOUT_MS = 30000
 const QUOTE_VALIDITY_MS = 60000
@@ -25,26 +28,43 @@ function normalizeChainId(id: ChainId): ChainId {
   return id
 }
 
-// Provider reliability scores
-const PROVIDER_RELIABILITY: Record<string, number> = {
-  'cctp': 98,           
-  'lifi': 95,
-  'rango': 90,
-  'symbiosis': 88,
-  'rubic': 85,
-  'near-intents': 80,
-}
-
 export interface AggregatedQuoteResponse {
   quotes: QuoteResponse[]
   bestQuote: QuoteResponse | null
   expiresAt: number
   fetchedAt: number
+  /** True when the request was rejected before fan-out (e.g. unsupported chain). */
+  unsupported?: boolean
+  /** Human-readable reason when the request can't be quoted (unsupported chain
+   *  or an address that doesn't match the chain's address space). */
+  reason?: string
   providerStats: {
     succeeded: string[]
     failed: string[]
     timedOut: string[]
     errors?: Record<string, string>
+  }
+}
+
+/**
+ * Best-effort resolve the source token's decimals when the caller omitted them.
+ * Rubic falls back to 18 (rubic.ts) which over/under-scales the input amount by
+ * 10^(realDecimals-18) → wildly wrong quotes. Resolving from the cached token
+ * list (ChainTokenService, 5-min cache) avoids that footgun. Returns undefined
+ * if it can't resolve, leaving providers on their own fallback.
+ */
+async function resolveFromTokenDecimals(
+  fromChain: ChainId,
+  fromToken: string
+): Promise<number | undefined> {
+  try {
+    const tokens = await ChainTokenService.getTokens(String(fromChain))
+    const target = fromToken.toLowerCase()
+    const match = tokens.find((t) => t.address.toLowerCase() === target)
+    return match?.decimals
+  } catch (e) {
+    console.warn('[QuoteAggregator] Could not resolve fromTokenDecimals:', String(e))
+    return undefined
   }
 }
 
@@ -75,45 +95,6 @@ async function withTimeout<T>(
   }
 }
 
-/**
- * Calculate a secondary score for tie-breaking when output amounts are equal.
- * Factors in: total fees (USD), gas cost, speed, and provider reliability.
- * Higher score = better route.
- */
-function calculateTieBreakerScore(quote: QuoteResponse): number {
-  const totalFeeUSD = parseFloat(quote.fees?.totalFeeUSD || '0')
-  const gasCostUSD = parseFloat(quote.estimatedGas || '0')
-  const duration = quote.estimatedDuration || 600
-  const reliability = PROVIDER_RELIABILITY[quote.provider] || 50
-
-  // Fee score: 0-30 points, lower fees = higher score
-  const totalCost = totalFeeUSD + gasCostUSD
-  const feeScore = Math.max(0, 30 * (1 - Math.min(totalCost, 30) / 30))
-
-  // Speed score: 0-10 points, faster = higher score
-  const speedScore = Math.max(0, 10 * (1 - Math.min(duration, 1800) / 1800))
-
-  // Reliability score: 0-10 points
-  const reliabilityScore = (reliability / 100) * 10
-
-  return feeScore + speedScore + reliabilityScore
-}
-
-function rankQuotes(quotes: QuoteResponse[]): QuoteResponse[] {
-  return quotes.sort((a, b) => {
-    const amountA = BigInt(a.toAmount || '0')
-    const amountB = BigInt(b.toAmount || '0')
-
-    // Primary: Output amount (higher = better)
-    if (amountA !== amountB) {
-      return amountA > amountB ? -1 : 1
-    }
-
-    // Equal output: use fee-aware tie-breaker score (higher = better)
-    return calculateTieBreakerScore(b) - calculateTieBreakerScore(a)
-  })
-}
-
 export const QuoteAggregator = {
   async getQuotes(request: QuoteRequest): Promise<AggregatedQuoteResponse> {
     const fetchedAt = Date.now()
@@ -131,6 +112,41 @@ export const QuoteAggregator = {
       failed: [] as string[],
       timedOut: [] as string[],
       errors: {} as Record<string, string>,
+    }
+
+    // Central request validation BEFORE fan-out: reject unsupported chains
+    // (A5 — 'other' family has no executable signing path) and addresses that
+    // don't match the chain's address space (A4). Returning early surfaces an
+    // honest reason instead of silently fanning out → "no routes".
+    const validation = validateQuoteRequest(normalizedRequest)
+    if (!validation.ok) {
+      console.warn(`[QuoteAggregator] Request rejected: ${validation.reason}`)
+      return {
+        quotes: [],
+        bestQuote: null,
+        unsupported: !!validation.unsupported,
+        reason: validation.reason,
+        expiresAt,
+        fetchedAt,
+        providerStats,
+      }
+    }
+
+    // U3: ensure fromTokenDecimals so Rubic (rubic.ts: || 18) can't mis-scale
+    // the input amount. Best-effort, cached; leaves it undefined if unresolved.
+    if (normalizedRequest.fromTokenDecimals === undefined) {
+      const resolved = await resolveFromTokenDecimals(
+        normalizedRequest.fromChain,
+        normalizedRequest.fromToken
+      )
+      if (resolved !== undefined) {
+        normalizedRequest.fromTokenDecimals = resolved
+        console.log(`[QuoteAggregator] Resolved fromTokenDecimals=${resolved}`)
+      } else {
+        console.warn(
+          '[QuoteAggregator] fromTokenDecimals missing and unresolved; providers will use their fallback'
+        )
+      }
     }
 
     console.log('=== QUOTE AGGREGATOR START ===')
@@ -186,7 +202,10 @@ export const QuoteAggregator = {
     console.log('Total Quotes:', allQuotes.length)
 
     // Rank quotes with tie-breakers
-    const rankedQuotes = rankQuotes(allQuotes)
+    // Pass the authoritative destination-token decimals so a provider that
+    // mislabels them (e.g. reports 6-dec USDC as 18) can't win the ranking,
+    // even if it's the majority. Falls back to consensus when not supplied.
+    const rankedQuotes = rankQuotes(allQuotes, request.toTokenDecimals)
 
     return {
       quotes: rankedQuotes,

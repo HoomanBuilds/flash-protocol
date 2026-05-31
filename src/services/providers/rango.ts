@@ -183,6 +183,8 @@ export class RangoProvider implements IProvider {
       fromAmount: fromAmount, 
       toAmount: quote.route.outputAmount,
       toAmountMin: quote.route.outputAmountMin,
+      toTokenDecimals: quote.route.to?.decimals,
+      toTokenPriceUSD: quote.route.to?.usdPrice ?? undefined,
       estimatedGas: quote.route.feeUsd?.toString() || '0',
       estimatedDuration: estimatedTime,
       transactionRequest: null, 

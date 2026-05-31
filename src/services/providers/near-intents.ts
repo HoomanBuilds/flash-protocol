@@ -1,5 +1,6 @@
 import { IProvider, QuoteRequest, QuoteResponse, StatusRequest, StatusResponse, TransactionStatus, FeeCost } from '@/types/provider'
 import { OneClickService, QuoteRequest as DefuseQuoteRequest, OpenAPI, TokenResponse } from '@defuse-protocol/one-click-sdk-typescript'
+import { deriveChainFamily } from '@/lib/chain-family'
 
 OpenAPI.BASE = 'https://1click.chaindefuser.com'
 
@@ -284,8 +285,10 @@ export class NearIntentsProvider implements IProvider {
         fromAmount: request.fromAmount,
         toAmount: quote.amountOut,
         toAmountMin: quote.minAmountOut || quote.amountOut,
+        toTokenDecimals: toTokenMeta?.decimals,
+        toAmountUSD: quote.amountOutUsd?.toString(),
         estimatedGas: '0', // NEAR Intents handles gas internally
-        estimatedDuration: quote.timeEstimate || 120, 
+        estimatedDuration: quote.timeEstimate || 120,
         transactionRequest: quote.depositAddress ? { 
           depositAddress: quote.depositAddress,
           memo: quote.depositMemo 
@@ -297,9 +300,9 @@ export class NearIntentsProvider implements IProvider {
           deadline: quote.deadline,
           amountOutFormatted: quote.amountOutFormatted,
           amountOutUsd: quote.amountOutUsd,
-          chainType: String(request.fromChain) === 'solana' ? 'solana' as const
-                   : String(request.fromChain) === 'bitcoin' ? 'bitcoin' as const
-                   : 'evm' as const,
+          // Real family — XRP/TON/Stellar/Tron/Sui resolve to 'other' (not 'evm'),
+          // so the executor blocks them instead of misrouting to the EVM signer.
+          chainType: deriveChainFamily(request.fromChain),
           isDepositTrade: true,
           amountToSend: request.fromAmount,
         },
@@ -350,7 +353,7 @@ export class NearIntentsProvider implements IProvider {
   }
 
   async getStatus(request: StatusRequest): Promise<StatusResponse> {
-    const { depositAddress } = request
+    const { depositAddress, depositMemo } = request
 
     if (!depositAddress) {
       console.error('NearIntentsProvider: depositAddress missing for status check')
@@ -361,7 +364,8 @@ export class NearIntentsProvider implements IProvider {
     }
 
     try {
-      const response = await OneClickService.getExecutionStatus(depositAddress)
+      // Pass the memo — memo-required deposit chains need it for status lookup.
+      const response = await OneClickService.getExecutionStatus(depositAddress, depositMemo)
       
       let finalStatus: TransactionStatus = 'PENDING'
       const status = (response.status || '').toUpperCase()

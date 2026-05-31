@@ -49,3 +49,7 @@ next-env.d.ts
 .agent/
 /documentation/
 /inspiration/
+provider-logs/
+
+# Local planning/specs — never commit
+docs/

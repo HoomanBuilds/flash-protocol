@@ -25,4 +25,3 @@ export const updatePaymentLinkSchema = createPaymentLinkSchema.partial().extend(
 })
 
 export type CreatePaymentLinkInput = z.infer<typeof createPaymentLinkSchema>
-export type UpdatePaymentLinkInput = z.infer<typeof updatePaymentLinkSchema>

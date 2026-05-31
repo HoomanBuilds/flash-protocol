@@ -137,34 +137,42 @@ export class RubicProvider implements IProvider {
       }
 
       const data = await response.json()
-      
+
+      // quoteDepositTrades wraps the route in { routes: [route] }; quoteBest
+      // returns it flat. Normalize to a single quote payload accessor.
+      const quote = isNonEvmSource ? (data.routes?.[0] ?? {}) : data
+
       console.log('=== RUBIC RAW RESPONSE ===')
-      console.log('destinationTokenAmount:', data.estimate?.destinationTokenAmount)
-      console.log('destinationTokenMinAmount:', data.estimate?.destinationTokenMinAmount)
-      console.log('type/providerType:', data.type, data.providerType)
-      console.log('tokens:', JSON.stringify(data.tokens, null, 2))
+      console.log('destinationTokenAmount:', quote.estimate?.destinationTokenAmount)
+      console.log('destinationTokenMinAmount:', quote.estimate?.destinationTokenMinAmount)
+      console.log('type/providerType:', quote.type, quote.providerType)
+      console.log('tokens:', JSON.stringify(quote.tokens, null, 2))
       console.log('===========================')
-      
-      if (!data.estimate || !data.estimate.destinationTokenAmount) {
+
+      if (!quote.estimate || !quote.estimate.destinationTokenAmount) {
         console.log('Rubic: No routes found in response')
         return []
       }
 
       // Extract underlying provider name from Rubic
-      const underlyingProvider = data.type || data.providerType || 'rubic'
-      const gasCostUSD = data.estimate?.gasFeeInfo?.usdValue || '0'
-      
+      const underlyingProvider = quote.type || quote.providerType || 'rubic'
+      const gasCostUSD = quote.estimate?.gasFeeInfo?.usdValue || '0'
+
       // IMPORTANT: Rubic returns human-readable amounts
-      const toDecimals = data.tokens?.to?.decimals || 6
-      const toAmountHuman = data.estimate.destinationTokenAmount
-      const toAmountMinHuman = data.estimate.destinationTokenMinAmount || toAmountHuman
-      
+      const toDecimals = quote.tokens?.to?.decimals || 6
+      const toAmountHuman = quote.estimate.destinationTokenAmount
+      const toAmountMinHuman = quote.estimate.destinationTokenMinAmount || toAmountHuman
+
       // Process EVM transaction data
       let transactionRequest = null
-      let approvalAddress = data.transaction?.approvalAddress
+      let approvalAddress = quote.transaction?.approvalAddress
       let insufficientBalance = false
 
-      if (data.id) {
+      // Deposit trades quote with id=null but still need the swap call to obtain
+      // a deposit address; gate on the presence of an estimate instead.
+      const shouldFetchTx = isNonEvmSource ? Boolean(quote.estimate) : Boolean(quote.id)
+
+      if (shouldFetchTx) {
         try {
           if (isNonEvmSource) {
             // Non-EVM
@@ -173,8 +181,9 @@ export class RubicProvider implements IProvider {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 ...commonParams,
-                id: data.id,
+                id: quote.id,
                 receiver: request.toAddress || request.fromAddress,
+                refundAddress: request.fromAddress,
               })
             })
 
@@ -183,7 +192,10 @@ export class RubicProvider implements IProvider {
               if (swapData.transaction?.depositAddress) {
                 transactionRequest = {
                   depositAddress: swapData.transaction.depositAddress,
-                  amountToSend: swapData.transaction.amountToSend,
+                  // Rubic returns amountToSend in HUMAN units; the executor does
+                  // BigInt(amountToSend) expecting RAW base units. The deposit
+                  // amount equals the source amount the user pays = request.fromAmount.
+                  amountToSend: request.fromAmount,
                   exchangeId: swapData.transaction.exchangeId,
                   type: chainType,
                 }
@@ -196,7 +208,7 @@ export class RubicProvider implements IProvider {
                headers: { 'Content-Type': 'application/json' },
                body: JSON.stringify({
                  ...commonParams,
-                 id: data.id
+                 id: quote.id
                })
             })
             
@@ -231,19 +243,33 @@ export class RubicProvider implements IProvider {
         }
       }
 
+      // Drop non-executable quotes: Rubic cannot be executed without tx data.
+      // EVM swaps need transactionRequest.to/data (from /routes/swap); deposit
+      // trades need a depositAddress (from /routes/swapDepositTrade). When the
+      // swap call fails (e.g. insufficient balance) these are absent, and the
+      // quote would be unexecutable yet could still poison ranking as "best".
+      const hasExecutableTx = isNonEvmSource
+        ? Boolean(transactionRequest?.depositAddress)
+        : Boolean(transactionRequest?.to && transactionRequest?.data)
+      if (!hasExecutableTx) {
+        console.log('Rubic: dropping quote with no executable transaction data')
+        return []
+      }
+
       // Calculate total fees
-      const protocolFeeUSD = data.fees?.gasTokenFees?.protocol?.fixedUsdAmount || 0
-      const providerFeeUSD = data.fees?.gasTokenFees?.provider?.fixedUsdAmount || 0
+      const protocolFeeUSD = quote.fees?.gasTokenFees?.protocol?.fixedUsdAmount || 0
+      const providerFeeUSD = quote.fees?.gasTokenFees?.provider?.fixedUsdAmount || 0
       const totalFeeUSD = (parseFloat(gasCostUSD) + protocolFeeUSD + providerFeeUSD).toFixed(4)
 
       return [{
         provider: 'rubic',
-        id: data.id || Math.random().toString(36).substring(7),
+        id: quote.id || Math.random().toString(36).substring(7),
         fromAmount: request.fromAmount,
         toAmount: this.toWei(toAmountHuman, toDecimals),
         toAmountMin: this.toWei(toAmountMinHuman, toDecimals),
+        toTokenDecimals: toDecimals,
         estimatedGas: gasCostUSD,
-        estimatedDuration: data.estimate.estimatedTime || 300,
+        estimatedDuration: quote.estimate.estimatedTime || 300,
         transactionRequest,
         fees: {
           totalFeeUSD,
@@ -263,61 +289,61 @@ export class RubicProvider implements IProvider {
         routes: [{
           type: 'bridge' as const,
           tool: underlyingProvider,
-          toolName: data.providerName || underlyingProvider,
+          toolName: quote.providerName || underlyingProvider,
           action: {
             fromToken: {
               address: request.fromToken,
               chainId: request.fromChain,
-              symbol: data.tokens?.from?.symbol || 'UNKNOWN',
-              decimals: data.tokens?.from?.decimals || 18
+              symbol: quote.tokens?.from?.symbol || 'UNKNOWN',
+              decimals: quote.tokens?.from?.decimals || 18
             },
             toToken: {
               address: request.toToken,
               chainId: request.toChain,
-              symbol: data.tokens?.to?.symbol || 'UNKNOWN',
-              decimals: data.tokens?.to?.decimals || 18
+              symbol: quote.tokens?.to?.symbol || 'UNKNOWN',
+              decimals: quote.tokens?.to?.decimals || 18
             },
             fromAmount: request.fromAmount,
-            toAmount: this.toWei(data.estimate.destinationTokenAmount, toDecimals)
+            toAmount: this.toWei(quote.estimate.destinationTokenAmount, toDecimals)
           },
           // TODO: Add support for platform fees
           estimate: {
             approvalAddress,
-            executionDuration: data.estimate.estimatedTime,
+            executionDuration: quote.estimate.estimatedTime,
             feeCosts: [
               // Gas Fees
-              ...(data.fees?.gasTokenFees?.gas?.totalUsdAmount ? [{
+              ...(quote.fees?.gasTokenFees?.gas?.totalUsdAmount ? [{
                 type: 'GAS' as const,
                 name: 'Network Gas',
                 description: 'Estimated gas fee for transaction',
-                amount: data.fees.gasTokenFees.gas.totalWeiAmount || '0',
-                amountUSD: data.fees.gasTokenFees.gas.totalUsdAmount.toString(),
+                amount: quote.fees.gasTokenFees.gas.totalWeiAmount || '0',
+                amountUSD: quote.fees.gasTokenFees.gas.totalUsdAmount.toString(),
                 included: false,
                 token: {
-                  address: data.fees.gasTokenFees.nativeToken?.address || '',
-                  chainId: data.fees.gasTokenFees.nativeToken?.blockchainId || request.fromChain,
-                  symbol: data.fees.gasTokenFees.nativeToken?.symbol || 'ETH',
-                  decimals: data.fees.gasTokenFees.nativeToken?.decimals || 18
+                  address: quote.fees.gasTokenFees.nativeToken?.address || '',
+                  chainId: quote.fees.gasTokenFees.nativeToken?.blockchainId || request.fromChain,
+                  symbol: quote.fees.gasTokenFees.nativeToken?.symbol || 'ETH',
+                  decimals: quote.fees.gasTokenFees.nativeToken?.decimals || 18
                 }
               }] : []),
 
               // Rubic Protocol Fee
-              ...(data.fees?.gasTokenFees?.protocol?.fixedUsdAmount ? [{
+              ...(quote.fees?.gasTokenFees?.protocol?.fixedUsdAmount ? [{
                 type: 'PROTOCOL' as const,
                 name: 'Rubic Protocol Fee',
                 description: 'Fixed fee charged by Rubic',
-                amount: data.fees.gasTokenFees.protocol.fixedWeiAmount || '0',
-                amountUSD: data.fees.gasTokenFees.protocol.fixedUsdAmount.toString(),
+                amount: quote.fees.gasTokenFees.protocol.fixedWeiAmount || '0',
+                amountUSD: quote.fees.gasTokenFees.protocol.fixedUsdAmount.toString(),
                 included: true
               }] : []),
 
               // Provider/Bridge Fee
-              ...(data.fees?.gasTokenFees?.provider?.fixedUsdAmount ? [{
+              ...(quote.fees?.gasTokenFees?.provider?.fixedUsdAmount ? [{
                 type: 'BRIDGE' as const,
                 name: 'Provider Fee',
                 description: 'Fee charged by the underlying bridge/provider',
-                amount: data.fees.gasTokenFees.provider.fixedWeiAmount || '0',
-                amountUSD: data.fees.gasTokenFees.provider.fixedUsdAmount.toString(),
+                amount: quote.fees.gasTokenFees.provider.fixedWeiAmount || '0',
+                amountUSD: quote.fees.gasTokenFees.provider.fixedUsdAmount.toString(),
                 included: true
               }] : [])
             ]

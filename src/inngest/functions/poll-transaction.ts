@@ -55,7 +55,7 @@ export const pollTransactionStatus = inngest.createFunction(
   { id: 'poll-transaction-status' },
   { event: 'transaction/poll' },
   async ({ event, step }) => {
-    const { transactionId, txHash, fromChainId, toChainId, bridge, provider: providerName, requestId, depositAddress, attempt = 1 } = event.data
+    const { transactionId, txHash, fromChainId, toChainId, bridge, provider: providerName, requestId, depositAddress, depositMemo, attempt = 1 } = event.data
 
     // Skip if no txHash yet
     if (!txHash) {
@@ -99,6 +99,7 @@ export const pollTransactionStatus = inngest.createFunction(
         bridge,
         requestId, // For Rango
         depositAddress, // For Near Intents
+        depositMemo, // For memo-required NEAR deposit chains
       }
       return provider.getStatus(request)
     })

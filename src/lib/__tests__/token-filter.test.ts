@@ -4,7 +4,10 @@ import {
   filterSpamTokens,
   STABLECOIN_SYMBOLS,
   MAX_SYMBOL_LENGTH,
+  normalizeSymbolKey,
+  collapseTokensBySymbol,
 } from '../token-filter'
+import type { UnifiedToken } from '../chain-registry'
 
 // ─── Helpers ───────────────────────────────────────────────────────
 
@@ -165,5 +168,114 @@ describe('filterSpamTokens', () => {
     const result = filterSpamTokens(tokens, counts)
     expect(result).toHaveLength(1)
     expect(result[0].symbol).toBe('WETH')
+  })
+})
+
+// ─── normalizeSymbolKey ───────────────────────────────────────────
+
+describe('normalizeSymbolKey', () => {
+  it('uppercases plain symbols', () => {
+    expect(normalizeSymbolKey('usdc')).toBe('USDC')
+    expect(normalizeSymbolKey('Weth')).toBe('WETH')
+  })
+
+  it('folds known bridged stablecoin variants to their base', () => {
+    expect(normalizeSymbolKey('USDC.e')).toBe('USDC')
+    expect(normalizeSymbolKey('usdbc')).toBe('USDC')
+    expect(normalizeSymbolKey('fUSDT')).toBe('USDT')
+  })
+
+  it('does not fold non-stablecoin lookalikes', () => {
+    expect(normalizeSymbolKey('WETH.e')).toBe('WETH.E')
+    expect(normalizeSymbolKey('SOL')).toBe('SOL')
+  })
+
+  it('handles empty symbol', () => {
+    expect(normalizeSymbolKey('')).toBe('')
+  })
+})
+
+// ─── collapseTokensBySymbol ───────────────────────────────────────
+
+describe('collapseTokensBySymbol', () => {
+  const t = (over: Partial<UnifiedToken>): UnifiedToken => ({
+    address: '0x0',
+    symbol: 'X',
+    name: 'X',
+    decimals: 18,
+    chainKey: '1',
+    ...over,
+  })
+
+  it('collapses multiple same-symbol USDC into one row', () => {
+    const tokens = [
+      t({ address: '0xAAA', symbol: 'USDC', name: 'USD Coin' }),
+      t({ address: '0xBBB', symbol: 'USDC', name: 'USD Coin (provider 2)' }),
+      t({ address: '0xCCC', symbol: 'USDC', name: 'USD Coin (provider 3)' }),
+    ]
+    const result = collapseTokensBySymbol(tokens)
+    expect(result.filter((x) => x.symbol.toUpperCase() === 'USDC')).toHaveLength(1)
+  })
+
+  it('prefers the canonical address when collapsing', () => {
+    const canonicalAddr = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' // Ethereum USDC
+    const tokens = [
+      t({ address: '0xSPAM', symbol: 'USDC', name: 'Fake USDC' }),
+      t({ address: canonicalAddr, symbol: 'USDC', name: 'USD Coin' }),
+    ]
+    const result = collapseTokensBySymbol(tokens, '1')
+    const usdc = result.find((x) => x.symbol === 'USDC')
+    expect(usdc?.address).toBe(canonicalAddr)
+  })
+
+  it('hides USDC.e when canonical USDC is present (base symbol wins)', () => {
+    const tokens = [
+      t({ address: '0xUSDC', symbol: 'USDC', name: 'USD Coin' }),
+      t({ address: '0xBRIDGED', symbol: 'USDC.e', name: 'Bridged USDC' }),
+    ]
+    const result = collapseTokensBySymbol(tokens)
+    const usdcFamily = result.filter((x) => normalizeSymbolKey(x.symbol) === 'USDC')
+    expect(usdcFamily).toHaveLength(1)
+    expect(usdcFamily[0].symbol).toBe('USDC')
+  })
+
+  it('keeps USDC.e when no plain USDC exists (never drops a whole family)', () => {
+    const tokens = [t({ address: '0xBRIDGED', symbol: 'USDC.e', name: 'Bridged USDC' })]
+    const result = collapseTokensBySymbol(tokens)
+    expect(result).toHaveLength(1)
+    expect(result[0].symbol).toBe('USDC.e')
+  })
+
+  it('collapses multiple native SOL entries into one', () => {
+    const tokens = [
+      t({ address: '11111111111111111111111111111111', symbol: 'SOL', name: 'Solana', isNative: true, chainKey: 'solana' }),
+      t({ address: 'So11111111111111111111111111111111111111112', symbol: 'SOL', name: 'Wrapped SOL', isNative: true, chainKey: 'solana' }),
+    ]
+    const result = collapseTokensBySymbol(tokens, 'solana')
+    expect(result.filter((x) => x.symbol === 'SOL')).toHaveLength(1)
+  })
+
+  it('prefers higher provider count when no canonical/native distinction', () => {
+    const tokens = [
+      t({ address: '0xLOW', symbol: 'WIF', name: 'dogwifhat', logoUrl: 'l', providerIds: { _count: 1 } as never }),
+      t({ address: '0xHIGH', symbol: 'WIF', name: 'dogwifhat', logoUrl: 'l', providerIds: { _count: 3 } as never }),
+    ]
+    const result = collapseTokensBySymbol(tokens)
+    expect(result).toHaveLength(1)
+    expect(result[0].address).toBe('0xHIGH')
+  })
+
+  it('leaves distinct symbols untouched', () => {
+    const tokens = [
+      t({ address: '0x1', symbol: 'USDC', name: 'USD Coin' }),
+      t({ address: '0x2', symbol: 'USDT', name: 'Tether' }),
+      t({ address: '0x3', symbol: 'WETH', name: 'Wrapped Ether' }),
+    ]
+    const result = collapseTokensBySymbol(tokens)
+    expect(result).toHaveLength(3)
+  })
+
+  it('handles empty input', () => {
+    expect(collapseTokensBySymbol([])).toEqual([])
   })
 })

@@ -4,7 +4,7 @@ import { OneClickService, OpenAPI } from '@defuse-protocol/one-click-sdk-typescr
 import { SYMBIOSIS_CONFIG } from '@/services/providers/symbiosis-data'
 import { CHAINS } from '@/lib/chains'
 import { TOKENS } from '@/lib/tokens'
-import { filterSpamTokens } from '@/lib/token-filter'
+import { filterSpamTokens, collapseTokensBySymbol } from '@/lib/token-filter'
 import {
   UnifiedChain,
   UnifiedToken,
@@ -811,7 +811,9 @@ function mergeTokens(tokenSets: UnifiedToken[][], chainKey?: string): UnifiedTok
     addressCounts,
     chainKey,
   )
-  const result = filtered
+  // Collapse same-symbol variants (USDC/USDC.e, multiple native SOL) into one
+  // canonical row per symbol so the UI shows a single selectable entry.
+  const result = collapseTokensBySymbol(filtered, chainKey, addressCounts)
   const canonical = chainKey ? buildCanonicalAddresses(chainKey) : new Set<string>()
 
   // Sort: native first, then canonical stablecoins, then multi-provider stablecoins,

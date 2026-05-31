@@ -127,3 +127,87 @@ export function filterSpamTokens(
     return !isSpamToken(token, count, canonical)
   })
 }
+
+/**
+ * Known bridged/variant stablecoin symbols folded into their canonical base
+ * for display. Only stablecoins — never fold arbitrary tokens by symbol.
+ */
+const SYMBOL_VARIANT_MAP: Record<string, string> = {
+  'USDC.E': 'USDC',
+  USDBC: 'USDC',
+  FUSDT: 'USDT',
+}
+
+/**
+ * Normalize a token symbol to its display family key (case-insensitive,
+ * folds known bridged variants like USDC.e → USDC).
+ */
+export function normalizeSymbolKey(symbol: string): string {
+  const upper = (symbol || '').toUpperCase()
+  return SYMBOL_VARIANT_MAP[upper] || upper
+}
+
+/**
+ * Collapse same-symbol tokens into a single canonical row per symbol family.
+ *
+ * Fixes the "2-3 USDC / multiple SOL on one chain" problem: providers return the
+ * same logical token at different addresses (native USDC vs USDC.e vs another
+ * provider's USDC), and without this they each render as a separate selectable row.
+ *
+ * Within each family the winner is scored by: native > exact base-symbol match >
+ * canonical address > provider count > has-logo. A family with only a bridged
+ * variant (e.g. USDC.e but no USDC) keeps that variant — never drops a whole family.
+ *
+ * @param tokens - Tokens for a single chain (already spam-filtered)
+ * @param chainKey - Chain key for canonical address lookup
+ * @param providerCounts - Optional map of lowercase address → provider count;
+ *   falls back to providerIds._count on each token.
+ */
+export function collapseTokensBySymbol(
+  tokens: UnifiedToken[],
+  chainKey?: string,
+  providerCounts?: Map<string, number>,
+): UnifiedToken[] {
+  const canonical = chainKey ? buildCanonicalAddresses(chainKey) : new Set<string>()
+  const groups = new Map<string, UnifiedToken[]>()
+
+  for (const token of tokens) {
+    const key = normalizeSymbolKey(token.symbol)
+    const group = groups.get(key)
+    if (group) group.push(token)
+    else groups.set(key, [token])
+  }
+
+  const countOf = (t: UnifiedToken): number => {
+    if (providerCounts) {
+      const c = providerCounts.get(t.address.toLowerCase())
+      if (c) return c
+    }
+    const ids = t.providerIds as Record<string, unknown> | undefined
+    if (ids && typeof ids._count === 'number') return ids._count as number
+    return 1
+  }
+
+  const result: UnifiedToken[] = []
+  for (const group of groups.values()) {
+    if (group.length === 1) {
+      result.push(group[0])
+      continue
+    }
+    const familyKey = normalizeSymbolKey(group[0].symbol)
+    const score = (t: UnifiedToken): number => {
+      let s = 0
+      if (t.isNative) s += 1000
+      // Base symbol (USDC) beats bridged variant (USDC.e) within the same family
+      if ((t.symbol || '').toUpperCase() === familyKey) s += 100
+      if (canonical.has(t.address.toLowerCase())) s += 50
+      s += Math.min(countOf(t), 9) * 2
+      if (t.logoUrl) s += 1
+      return s
+    }
+    const winner = group.reduce((best, t) => (score(t) > score(best) ? t : best), group[0])
+    result.push(winner)
+  }
+
+  return result
+}

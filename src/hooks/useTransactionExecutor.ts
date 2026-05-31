@@ -16,12 +16,14 @@ import {
   getSolanaConnection,
   isSolNative,
 } from '@/lib/solana'
-import { PublicKey } from '@solana/web3.js'
+import { resolveExecutionPath, isCrossChainSwap } from '@/lib/execution-path'
+import { PublicKey, VersionedTransaction, Transaction } from '@solana/web3.js'
 
 OpenAPI.BASE = 'https://1click.chaindefuser.com'
 
 // Initialize Rango Client
-const RANGO_API_KEY = process.env.NEXT_PUBLIC_RANGO_API_KEY || 'c6381a79-2817-4602-83bf-6a641a409e32' 
+const RANGO_API_KEY =
+  process.env.NEXT_PUBLIC_RANGO_API_KEY || 'c6381a79-2817-4602-83bf-6a641a409e32'
 const rangoClient = new RangoClient(RANGO_API_KEY)
 
 const erc20Abi = parseAbi([
@@ -34,7 +36,7 @@ const erc20Abi = parseAbi([
 enum TransactionStatus {
   FAILED = 'FAILED',
   SUCCESS = 'SUCCESS',
-  RUNNING = 'RUNNING'
+  RUNNING = 'RUNNING',
 }
 
 enum TransactionType {
@@ -44,10 +46,19 @@ enum TransactionType {
   SOLANA = 'SOLANA',
   TRON = 'TRON',
   STARKNET = 'STARKNET',
-  TON = 'TON'
+  TON = 'TON',
 }
 
-export type ExecutorStatus = 'idle' | 'approving' | 'executing' | 'completed' | 'failed'
+// 'submitted' = source tx broadcast for a cross-chain atomic swap; settlement on
+// the destination is still pending and tracked by the server-side poller. We do
+// NOT claim 'completed' on broadcast for cross-chain bridges (they take minutes).
+export type ExecutorStatus =
+  | 'idle'
+  | 'approving'
+  | 'executing'
+  | 'submitted'
+  | 'completed'
+  | 'failed'
 
 export function useTransactionExecutor() {
   const { data: walletClient } = useWalletClient()
@@ -55,7 +66,7 @@ export function useTransactionExecutor() {
   const { switchChainAsync } = useSwitchChain()
   const config = useConfig()
   const { address } = useAppKitAccount()
-  
+
   const [status, setStatus] = useState<ExecutorStatus>('idle')
   const [error, setError] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
@@ -77,7 +88,7 @@ export function useTransactionExecutor() {
               await switchChainAsync({ chainId })
               const client = await getWalletClient(config, { chainId })
               return client
-            }
+            },
           }),
           // Solana provider for LIFI
           Solana({
@@ -85,257 +96,281 @@ export function useTransactionExecutor() {
               const solana = (window as any).phantom?.solana || (window as any).solana
               if (!solana) throw new Error('Solana wallet not connected')
               return solana
-            }
-          })
-        ]
+            },
+          }),
+        ],
       })
     }
   }, [walletClient, switchChainAsync])
 
-  const executeLifi = useCallback(async (route: Route) => {
-    if (!walletClient) throw new Error('Wallet not connected')
-    
-    setStatus('executing')
-    setStep('Executing LI.FI Route...')
-    
-    try {
-      // Execute route (signer is handled by global config)
-      const executedRoute = await executeRoute(route)
+  const executeLifi = useCallback(
+    async (route: Route) => {
+      if (!walletClient) throw new Error('Wallet not connected')
 
-      // The SDK returns the completed route. We extract the final TX hash from the last step.
-      const lastStep = executedRoute.steps[executedRoute.steps.length - 1]
-      const finalTx = lastStep.execution?.process.find(p => p.type === 'CROSS_CHAIN' || p.type === 'SWAP')?.txHash
-      
-      if (finalTx) {
-        setTxHash(finalTx)
-        setStatus('completed')
-        return finalTx
-      } else {
-         // Fallback if SDK doesn't return explicit hash in expected place
-         setStatus('completed')
-         return '0x' 
+      setStatus('executing')
+      setStep('Executing LI.FI Route...')
+
+      try {
+        // Execute route (signer is handled by global config)
+        const executedRoute = await executeRoute(route)
+
+        // The SDK returns the completed route. We extract the final TX hash from the last step.
+        const lastStep = executedRoute.steps[executedRoute.steps.length - 1]
+        const finalTx = lastStep.execution?.process.find(
+          (p) => p.type === 'CROSS_CHAIN' || p.type === 'SWAP',
+        )?.txHash
+
+        if (finalTx) {
+          setTxHash(finalTx)
+          setStatus('completed')
+          return finalTx
+        } else {
+          // Fallback if SDK doesn't return explicit hash in expected place
+          setStatus('completed')
+          return '0x'
+        }
+      } catch (e: any) {
+        console.error('LI.FI Execution Error:', e)
+        setError(e.message || 'LI.FI Execution Failed')
+        setStatus('failed')
+        throw e
       }
-    } catch (e: any) {
-      console.error('LI.FI Execution Error:', e)
-      setError(e.message || 'LI.FI Execution Failed')
-      setStatus('failed')
-      throw e
-    }
-  }, [walletClient])
+    },
+    [walletClient],
+  )
 
-  const executeNearIntents = useCallback(async (quote: QuoteResponse) => {
-    if (!walletClient) throw new Error('Wallet not connected')
-    
-    setStatus('executing')
-    setStep('Executing Near Intents Deposit...')
+  const executeNearIntents = useCallback(
+    async (quote: QuoteResponse) => {
+      if (!walletClient) throw new Error('Wallet not connected')
 
-    try {
-      // 1. Extract Deposit Address
-      const depositAddress = quote.transactionRequest?.depositAddress || quote.metadata?.depositAddress
-      if (!depositAddress) throw new Error('Deposit address missing for Near Intents')
+      setStatus('executing')
+      setStep('Executing Near Intents Deposit...')
 
-      const amount = BigInt(quote.fromAmount)
-      const fromToken = quote.routes[0]?.action.fromToken
+      try {
+        // 1. Extract Deposit Address
+        const depositAddress =
+          quote.transactionRequest?.depositAddress || quote.metadata?.depositAddress
+        if (!depositAddress) throw new Error('Deposit address missing for Near Intents')
 
-      let hash: `0x${string}`
+        const amount = BigInt(quote.fromAmount)
+        const fromToken = quote.routes[0]?.action.fromToken
 
-      // 2. Send Transaction (Native vs ERC20)
-      if (fromToken.address === '0x0000000000000000000000000000000000000000') {
-         // Native Transfer
-         hash = await walletClient.sendTransaction({
+        let hash: `0x${string}`
+
+        // 2. Send Transaction (Native vs ERC20)
+        if (fromToken.address === '0x0000000000000000000000000000000000000000') {
+          // Native Transfer
+          hash = await walletClient.sendTransaction({
             to: depositAddress as `0x${string}`,
-            value: amount
-         })
-      } else {
-         // ERC20 Transfer
-         hash = await walletClient.writeContract({
+            value: amount,
+          })
+        } else {
+          // ERC20 Transfer
+          hash = await walletClient.writeContract({
             address: fromToken.address as `0x${string}`,
             abi: erc20Abi,
             functionName: 'transfer',
-            args: [depositAddress as `0x${string}`, amount]
-         })
-      }
+            args: [depositAddress as `0x${string}`, amount],
+          })
+        }
 
-      setTxHash(hash)
-      setStep('Submitting Transaction Hash...')
+        setTxHash(hash)
+        setStep('Submitting Transaction Hash...')
 
-      // 3. Submit Hash to Solver Network
-      try {
-        await OneClickService.submitDepositTx({
+        // 3. Submit Hash to Solver Network (include memo for memo-required chains)
+        try {
+          await OneClickService.submitDepositTx({
             txHash: hash,
-            depositAddress
-        })
-      } catch (e) {
-        console.warn('Failed to submit tx hash to Near Intents:', e)
-        // Non-blocking error, solver will find it eventually
+            depositAddress,
+            memo: quote.metadata?.depositMemo as string | undefined,
+          })
+        } catch (e) {
+          console.warn('Failed to submit tx hash to Near Intents:', e)
+          // Non-blocking error, solver will find it eventually
+        }
+
+        setStatus('completed')
+        return hash
+      } catch (e: any) {
+        console.error('Near Intents Execution Error:', e)
+        setError(e.message || 'Near Intents Execution Failed')
+        setStatus('failed')
+        throw e
       }
+    },
+    [walletClient],
+  )
 
-      setStatus('completed')
-      return hash
+  const executeRango = useCallback(
+    async (quote: QuoteResponse, recipientAddress?: string) => {
+      if (!walletClient || !publicClient) throw new Error('Wallet not connected')
+      const params = quote.metadata?.rangoParams as any
+      if (!params) throw new Error('Rango params missing from quote metadata')
 
-    } catch (e: any) {
-      console.error('Near Intents Execution Error:', e)
-      setError(e.message || 'Near Intents Execution Failed')
-      setStatus('failed')
-      throw e
-    }
-  }, [walletClient])
+      try {
+        // 1. Prepare Swap Request
+        // Rango expects the full params again for the swap
+        const swapRequest = {
+          ...params,
+          fromAddress: walletClient.account.address,
+          toAddress: recipientAddress || walletClient.account.address,
+          slippage: params.slippage || 1.0,
+          disableEstimate: false,
+        }
 
-  const executeRango = useCallback(async (quote: QuoteResponse, recipientAddress?: string) => {
-    if (!walletClient || !publicClient) throw new Error('Wallet not connected')
-    const params = quote.metadata?.rangoParams as any
-    if (!params) throw new Error('Rango params missing from quote metadata')
+        setStep('Requesting Swap Transaction...')
+        setStatus('approving')
 
-    try {
-      // 1. Prepare Swap Request
-      // Rango expects the full params again for the swap
-      const swapRequest = {
-        ...params,
-        fromAddress: walletClient.account.address,
-        toAddress: recipientAddress || walletClient.account.address,
-        slippage: params.slippage || 1.0,
-        disableEstimate: false
-      }
+        // 2. Call Swap API (Step 1)
+        // We pass the full request to get the tx data
+        const swapResponse = await rangoClient.swap(swapRequest)
 
-      setStep('Requesting Swap Transaction...')
-      setStatus('approving')
+        if (swapResponse.error) throw new Error(swapResponse.error)
 
-      // 2. Call Swap API (Step 1)
-      // We pass the full request to get the tx data
-      const swapResponse = await rangoClient.swap(swapRequest)
+        const requestId = swapResponse.requestId
+        const tx = swapResponse.tx
 
-      if (swapResponse.error) throw new Error(swapResponse.error)
-      
-      const requestId = swapResponse.requestId
-      const tx = swapResponse.tx
-      
-      if (!tx) throw new Error('Failed to get transaction data from Rango')
+        if (!tx) throw new Error('Failed to get transaction data from Rango')
 
-      // 3. Handle Approval if present
-      // @ts-ignore - Local enum matching
-      if (tx.type === TransactionType.EVM && tx.approveData && tx.approveTo) {
-        setStep('Approving Token...')
-        const approveHash = await walletClient.sendTransaction({
-          to: tx.approveTo as `0x${string}`,
-          data: tx.approveData as `0x${string}`,
-        })
+        // 3. Handle Approval if present
+        // @ts-ignore - Local enum matching
+        if (tx.type === TransactionType.EVM && tx.approveData && tx.approveTo) {
+          setStep('Approving Token...')
+          const approveHash = await walletClient.sendTransaction({
+            to: tx.approveTo as `0x${string}`,
+            data: tx.approveData as `0x${string}`,
+          })
 
-        setStep('Waiting for Approval...')
-        await publicClient.waitForTransactionReceipt({ hash: approveHash })
-        
-        // Loop check isApproved from Rango
-        let isApproved = false
-        while (!isApproved) {
-            await new Promise(r => setTimeout(r, 3000))
+          setStep('Waiting for Approval...')
+          await publicClient.waitForTransactionReceipt({ hash: approveHash })
+
+          // Loop check isApproved from Rango
+          let isApproved = false
+          while (!isApproved) {
+            await new Promise((r) => setTimeout(r, 3000))
             const check = await rangoClient.isApproved(requestId, approveHash)
             if (check.isApproved) isApproved = true
+          }
         }
 
-      }
+        // 4. Execute Main Swap
+        setStep('Executing Swap...')
+        setStatus('executing')
 
-      // 4. Execute Main Swap
-      setStep('Executing Swap...')
-      setStatus('executing')
-      
-      // @ts-ignore
-      if (tx.type === TransactionType.SOLANA) {
-        // Solana transaction from Rango
-        return await executeSolanaTx(tx)
-      }
+        // @ts-ignore
+        if (tx.type === TransactionType.SOLANA) {
+          // Solana transaction from Rango
+          return await executeSolanaTx(tx)
+        }
 
-      // @ts-ignore
-      if (tx.type !== TransactionType.EVM) throw new Error(`Unsupported transaction type: ${tx.type}`)
+        // @ts-ignore
+        if (tx.type !== TransactionType.EVM)
+          throw new Error(`Unsupported transaction type: ${tx.type}`)
 
-      const hash = await walletClient.sendTransaction({
-        to: tx.txTo as `0x${string}`,
-        data: tx.txData as `0x${string}`,
-        value: tx.value ? BigInt(tx.value) : BigInt(0),
-      })
+        const hash = await walletClient.sendTransaction({
+          to: tx.txTo as `0x${string}`,
+          data: tx.txData as `0x${string}`,
+          value: tx.value ? BigInt(tx.value) : BigInt(0),
+        })
 
-      setTxHash(hash)
-      setStep('Waiting for Confirmation...')
-      
-      // 5. Poll Status
-      let finished = false
-      while (!finished) {
-          await new Promise(r => setTimeout(r, 5000))
+        setTxHash(hash)
+        setStep('Waiting for Confirmation...')
+
+        // 5. Poll Status
+        let finished = false
+        while (!finished) {
+          await new Promise((r) => setTimeout(r, 5000))
           const statusRes = await rangoClient.status({ requestId, txId: hash })
           // @ts-ignore
-          if (statusRes.status === TransactionStatus.SUCCESS || statusRes.status === TransactionStatus.FAILED) {
-              finished = true
-              // @ts-ignore
-              if (statusRes.status === TransactionStatus.FAILED) {
-                  throw new Error('Rango Transaction Failed on-chain')
-              }
+          if (
+            statusRes.status === TransactionStatus.SUCCESS ||
+            statusRes.status === TransactionStatus.FAILED
+          ) {
+            finished = true
+            // @ts-ignore
+            if (statusRes.status === TransactionStatus.FAILED) {
+              throw new Error('Rango Transaction Failed on-chain')
+            }
           }
-      }
-
-      setStatus('completed')
-      return hash
-
-    } catch (e: any) {
-      console.error('Rango Execution Error:', e)
-      setError(e.message || 'Rango Execution Failed')
-      setStatus('failed')
-      throw e
-    }
-  }, [walletClient, publicClient])
-
-  const executeCCTP = useCallback(async (quote: QuoteResponse, recipientAddress?: string) => {
-    if (!walletClient || !evmAdapter) throw new Error('Wallet or Adapter not ready')
-
-    try {
-      const sourceChain = quote.metadata?.sourceChain as string
-      const destChain = quote.metadata?.destChain as string
-      const amount = (BigInt(quote.fromAmount) / BigInt(1e12)).toString() // Convert Wei (18) 
-      
-      const fromDecimals = quote.routes[0]?.action.fromToken.decimals || 6
-      const amountHuman = (Number(quote.fromAmount) / Math.pow(10, fromDecimals)).toString()
-
-      setStatus('approving')
-      setStep('Initializing CCTP Transfer...')
-
-      const result = await executeCCTPBridge({
-        fromChain: sourceChain,
-        toChain: destChain,
-        amount: amountHuman, 
-        recipientAddress: recipientAddress || walletClient.account.address,
-        fromAdapter: evmAdapter,
-        toAdapter: evmAdapter
-      }, {
-        onEvent: (evt: any) => {
-           console.log('CCTP Event:', evt)
-           
-           if (evt.type === 'APPROVAL_TX_SENT') setStep('Approving USDC...')
-           if (evt.type === 'BURN_TX_SENT') {
-             setStatus('executing')
-             setStep('Burning USDC...')
-           } 
-           if (evt.step === 'burn' && evt.status === 'complete') {
-             setStep('Waiting for Circle Attestation (~20 mins)...')
-           }
-           if (evt.step === 'mint' && evt.status === 'progress') {
-             setStep('Minting on Destination...')
-           }
         }
-      })
-      
-      if (!result?.data) throw new Error('CCTP Bridge Failed')
-      
-      const burnStep = result.data.steps.find(s => s.name === 'burn')
-      const tx = burnStep?.txHash
-      
-      if (tx) setTxHash(tx)
-      setStatus('completed')
-      return tx || '0x'
 
-    } catch (e: any) {
-      console.error('CCTP Execution Error:', e)
-      setError(e.message || 'CCTP Failed')
-      setStatus('failed')
-      throw e
-    }
-  }, [walletClient, evmAdapter, executeCCTPBridge])
+        setStatus('completed')
+        return hash
+      } catch (e: any) {
+        console.error('Rango Execution Error:', e)
+        setError(e.message || 'Rango Execution Failed')
+        setStatus('failed')
+        throw e
+      }
+    },
+    [walletClient, publicClient],
+  )
+
+  const executeCCTP = useCallback(
+    async (quote: QuoteResponse, recipientAddress?: string) => {
+      if (!walletClient || !evmAdapter) throw new Error('Wallet or Adapter not ready')
+
+      try {
+        const sourceChain = quote.metadata?.sourceChain as string
+        const destChain = quote.metadata?.destChain as string
+
+        const fromDecimals = quote.routes[0]?.action.fromToken.decimals || 6
+        const amountHuman = (Number(quote.fromAmount) / Math.pow(10, fromDecimals)).toString()
+
+        setStatus('approving')
+        setStep('Initializing CCTP Transfer...')
+
+        const result = await executeCCTPBridge(
+          {
+            fromChain: sourceChain,
+            toChain: destChain,
+            amount: amountHuman,
+            recipientAddress: recipientAddress || walletClient.account.address,
+            fromAdapter: evmAdapter,
+            toAdapter: evmAdapter,
+          },
+          {
+            onEvent: (evt: any) => {
+              console.log('CCTP Event:', evt)
+
+              if (evt.type === 'APPROVAL_TX_SENT') setStep('Approving USDC...')
+              if (evt.type === 'BURN_TX_SENT') {
+                setStatus('executing')
+                setStep('Burning USDC...')
+              }
+              if (evt.step === 'burn' && evt.status === 'complete') {
+                setStep('Waiting for Circle Attestation (~20 mins)...')
+              }
+              if (evt.step === 'mint' && evt.status === 'progress') {
+                setStep('Minting on Destination...')
+              }
+            },
+          },
+        )
+
+        if (!result?.data) throw new Error('CCTP Bridge Failed')
+
+        const burnStep = result.data.steps.find((s) => s.name === 'burn')
+        const tx = burnStep?.txHash
+
+        // Never report success without a real burn tx hash — the bridge is not done
+        // and the server-side poller has nothing to track. Surface the failure.
+        if (!tx) {
+          throw new Error('CCTP burn transaction hash missing — bridge did not complete')
+        }
+
+        setTxHash(tx)
+        setStatus('completed')
+        return tx
+      } catch (e: any) {
+        console.error('CCTP Execution Error:', e)
+        setError(e.message || 'CCTP Failed')
+        setStatus('failed')
+        throw e
+      }
+    },
+    [walletClient, evmAdapter, executeCCTPBridge],
+  )
 
   //Solana Transaction Signing (Rango serialized tx)
   const executeSolanaTx = useCallback(async (tx: any) => {
@@ -351,7 +386,7 @@ export function useTransactionExecutor() {
       if (!serialized) throw new Error('No serialized Solana transaction data')
 
       const transaction = deserializeSolanaTransaction(serialized)
-      
+
       if (!solana?.signAndSendTransaction) {
         throw new Error('Solana wallet does not support signAndSendTransaction')
       }
@@ -370,68 +405,144 @@ export function useTransactionExecutor() {
     }
   }, [])
 
-  const executeSolanaDeposit = useCallback(async (quote: QuoteResponse) => {
+  // Solana execution for atomic swap providers (primarily LI.FI) that return a
+  // base64 serialized (Versioned)Transaction in transactionRequest.data.
+  const executeLifiSolana = useCallback(async (quote: QuoteResponse) => {
     const solana = (window as any).phantom?.solana || (window as any).solana
-    if (!solana || !address) throw new Error('Solana wallet not connected')
+    if (!solana) throw new Error('Solana wallet not connected')
+    if (!solana.signAndSendTransaction) {
+      throw new Error('Connected Solana wallet does not support signAndSendTransaction.')
+    }
 
-    const depositAddress = quote.metadata?.depositAddress || quote.transactionRequest?.depositAddress
-    if (!depositAddress) throw new Error('No deposit address in quote')
+    const serialized = quote.transactionRequest?.data as string | undefined
+    if (!serialized) throw new Error('No serialized Solana transaction data in quote')
 
     setStatus('executing')
-    setStep('Sending Solana Deposit...')
+    setStep('Signing Solana Transaction...')
 
     try {
-      const fromPubkey = new PublicKey(address)
-      const toPubkey = new PublicKey(depositAddress)
-      const fromToken = quote.routes[0]?.action.fromToken
-
-      let transaction
-
-      if (!fromToken || isSolNative(fromToken.address)) {
-        const lamports = BigInt(quote.metadata?.amountToSend || quote.fromAmount)
-        transaction = await buildSolTransfer(fromPubkey, toPubkey, lamports)
-      } else {
-        const mint = new PublicKey(fromToken.address)
-        const amount = BigInt(quote.metadata?.amountToSend || quote.fromAmount)
-        transaction = await buildSplTokenTransfer(fromPubkey, toPubkey, mint, amount)
+      let transaction: VersionedTransaction | Transaction
+      try {
+        transaction = deserializeSolanaTransaction(serialized)
+      } catch {
+        // Fallback: legacy (non-versioned) Solana transaction
+        transaction = Transaction.from(Buffer.from(serialized, 'base64'))
       }
 
-      let txHash: string
-      if (solana?.signAndSendTransaction) {
-        const result = await solana.signAndSendTransaction(transaction)
-        txHash = typeof result === 'string' ? result : result?.signature || result?.toString()
-      } else {
-        throw new Error('Connected Solana wallet does not support signAndSendTransaction.')
+      const result = await solana.signAndSendTransaction(transaction)
+      const hash = typeof result === 'string' ? result : result?.signature || result?.toString()
+
+      setTxHash(hash)
+      setStep('Confirming Solana Transaction...')
+
+      try {
+        const connection = getSolanaConnection()
+        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed')
+        await connection.confirmTransaction(
+          { signature: hash, blockhash, lastValidBlockHeight },
+          'confirmed',
+        )
+      } catch (confirmErr) {
+        console.warn('Solana confirmation polling failed (tx may still succeed):', confirmErr)
       }
 
-      setTxHash(txHash)
-      setStep('Deposit Sent. Waiting for swap...')
-
+      // Deposit-based providers (e.g. NEAR via Solana) need the hash submitted to
+      // the solver; LI.FI is self-contained and needs no extra submission.
+      const depositAddress =
+        quote.metadata?.depositAddress || quote.transactionRequest?.depositAddress
       if (quote.provider === 'near-intents' && depositAddress) {
         try {
-          await OneClickService.submitDepositTx({ txHash, depositAddress })
+          await OneClickService.submitDepositTx({
+            txHash: hash,
+            depositAddress: depositAddress as string,
+            memo: quote.metadata?.depositMemo as string | undefined,
+          })
         } catch (e) {
-          console.warn('Failed to submit Solana deposit hash:', e)
+          console.warn('Failed to submit Solana swap hash:', e)
         }
       }
 
       setStatus('completed')
-      return txHash
+      return hash
     } catch (e: any) {
-      console.error('Solana Deposit Error:', e)
-      setError(e.message || 'Solana Deposit Failed')
+      console.error('Solana Swap Execution Error:', e)
+      setError(e.message || 'Solana Swap Execution Failed')
       setStatus('failed')
       throw e
     }
-  }, [address])
+  }, [])
+
+  const executeSolanaDeposit = useCallback(
+    async (quote: QuoteResponse) => {
+      const solana = (window as any).phantom?.solana || (window as any).solana
+      if (!solana || !address) throw new Error('Solana wallet not connected')
+
+      const depositAddress =
+        quote.metadata?.depositAddress || quote.transactionRequest?.depositAddress
+      if (!depositAddress) throw new Error('No deposit address in quote')
+
+      setStatus('executing')
+      setStep('Sending Solana Deposit...')
+
+      try {
+        const fromPubkey = new PublicKey(address)
+        const toPubkey = new PublicKey(depositAddress)
+        const fromToken = quote.routes[0]?.action.fromToken
+
+        let transaction
+
+        if (!fromToken || isSolNative(fromToken.address)) {
+          const lamports = BigInt(quote.metadata?.amountToSend || quote.fromAmount)
+          transaction = await buildSolTransfer(fromPubkey, toPubkey, lamports)
+        } else {
+          const mint = new PublicKey(fromToken.address)
+          const amount = BigInt(quote.metadata?.amountToSend || quote.fromAmount)
+          transaction = await buildSplTokenTransfer(fromPubkey, toPubkey, mint, amount)
+        }
+
+        let txHash: string
+        if (solana?.signAndSendTransaction) {
+          const result = await solana.signAndSendTransaction(transaction)
+          txHash = typeof result === 'string' ? result : result?.signature || result?.toString()
+        } else {
+          throw new Error('Connected Solana wallet does not support signAndSendTransaction.')
+        }
+
+        setTxHash(txHash)
+        setStep('Deposit Sent. Waiting for swap...')
+
+        if (quote.provider === 'near-intents' && depositAddress) {
+          try {
+            await OneClickService.submitDepositTx({
+              txHash,
+              depositAddress,
+              memo: quote.metadata?.depositMemo as string | undefined,
+            })
+          } catch (e) {
+            console.warn('Failed to submit Solana deposit hash:', e)
+          }
+        }
+
+        setStatus('completed')
+        return txHash
+      } catch (e: any) {
+        console.error('Solana Deposit Error:', e)
+        setError(e.message || 'Solana Deposit Failed')
+        setStatus('failed')
+        throw e
+      }
+    },
+    [address],
+  )
 
   const executeBitcoinDeposit = useCallback(async (quote: QuoteResponse) => {
-  
-    const depositAddress = quote.metadata?.depositAddress || quote.transactionRequest?.depositAddress
+    const depositAddress =
+      quote.metadata?.depositAddress || quote.transactionRequest?.depositAddress
     if (!depositAddress) throw new Error('No Bitcoin deposit address in quote')
 
     const btcProvider = (window as any).unisat || (window as any).xfi?.bitcoin
-    if (!btcProvider) throw new Error('Bitcoin wallet not connected. Install a Bitcoin wallet extension.')
+    if (!btcProvider)
+      throw new Error('Bitcoin wallet not connected. Install a Bitcoin wallet extension.')
 
     setStatus('executing')
     setStep('Sending Bitcoin Transaction...')
@@ -439,7 +550,7 @@ export function useTransactionExecutor() {
     try {
       const amountToSend = quote.metadata?.amountToSend || quote.fromAmount
       const satoshis = parseInt(amountToSend as string, 10)
-      
+
       let txHash: string
 
       if (btcProvider?.sendBitcoin) {
@@ -459,7 +570,11 @@ export function useTransactionExecutor() {
 
       if (quote.provider === 'near-intents' && depositAddress) {
         try {
-          await OneClickService.submitDepositTx({ txHash, depositAddress })
+          await OneClickService.submitDepositTx({
+            txHash,
+            depositAddress,
+            memo: quote.metadata?.depositMemo as string | undefined,
+          })
         } catch (e) {
           console.warn('Failed to submit BTC deposit hash:', e)
         }
@@ -476,96 +591,137 @@ export function useTransactionExecutor() {
   }, [])
 
   // Main Entry Point
-  const execute = useCallback(async (quote: QuoteResponse, recipientAddress?: string) => {
-    setError(null)
-    setTxHash(null)
-    
-    try {
-      // Check if this is a non-EVM chain 
-      const chainType = quote.metadata?.chainType || 'evm'
-      const isDepositTrade = quote.metadata?.isDepositTrade
+  const execute = useCallback(
+    async (quote: QuoteResponse, recipientAddress?: string) => {
+      setError(null)
+      setTxHash(null)
 
-      if (isDepositTrade) {
-        if (chainType === 'solana') {
-          return await executeSolanaDeposit(quote)
+      try {
+        // Check if this is a non-EVM chain
+        const chainType = quote.metadata?.chainType || 'evm'
+        const isDepositTrade = quote.metadata?.isDepositTrade
+
+        if (isDepositTrade) {
+          if (chainType === 'solana') {
+            return await executeSolanaDeposit(quote)
+          }
+          if (chainType === 'bitcoin') {
+            return await executeBitcoinDeposit(quote)
+          }
+          // Fund-safety: never let a non-EVM/non-Solana/non-Bitcoin deposit
+          // (XRP/TON/Stellar/Tron/Sui — often memo/tag-required) fall through to
+          // the EVM signer below. We have no working signing path for these, and
+          // misrouting would send funds to a wrong-format address / without the
+          // required memo → unrecoverable loss.
+          if (chainType === 'other') {
+            throw new Error(
+              'Paying from this source chain is not supported yet. ' +
+                'Please choose an EVM, Solana, or Bitcoin source token.',
+            )
+          }
         }
-        if (chainType === 'bitcoin') {
-          return await executeBitcoinDeposit(quote)
+
+        // Non-deposit Solana-source swaps (primarily LI.FI) sign a serialized
+        // Solana transaction. Without this branch they fall through to the EVM
+        // signer below and become unexecutable.
+        if (!isDepositTrade && quote.provider !== 'near-intents' && quote.provider !== 'cctp') {
+          if (resolveExecutionPath(quote) === 'solana') {
+            return await executeLifiSolana(quote)
+          }
         }
-      }
 
-      // EVM execution paths
-      if (quote.provider === 'lifi') {
-        const route = (quote.metadata?.lifiRoute as Route) || quote.routes[0] || quote.transactionRequest
-        return await executeLifi(route) 
-      } 
-      else if (quote.provider === 'rango') {
-        return await executeRango(quote, recipientAddress)
-      }
-      else if (quote.provider === 'near-intents') {
-        return await executeNearIntents(quote)
-      }
-      else if (quote.provider === 'cctp') {
-        return await executeCCTP(quote, recipientAddress)
-      }
-      else {
-        // Atomic Providers (Symbiosis, Rubic)
-        if (!quote.transactionRequest) throw new Error('No transaction request found')
-        
-        if (!walletClient || !publicClient) throw new Error('Wallet not connected')
+        // EVM execution paths
+        if (quote.provider === 'lifi') {
+          const route =
+            (quote.metadata?.lifiRoute as Route) || quote.routes[0] || quote.transactionRequest
+          return await executeLifi(route)
+        } else if (quote.provider === 'rango') {
+          return await executeRango(quote, recipientAddress)
+        } else if (quote.provider === 'near-intents') {
+          return await executeNearIntents(quote)
+        } else if (quote.provider === 'cctp') {
+          return await executeCCTP(quote, recipientAddress)
+        } else {
+          // Atomic Providers (Symbiosis, Rubic)
+          if (!quote.transactionRequest) throw new Error('No transaction request found')
 
-        // 1. Handle Approvals if needed
-        const approvalAddress = quote.routes[0]?.estimate?.approvalAddress
-        if (approvalAddress && quote.routes[0]?.action?.fromToken?.address !== '0x0000000000000000000000000000000000000000') {
-           const tokenAddress = quote.routes[0].action.fromToken.address as `0x${string}`
-           const amount = BigInt(quote.fromAmount)
-           
-           try {
-             // Check allowance
-             const allowance = await publicClient.readContract({
-               address: tokenAddress,
-               abi: erc20Abi,
-               functionName: 'allowance',
-               args: [walletClient.account.address, approvalAddress as `0x${string}`]
-             }) as bigint
+          if (!walletClient || !publicClient) throw new Error('Wallet not connected')
 
-             if (allowance < amount) {
-               setStep('Approving Token...')
-               setStatus('approving')
-               const approveHash = await walletClient.writeContract({
-                 address: tokenAddress,
-                 abi: erc20Abi,
-                 functionName: 'approve',
-                 args: [approvalAddress as `0x${string}`, amount]
-               })
-               
-               setStep('Waiting for Approval...')
-               await publicClient.waitForTransactionReceipt({ hash: approveHash })
-             }
-           } catch (e) {
-             console.warn('Approval check failed, proceeding to tx (might fail):', e)
-           }
+          // 1. Handle Approvals if needed
+          const approvalAddress = quote.routes[0]?.estimate?.approvalAddress
+          if (
+            approvalAddress &&
+            quote.routes[0]?.action?.fromToken?.address !==
+              '0x0000000000000000000000000000000000000000'
+          ) {
+            const tokenAddress = quote.routes[0].action.fromToken.address as `0x${string}`
+            const amount = BigInt(quote.fromAmount)
+
+            try {
+              // Check allowance
+              const allowance = (await publicClient.readContract({
+                address: tokenAddress,
+                abi: erc20Abi,
+                functionName: 'allowance',
+                args: [walletClient.account.address, approvalAddress as `0x${string}`],
+              })) as bigint
+
+              if (allowance < amount) {
+                setStep('Approving Token...')
+                setStatus('approving')
+                const approveHash = await walletClient.writeContract({
+                  address: tokenAddress,
+                  abi: erc20Abi,
+                  functionName: 'approve',
+                  args: [approvalAddress as `0x${string}`, amount],
+                })
+
+                setStep('Waiting for Approval...')
+                await publicClient.waitForTransactionReceipt({ hash: approveHash })
+              }
+            } catch (e) {
+              console.warn('Approval check failed, proceeding to tx (might fail):', e)
+            }
+          }
+
+          setStatus('executing')
+          setStep('Sending Transaction...')
+
+          const hash = await walletClient.sendTransaction({
+            to: quote.transactionRequest.to as `0x${string}`,
+            data: quote.transactionRequest.data as `0x${string}`,
+            value: BigInt(quote.transactionRequest.value || 0),
+          })
+
+          setTxHash(hash)
+          // Same-chain swaps complete on broadcast; cross-chain bridges (Symbiosis/
+          // Rubic) only settle on the destination minutes later — keep them honest
+          // at 'submitted' and let the server-side poller mark completion.
+          if (isCrossChainSwap(quote)) {
+            setStep('Submitted. Settling on destination chain...')
+            setStatus('submitted')
+          } else {
+            setStatus('completed')
+          }
+          return hash
         }
-        
-        setStatus('executing')
-        setStep('Sending Transaction...')
-        
-        const hash = await walletClient.sendTransaction({
-          to: quote.transactionRequest.to as `0x${string}`,
-          data: quote.transactionRequest.data as `0x${string}`,
-          value: BigInt(quote.transactionRequest.value || 0),
-        })
-        
-        setTxHash(hash)
-        setStatus('completed')
-        return hash
+      } catch (e: any) {
+        setError(e.message)
+        setStatus('failed')
+        throw e
       }
-    } catch (e: any) {
-       setError(e.message)
-       setStatus('failed')
-       throw e
-    }
-  }, [executeLifi, executeRango, executeNearIntents, executeSolanaDeposit, executeBitcoinDeposit, walletClient, publicClient])
+    },
+    [
+      executeLifi,
+      executeRango,
+      executeNearIntents,
+      executeLifiSolana,
+      executeSolanaDeposit,
+      executeBitcoinDeposit,
+      walletClient,
+      publicClient,
+    ],
+  )
 
   return { execute, status, error, txHash, step }
 }
